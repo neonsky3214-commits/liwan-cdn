@@ -68,7 +68,7 @@ def title_of(text):
 def main():
     now = dt.datetime.now(dt.timezone.utc)
     found = {}
-    for url in (f"https://t.me/s/{CHANNEL}", f"https://t.me/s/{CHANNEL}?q=%23weekend", f"https://t.me/s/{CHANNEL}?q=%23афиша"):
+    for url in (f"https://t.me/s/{CHANNEL}", f"https://t.me/s/{CHANNEL}?q=%23weekend", f"https://t.me/s/{CHANNEL}?q=%23%D0%B0%D1%84%D0%B8%D1%88%D0%B0"):
         try:
             for p in posts(get(url).decode("utf-8", "replace")):
                 found[p["id"]] = p
@@ -102,7 +102,7 @@ def main():
                 print("картинка не скачалась", p["id"], err)
                 continue
         keep.add(name)
-        upcoming = [d for d in p["when"] if d >= today]
+        upcoming = sorted({d for d in p["when"] if d >= today})
         items.append(dict(id=p["id"], url=f"https://t.me/{CHANNEL}/{p['id']}", date=p["date"][:10],
                           when=[d.isoformat() for d in upcoming],
                           title=title_of(p["text"]), img=name))
