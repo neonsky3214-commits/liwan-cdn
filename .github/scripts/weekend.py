@@ -57,6 +57,62 @@ def event_dates(text, posted):
     return res
 
 
+DATE_RX = re.compile(r"\b(\d{1,2})\.(\d{2})\b(?!\.\d)|\b(\d{1,2})\s+(январ|феврал|март|апрел|ма[яй]|июн|июл|август|сентябр|октябр|ноябр|декабр)[а-яё]*", re.I)
+TIME_RX = re.compile(r"(\d{1,2}:\d{2})(?:\s*[-–—]\s*(\d{1,2}:\d{2}))?")
+NOISE = re.compile(r"(понедельник|вторник|среда|четверг|пятница|суббота|воскресенье|\b(пн|вт|ср|чт|пт|сб|вс)\b|начало в|начало|бронь.*|по ссылке)", re.I)
+
+
+def clean(t):
+    t = re.sub(r"[\U0001F000-\U0001FAFF\u2600-\u27BF\uFE0F\u200d]", "", t)
+    return re.sub(r"\s+", " ", t).strip(" ,.|—–-:")
+
+
+def name_in(text):
+    """имя артиста или название: «в кавычках», DJ Имя, слово капсом"""
+    q = re.search(r"«([^»]{2,40})»", text)
+    if q: return "«" + q.group(1).strip() + "»"
+    dj = re.search(r"\bDJ[ \t]+([A-ZА-ЯЁ][\w.\-]+(?:[ \t]+[A-ZА-ЯЁ]{2,}[\w.\-]*)?)", text)
+    if dj: return "DJ " + dj.group(1)
+    caps = [w for w in re.findall(r"\b[A-ZА-ЯЁ][A-ZА-ЯЁ0-9.\-]{3,}(?:[ \t]+[A-ZА-ЯЁ][A-ZА-ЯЁ0-9.\-]{2,})?\b", text) if w not in ("LIWAN", "DJ")]
+    return caps[0] if caps else ""
+
+
+def kind_of(text):
+    t = text.lower()
+    if "🎧" in text: return "DJ-сет"
+    if "кино" in t or "на экране" in t: return "Кинопоказ"
+    if re.search(r"\bdj\b|диджей|\bсет", t): return "DJ-сет"
+    if "живая музыка" in t or "живой звук" in t or "концерт" in t: return "Живая музыка"
+    if "звучит" in t or "музык" in t: return "Музыкальный вечер"
+    return "Вечер в Liwan"
+
+
+def events_in(post, posted):
+    """события поста: строка с датой + следующие строки до новой даты; одна дата — одно событие"""
+    lines = post["text"].split("\n")
+    idx = [i for i, l in enumerate(lines) if DATE_RX.search(l)]
+    post_kind = kind_of(re.sub(r"(?i)кинопоказ|кино|на экране", "", post["text"]))  # для строк без своих слов; кино — только по своей строке
+    by_date = {}
+    for k, i in enumerate(idx):
+        ds = event_dates(lines[i], posted)
+        if not ds: continue
+        block = "\n".join(lines[i: (idx[k + 1] if k + 1 < len(idx) else min(len(lines), i + 4))])
+        tm = TIME_RX.search(block)
+        head = TIME_RX.sub(" ", NOISE.sub(" ", DATE_RX.sub(" ", "\n".join(block.split("\n")[:3]))))
+        name = name_in(head)
+        if not name:
+            first = clean(head.split("\n")[0])
+            name = first if 2 < len(first) <= 32 else name_in(post["text"])
+        kind = kind_of(block)
+        if kind == "Вечер в Liwan": kind = post_kind
+        e = dict(date=ds[0], time=(tm.group(1) + ("–" + tm.group(2) if tm.group(2) else "")) if tm else None, name=clean(name), kind=kind)
+        old = by_date.get(ds[0])
+        if not old or (e["time"] and not old["time"]) or (not old["name"] and e["name"]):
+            if old and not e["name"]: e["name"] = old["name"]
+            by_date[ds[0]] = e
+    return list(by_date.values())
+
+
 def title_of(text):
     text = TAGS.sub("", text)
     lines = [l.strip(" .—-") for l in text.split("\n") if len(l.strip()) > 2]
@@ -109,13 +165,27 @@ def main():
     for f in os.listdir(OUT):  # старые картинки убираем
         if f.endswith(".jpg") and f not in keep:
             os.remove(os.path.join(OUT, f))
-    data = dict(channel=f"https://t.me/{CHANNEL}", mode="tag" if tagged else "auto", items=items)
+    # отдельные события (для главной афиши блока): дата, время, кто/что; из нескольких постов про одно событие — более узкий
+    ev = {}
+    for p in pick:
+        posted = dt.datetime.fromisoformat(p["date"]).date()
+        es = events_in(p, posted)
+        for e in es:
+            if e["date"] < today: continue
+            key = (e["date"], e["name"].lower())
+            cand = dict(date=e["date"].isoformat(), time=e["time"], name=e["name"] or "Вечер в Liwan", kind=e["kind"],
+                        url=f"https://t.me/{CHANNEL}/{p['id']}", img=f"{p['id']}.jpg", _n=len(es))
+            if key not in ev or cand["_n"] < ev[key]["_n"]: ev[key] = cand
+    events = sorted(ev.values(), key=lambda e: (e["date"], e["time"] or ""))[:6]
+    for e in events: e.pop("_n")
+    data = dict(channel=f"https://t.me/{CHANNEL}", mode="tag" if tagged else "auto", events=events, items=items)
     path = os.path.join(OUT, "weekend.json")
     old = open(path).read() if os.path.exists(path) else ""
     new = json.dumps(data, ensure_ascii=False, indent=1)
     if new != old:
         open(path, "w").write(new)
     print(f"{len(items)} афиш ({data['mode']}):", [i["title"] for i in items])
+    print("события:", [(e["date"], e["time"], e["name"], e["kind"]) for e in events])
 
 
 if __name__ == "__main__":
