@@ -1,6 +1,24 @@
 {
  "channel": "https://t.me/loungeliwan",
  "mode": "auto",
+ "events": [
+  {
+   "date": "2026-10-23",
+   "time": "21:00–00:00",
+   "name": "DJ Tammy",
+   "kind": "DJ-сет",
+   "url": "https://t.me/loungeliwan/439",
+   "img": "439.jpg"
+  },
+  {
+   "date": "2026-10-24",
+   "time": "21:00–00:00",
+   "name": "MARSELINA",
+   "kind": "DJ-сет",
+   "url": "https://t.me/loungeliwan/442",
+   "img": "442.jpg"
+  }
+ ],
  "items": [
   {
    "id": 442,
