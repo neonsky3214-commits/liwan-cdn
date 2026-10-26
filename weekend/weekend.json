@@ -1,6 +1,44 @@
 {
  "channel": "https://t.me/loungeliwan",
  "mode": "auto",
- "events": [],
- "items": []
+ "events": [
+  {
+   "date": "2026-10-28",
+   "time": "22:00",
+   "name": "«Страх и ненависть в Лас-Вегасе»",
+   "kind": "Кинопоказ",
+   "url": "https://t.me/loungeliwan/458",
+   "img": "458.jpg"
+  },
+  {
+   "date": "2026-10-30",
+   "time": "21:00–00:00",
+   "name": "DJ Bbooka",
+   "kind": "DJ-сет",
+   "url": "https://t.me/loungeliwan/458",
+   "img": "458.jpg"
+  },
+  {
+   "date": "2026-10-31",
+   "time": "21:00–00:00",
+   "name": "«Страх и ненависть в Лас-Вегасе»",
+   "kind": "DJ-сет",
+   "url": "https://t.me/loungeliwan/458",
+   "img": "458.jpg"
+  }
+ ],
+ "items": [
+  {
+   "id": 458,
+   "url": "https://t.me/loungeliwan/458",
+   "date": "2026-10-26",
+   "when": [
+    "2026-10-28",
+    "2026-10-30",
+    "2026-10-31"
+   ],
+   "title": "На этой неделе в Liwan смотрим культовое кино и встречаемся за DJ-пультом. Сохраняйте расп…",
+   "img": "458.jpg"
+  }
+ ]
 }
