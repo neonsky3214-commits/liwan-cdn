@@ -79,8 +79,9 @@ def name_in(text):
 
 def kind_of(text):
     t = text.lower()
+    if "🎬" in text: return "Кинопоказ"
     if "🎧" in text: return "DJ-сет"
-    if "кино" in t or "на экране" in t: return "Кинопоказ"
+    if "кино" in t or "экран" in t or "фильм" in t: return "Кинопоказ"
     if re.search(r"\bdj\b|диджей|\bсет", t): return "DJ-сет"
     if "живая музыка" in t or "живой звук" in t or "концерт" in t: return "Живая музыка"
     if "звучит" in t or "музык" in t: return "Музыкальный вечер"
@@ -91,7 +92,8 @@ def events_in(post, posted):
     """события поста: строка с датой + следующие строки до новой даты; одна дата — одно событие"""
     lines = post["text"].split("\n")
     idx = [i for i, l in enumerate(lines) if DATE_RX.search(l)]
-    post_kind = kind_of(re.sub(r"(?i)кинопоказ|кино|на экране", "", post["text"]))  # для строк без своих слов; кино — только по своей строке
+    post_kind = kind_of(re.sub(r"(?i)кинопоказ|кино|экран|фильм|🎬", "", post["text"]))
+    single = len({tuple(event_dates(lines[i], posted)[:1]) for i in idx} - {()}) <= 1  # все даты поста — один день  # для строк без своих слов; кино — только по своей строке
     by_date = {}
     for k, i in enumerate(idx):
         ds = event_dates(lines[i], posted)
@@ -100,10 +102,12 @@ def events_in(post, posted):
         tm = TIME_RX.search(block)
         head = TIME_RX.sub(" ", NOISE.sub(" ", DATE_RX.sub(" ", "\n".join(block.split("\n")[:3]))))
         name = name_in(head)
-        if not name:
-            first = clean(head.split("\n")[0])
-            name = first if 2 < len(first) <= 32 else name_in(post["text"])
-        kind = kind_of(block)
+        if not name and single:  # пост про одно событие: имя ищем по всему тексту
+            name = name_in(post["text"])
+        if not name:  # афиша недели: первая короткая строка события («Sokol»)
+            short = [l for l in (clean(x) for x in head.split("\n")) if 2 < len(l) <= 32]
+            name = short[0] if short else ""
+        kind = kind_of(post["text"]) if single else kind_of(block)
         if kind == "Вечер в Liwan": kind = post_kind
         e = dict(date=ds[0], time=(tm.group(1) + ("–" + tm.group(2) if tm.group(2) else "")) if tm else None, name=clean(name), kind=kind)
         old = by_date.get(ds[0])
