@@ -1,4 +1,4 @@
-/* Liwan — дополнения к блоку Tilda: «Карта путника» и «Напомнить» в афише.
+/* Liwan — дополнения к блоку Tilda: «Карта путника», чайный гид и «Напомнить» в афише.
    Грузится блоком после заставки (window.LIWAN_RT), лежит на хостинге рядом с картинками: в блок T123 не помещается.
    Тексты карт — в массиве DECK ниже: чай и фразу можно менять, код карты (QS, KH…) — имя файла в assets/cards. */
 (() => {
@@ -42,10 +42,34 @@
 #liwan .tc-in > :last-child { transition-delay: .15s; }
 #liwan .tc.in .tc-in > * { opacity: 1; translate: 0 0; }
 
+#liwan .tg { scroll-margin-top: 40px; margin: 0 var(--rail); padding: clamp(72px, 12vh, 130px) clamp(28px, 5vw, 88px); background: #16100d; border-top: 1px solid var(--line-dark); }
+#liwan .tg .eyebrow { margin-bottom: clamp(22px, 4vh, 40px); }
+#liwan .tg-top { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: end; gap: 24px clamp(32px, 5vw, 96px); }
+#liwan .tg-h { margin: 0; font: 400 clamp(40px, 5.2vw, 84px)/1 var(--display); letter-spacing: -.01em; text-wrap: balance; }
+#liwan .tg-lead { max-width: 36ch; margin: 0; font: 300 clamp(17px, 1.35vw, 20px)/1.5 var(--text); opacity: .85; }
+#liwan .tg-moods { display: flex; flex-wrap: wrap; gap: 10px; margin: clamp(32px, 5vh, 48px) 0 0; padding: 0; list-style: none; }
+#liwan .tg-mood { min-height: 46px; padding: 0 22px; border-radius: 999px; border: 1px solid rgba(249, 238, 210, .3); font: 400 15px/1 var(--text); color: var(--cream); cursor: pointer; transition: background .3s var(--ease), color .3s var(--ease), border-color .3s var(--ease); }
+#liwan .tg-mood:hover { border-color: rgba(249, 238, 210, .7); }
+#liwan .tg-mood[aria-pressed="true"] { background: var(--cream); color: var(--choc); border-color: var(--cream); }
+#liwan .tg-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 0 clamp(24px, 3vw, 48px); margin: clamp(36px, 6vh, 56px) 0 0; padding: 0; list-style: none; }
+#liwan .tg-tea { padding: 24px 0 26px; border-top: 1px solid var(--line-dark); animation: lw-tc-in .6s var(--ease) both; animation-delay: calc(var(--i, 0) * 70ms); }
+#liwan .tg-name { margin: 0; font: 400 clamp(24px, 2.1vw, 32px)/1.1 var(--display); }
+#liwan .tg-desc { max-width: 34ch; margin: 10px 0 0; font: 300 16px/1.5 var(--text); opacity: .86; }
+#liwan .tg-price { margin: 14px 0 0; font: 500 12px/1 var(--text); letter-spacing: .14em; text-transform: uppercase; color: var(--brass); }
+#liwan .tg-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; margin-top: clamp(28px, 5vh, 44px); }
+#liwan .tg-foot p { flex: 1 1 260px; margin: 0; font: 300 15px/1.5 var(--text); opacity: .7; }
+#liwan .tg .wk-acts { margin: 0; }
+#liwan .tg-more { margin-top: 8px; color: var(--cream); cursor: pointer; }
+
 @media (max-width: 767px) {
-  #liwan .tc { margin: 0; }
+  #liwan .tc, #liwan .tg { margin: 0; }
   #liwan .tc-in { grid-template-columns: 1fr; gap: 64px; min-height: 0; padding: 72px 20px 96px; }
   #liwan .tc-deck { order: 2; }
+  #liwan .tg { padding: 72px 20px 80px; }
+  #liwan .tg-top { grid-template-columns: 1fr; }
+  #liwan .tg-moods { flex-wrap: nowrap; overflow-x: auto; margin-right: -20px; padding-right: 20px; scrollbar-width: none; } /* настроения листаются вбок, а не в пять строк */
+  #liwan .tg-moods::-webkit-scrollbar { display: none; }
+  #liwan .tg-mood { flex: none; }
 }
 `;
   const style = document.createElement("style");
@@ -246,6 +270,82 @@
         setTimeout(() => URL.revokeObjectURL(a.href), 4000);
       } else open("https://t.me/share/url?url=" + encodeURIComponent(SITE) + "&text=" + encodeURIComponent(text), "_blank", "noopener");
     });
+  })();
+
+  /* =================== чайный гид: настроение → 3–6 чаёв из меню с понятным описанием =================== */
+  const MOODS = [["fresh", "Свежее, цветочное"], ["honey", "Медовое, сладкое"], ["roast", "Обжаренное, с дымком"], ["deep", "Глубокое, плотное"], ["calm", "Спокойное, на вечер"]];
+  /* название как в меню, цена, объём чайника, настроения, описание в одну строку; «Ян Ча», «Шен Иу», «Лао Ча Ван» не описаны — уточнить у мастера */
+  const TEAS = [
+    ["Те Гуань Инь", 1100, 1000, "fresh", "Светлый улун: орхидея, сливки и весенняя свежесть."],
+    ["Тайваньский Сы Цзи Чунь", 1200, 1000, "fresh", "Тайваньский улун «Четыре сезона»: лёгкий, цветочный, весенний."],
+    ["Джан Пин Шуй Сян", 1500, 1000, "fresh", "Прессованный улун из Чжанпина: нежный, цветочный, с орхидеей."],
+    ["Жасмин", 1200, 1000, "fresh", "Зелёный чай с жасмином: цветочный и освежающий."],
+    ["Бай Мудань", 1100, 1000, "fresh calm", "Белый чай: лёгкий, цветочный, почти прозрачный вкус."],
+    ["Марокканский", 1300, 650, "fresh", "Зелёный чай с мятой по-марокански: бодрит и освежает."],
+    ["Молочный Улун", 1100, 1000, "fresh honey", "Сливочный и мягкий, со сладким молочным ароматом."],
+    ["Фен Хуан Дан Цун", 1600, 1000, "honey fresh", "Улун с горы Фэнхуан: яркий, фруктово-цветочный, с медовым следом."],
+    ["Дун Фан Мей Жень", 1500, 1000, "honey", "«Восточная красавица»: мёд, спелые фрукты и мускат."],
+    ["Цзинь Цзунь Мей", 1100, 1000, "honey", "Красный чай из Уишаня: мёд, солод и сухофрукты. Сладкий без сахара."],
+    ["Красный Чжун Го Хун", 1400, 1000, "honey deep", "Красный чай: сладкий, тёплый, с нотами сухофруктов."],
+    ["Лао Гун Мей", 1200, 1000, "honey calm", "Выдержанный белый чай: финики, мёд и сухофрукты."],
+    ["Розовый с яблоком", 1600, 650, "honey", "С розой и яблоком: ароматный, фруктовый, сладкий."],
+    ["Габа Бриллиант", 1300, 1000, "honey calm", "Улун с фруктовой кислинкой и сладостью, мягко расслабляет."],
+    ["Да Хун Пао", 1100, 1000, "roast", "Утёсный улун: прожарка, минеральность, долгое послевкусие."],
+    ["Да Хун Пао Традиционный", 2900, 1000, "roast deep", "Утёсный улун сильной прожарки: густой, с дымком и минеральностью."],
+    ["Шуй Сян", 1500, 1000, "roast", "Утёсный улун «Нарцисс»: прожарка, дерево и сладкое послевкусие."],
+    ["Те Гуань Инь Вулкан", 1100, 1000, "roast", "Те Гуань Инь после прожарки: орехи, карамель, тёплый вкус."],
+    ["Гречишный", 1100, 1000, "calm roast", "Без кофеина: вкус поджаренной гречки и свежего хлеба."],
+    ["Дянь Хун", 1100, 1000, "deep honey", "Юньнаньский красный: тёплый, хлебный, с нотами какао."],
+    ["Шу Гун Тин", 1100, 1000, "deep calm", "Шу пуэр из почек: густой, мягкий, землистый, с нотами какао."],
+    ["Шен Пуэр", 1300, 1000, "deep", "Шен пуэр: бодрящий, яркий, с фруктовой терпкостью."],
+    ["Мен Хай Гу Шу", 1500, 1000, "deep", "Пуэр со старых деревьев Мэнхая: плотный и долгий вкус."],
+    ["Тибетская Ромашка", 1100, 1000, "calm", "Травяной и мягкий, с медовой ноткой — на поздний вечер."],
+    ["Чай с чабрецом", 800, 650, "calm", "С чабрецом: травяной, согревающий, уютный."]
+  ];
+  (function guide() {
+    const anchor = $("#karta") || $(".about");
+    if (!anchor) return;
+    const rub = (n) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " ₽";
+    const sec = document.createElement("section");
+    sec.className = "tg"; sec.id = "chai"; sec.setAttribute("aria-labelledby", "h-chai-gid");
+    sec.innerHTML = '<h2 class="eyebrow" id="h-chai-gid">Чайный гид</h2>' +
+      '<div class="tg-top"><p class="tg-h">Какой вкус вам ближе?</p><p class="tg-lead">В меню больше двадцати чаёв. Выберите настроение — подскажем, с чего начать.</p></div>' +
+      '<div class="tg-moods" role="group" aria-label="Настроение"></div><ul class="tg-list" aria-live="polite"></ul>' +
+      '<div class="tg-foot"><p>Мастер заварит при вас и расскажет о чае подробнее.</p><div class="wk-acts"><a class="wk-btn main" href="' + BOOK + '" target="_blank" rel="noopener">Забронировать стол</a><a class="wk-btn" href="#menu" data-open="menu">Всё меню</a></div></div>';
+    anchor.before(sec);
+    const moods = $(".tg-moods", sec), list = $(".tg-list", sec);
+    const phone = matchMedia("(max-width: 767px)");
+    function show(key, all) {
+      [...moods.children].forEach((b) => b.setAttribute("aria-pressed", b.dataset.mood === key ? "true" : "false"));
+      const on = moods.querySelector('[aria-pressed="true"]'); /* на телефоне лента листается: выбранное держим в поле зрения */
+      if (on && moods.scrollWidth > moods.clientWidth) moods.scrollTo({ left: Math.max(0, on.offsetLeft - moods.offsetLeft - 20), behavior: "smooth" });
+      list.textContent = "";
+      const found = TEAS.filter((t) => t[3].split(" ").includes(key)), cap = phone.matches && !all ? 4 : found.length;
+      found.slice(0, cap).forEach((t, i) => {
+        const li = document.createElement("li");
+        li.className = "tg-tea"; li.style.setProperty("--i", i);
+        const n = document.createElement("p"); n.className = "tg-name"; n.textContent = t[0];
+        const d = document.createElement("p"); d.className = "tg-desc"; d.textContent = t[4];
+        const p = document.createElement("p"); p.className = "tg-price"; p.textContent = rub(t[1]) + " · чайник " + (t[2] >= 1000 ? "1 л" : t[2] + " мл");
+        li.append(n, d, p); list.appendChild(li);
+      });
+      if (found.length > cap) { /* на телефоне сначала четыре, остальное по кнопке */
+        const li = document.createElement("li"), b = document.createElement("button");
+        b.type = "button"; b.className = "wk-btn tg-more"; b.textContent = "Ещё " + (found.length - cap);
+        b.addEventListener("click", () => show(key, true));
+        li.appendChild(b); list.appendChild(li);
+      }
+      store.set("lw-mood", key);
+    }
+    MOODS.forEach(([key, label]) => {
+      const b = document.createElement("button");
+      b.type = "button"; b.className = "tg-mood"; b.dataset.mood = key; b.textContent = label;
+      b.addEventListener("click", () => show(key));
+      moods.appendChild(b);
+    });
+    const last = store.get("lw-mood");
+    show(MOODS.some((m) => m[0] === last) ? last : MOODS[0][0]); /* вернувшийся гость видит своё настроение */
+    phone.addEventListener("change", () => show(store.get("lw-mood") || MOODS[0][0])); /* поворот экрана: четыре на телефоне, все на планшете */
   })();
 
 })();
