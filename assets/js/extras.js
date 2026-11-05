@@ -9,6 +9,13 @@
   const url = RT.url;
   const SITE = "https://liwan-lounge.ru/";
   const BOOK = "https://reservation.yandex.ru/partner-reserve/forms/03fcde06-37b9-4221-a463-c06049b48a12";
+  /* Метрика: нажатие на любую кнопку брони (левой кнопкой или колёсиком) — цель booking_click, ID 679080180.
+     Слушаем document, чтобы учесть и кнопки, которые появляются позже: афишу, чайный гид. */
+  const trackBooking = (e) => {
+    if (e.button < 2 && e.target.closest(`a[href^="${BOOK}"]`) && typeof window.ym === "function") window.ym(113427535, "reachGoal", "booking_click");
+  };
+  document.addEventListener("click", trackBooking, true);
+  document.addEventListener("auxclick", trackBooking, true);
   const finePointer = matchMedia("(hover: hover) and (pointer: fine)").matches; /* компьютер с мышью */
   const mskToday = () => new Date(Date.now() + 3 * 3600e3).toISOString().slice(0, 10); /* дата по Москве */
   const store = { get: (k) => { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } },
