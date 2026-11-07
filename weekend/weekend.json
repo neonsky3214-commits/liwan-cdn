@@ -1,16 +1,7 @@
 {
  "channel": "https://t.me/loungeliwan",
  "mode": "auto",
- "events": [
-  {
-   "date": "2026-11-07",
-   "time": "21:00–00:00",
-   "name": "DJ Sativa",
-   "kind": "DJ-сет",
-   "url": "https://t.me/loungeliwan/472",
-   "img": "472.jpg"
-  }
- ],
+ "events": [],
  "items": [
   {
    "id": 474,
@@ -19,16 +10,6 @@
    "when": [],
    "title": "Сегодня можно никуда не спешить",
    "img": "474.jpg"
-  },
-  {
-   "id": 472,
-   "url": "https://t.me/loungeliwan/472",
-   "date": "2026-11-02",
-   "when": [
-    "2026-11-07"
-   ],
-   "title": "В среду выходной, и вечером в Liwan кино. А в пятницу и субботу за пультом DJ Hellena и DJ…",
-   "img": "472.jpg"
   },
   {
    "id": 468,
