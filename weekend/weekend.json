@@ -1,8 +1,45 @@
 {
  "channel": "https://t.me/loungeliwan",
  "mode": "auto",
- "events": [],
+ "events": [
+  {
+   "date": "2026-11-11",
+   "time": "22:00",
+   "name": "«Пленницы»",
+   "kind": "Кинопоказ",
+   "url": "https://t.me/loungeliwan/478",
+   "img": "478.jpg"
+  },
+  {
+   "date": "2026-11-13",
+   "time": "22:00–01:00",
+   "name": "DJ INAYA",
+   "kind": "DJ-сет",
+   "url": "https://t.me/loungeliwan/478",
+   "img": "478.jpg"
+  },
+  {
+   "date": "2026-11-14",
+   "time": "21:30–23:00",
+   "name": "Talisman",
+   "kind": "Живая музыка",
+   "url": "https://t.me/loungeliwan/478",
+   "img": "478.jpg"
+  }
+ ],
  "items": [
+  {
+   "id": 478,
+   "url": "https://t.me/loungeliwan/478",
+   "date": "2026-11-09",
+   "when": [
+    "2026-11-11",
+    "2026-11-13",
+    "2026-11-14"
+   ],
+   "title": "Неделя в Liwan",
+   "img": "478.jpg"
+  },
   {
    "id": 474,
    "url": "https://t.me/loungeliwan/474",
