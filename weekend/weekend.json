@@ -1,26 +1,6 @@
 {
  "channel": "https://t.me/loungeliwan",
  "mode": "auto",
- "events": [
-  {
-   "date": "2026-11-14",
-   "time": "21:30–23:00",
-   "name": "Talisman",
-   "kind": "Живая музыка",
-   "url": "https://t.me/loungeliwan/478",
-   "img": "478.jpg"
-  }
- ],
- "items": [
-  {
-   "id": 478,
-   "url": "https://t.me/loungeliwan/478",
-   "date": "2026-11-09",
-   "when": [
-    "2026-11-14"
-   ],
-   "title": "Неделя в Liwan",
-   "img": "478.jpg"
-  }
- ]
+ "events": [],
+ "items": []
 }
