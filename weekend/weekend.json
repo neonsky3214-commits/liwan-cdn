@@ -1,6 +1,44 @@
 {
  "channel": "https://t.me/loungeliwan",
  "mode": "auto",
- "events": [],
- "items": []
+ "events": [
+  {
+   "date": "2026-11-18",
+   "time": "22:00",
+   "name": "«Прибытие»",
+   "kind": "Кинопоказ",
+   "url": "https://t.me/loungeliwan/491",
+   "img": "491.jpg"
+  },
+  {
+   "date": "2026-11-20",
+   "time": "22:00",
+   "name": "DJ Tammy",
+   "kind": "DJ-сет",
+   "url": "https://t.me/loungeliwan/491",
+   "img": "491.jpg"
+  },
+  {
+   "date": "2026-11-21",
+   "time": "19:00",
+   "name": "DJ Arina",
+   "kind": "DJ-сет",
+   "url": "https://t.me/loungeliwan/491",
+   "img": "491.jpg"
+  }
+ ],
+ "items": [
+  {
+   "id": 491,
+   "url": "https://t.me/loungeliwan/491",
+   "date": "2026-11-16",
+   "when": [
+    "2026-11-18",
+    "2026-11-20",
+    "2026-11-21"
+   ],
+   "title": "Неделя в Liwan",
+   "img": "491.jpg"
+  }
+ ]
 }
