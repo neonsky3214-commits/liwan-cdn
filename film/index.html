@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Liwan — фильм</title>
-<meta name="description" content="Liwan — лаунж-бар и чайная в Жулебино. Минутный фильм: чай, живой звук, ночь с DJ, веранда.">
+<meta name="description" content="Liwan — лаунж-бар и чайная в Жулебино. Короткий фильм: чай, живой звук, ночь с DJ, веранда.">
 <meta property="og:title" content="Liwan — фильм">
-<meta property="og:description" content="Минутный фильм о лаунж-баре и чайной в Жулебино. Зажмите, чтобы начать.">
+<meta property="og:description" content="Короткий фильм о лаунж-баре и чайной в Жулебино. Зажмите, чтобы начать.">
 <meta property="og:image" content="https://neonsky3214-commits.github.io/liwan-cdn/film/img/og.jpg">
 <meta name="theme-color" content="#0E0907">
 <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
@@ -56,10 +56,11 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .hold circle{fill:none;stroke-width:1}
 .hold .bg{stroke:rgba(181,139,90,.3)}
 .hold .fg{stroke:var(--cream);stroke-dasharray:1 1;stroke-dashoffset:1}
-.hold span{font:400 10px/1.7 Inter;letter-spacing:.3em;text-transform:uppercase;padding-left:.3em}
+.hold span{font:400 10px/1.7 Inter;letter-spacing:.3em;text-transform:uppercase;padding-left:.3em;text-shadow:0 0 10px #0E0907,0 0 3px #0E0907}
+.hold:after{content:"";position:absolute;inset:6px;border-radius:50%;background:radial-gradient(closest-side,rgba(14,9,7,.75),rgba(14,9,7,0));z-index:-1}
 .hold:before{content:"";position:absolute;inset:18px;border-radius:50%;border:1px solid rgba(181,139,90,.2);animation:breathe 3s ease-in-out infinite}
 @keyframes breathe{50%{transform:scale(1.08);opacity:.4}}
-.gate-sub{font:400 10px/1.9 Inter;letter-spacing:.32em;text-transform:uppercase;color:rgba(249,238,210,.5);opacity:0;transition:opacity 1.2s .3s}
+.gate-sub{font:400 10px/1.9 Inter;letter-spacing:.32em;text-transform:uppercase;color:rgba(249,238,210,.62);text-shadow:0 0 12px #0E0907,0 0 4px #0E0907;opacity:0;transition:opacity 1.2s .3s}
 .ready .gate-sub{opacity:1}
 
 /* интерфейс */
@@ -103,6 +104,10 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   background:radial-gradient(closest-side,rgba(255,214,160,.16),transparent);opacity:0;transition:opacity 2.4s ease .2s}
 #card.on:before{transform:scaleX(1);opacity:.7}
 #card.on:after{opacity:1}
+#card.side{left:auto;right:calc(var(--pad) + 20px);width:min(470px,42vw);text-align:left}
+#card.side h2{font-size:clamp(46px,6vw,100px)}
+#card.side .rule{margin-left:0}
+#card.side:before,#card.side:after{display:none}
 #card .rule{display:block;width:min(340px,50vw);height:1px;margin:32px auto 0;background:linear-gradient(90deg,transparent,var(--brass),transparent);
   transform:scaleX(0);transition:transform 2s var(--out) .4s}
 #card.on .kick{opacity:1}
@@ -121,7 +126,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 #subs a{pointer-events:auto;border-bottom:1px solid var(--brass)}
 
 /* финал: титры и бронь */
-#credits{position:fixed;z-index:9;right:calc(var(--pad) + 20px);top:0;bottom:0;width:min(460px,42vw);overflow:hidden;pointer-events:none;
+#credits{position:fixed;z-index:9;right:calc(var(--pad) + 20px);top:110px;bottom:110px;width:min(460px,42vw);overflow:hidden;pointer-events:none;
   -webkit-mask-image:linear-gradient(transparent,#000 22%,#000 78%,transparent);mask-image:linear-gradient(transparent,#000 22%,#000 78%,transparent);opacity:0;transition:opacity 1.2s}
 #credits.on{opacity:1}
 #credits .roll{position:absolute;left:0;right:0;top:100%;text-align:center}
@@ -163,12 +168,14 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 @media (pointer:coarse){.cur,.dot{display:none}}
 
 /* телефон */
-@media (max-width:760px){
+@media (max-width:760px), (max-aspect-ratio:1/1){
   .logo{width:24px}
   .book{padding:12px 15px 12px 17px;letter-spacing:.16em;font-size:10px}
   .segs{top:calc(var(--pad) + 46px);left:var(--pad);right:var(--pad);transform:none;gap:4px}
   .segs button{flex:1;width:auto}
   #card{top:36%}
+  #card.side{left:0;right:0;width:auto;text-align:center;top:68%}
+  #card.side .rule{margin-left:auto}
   #card h2{font-size:clamp(46px,14vw,70px)}
   #card .kick{margin-bottom:18px}
   #subs{bottom:96px;font-size:16px}
@@ -183,6 +190,20 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   .again{display:none}
 }
 @media (max-width:760px) and (max-height:720px){.fin p{display:none}.acts{margin-top:6px}}
+/* телефон боком: низкий экран — компактный финал */
+@media (max-height:520px) and (min-aspect-ratio:1/1){
+  .fin{width:min(420px,46vw);right:var(--pad)}
+  .fin .num{margin-bottom:10px}
+  .fin h2{font-size:clamp(30px,4.4vw,44px);margin-bottom:10px}
+  .fin p,.again{display:none}
+  .acts{margin:12px 0;gap:8px}
+  .btn{min-height:40px;padding:0 18px;font-size:10px}
+  .info{font-size:12px;gap:2px 14px}
+  .info dt{line-height:1.7}
+  #card h2{font-size:clamp(44px,9vw,80px)}
+  #card .kick{margin-bottom:16px}
+  #credits{top:60px;bottom:50px}
+}
 
 /* без WebGL — простая страница */
 .nogl body{overflow:auto;touch-action:auto}
@@ -215,7 +236,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
     <div class="pct" aria-live="polite">0%</div>
     <button class="hold" type="button" aria-label="Зажмите, чтобы начать фильм">
       <svg viewBox="0 0 140 140"><circle class="bg" cx="70" cy="70" r="68"/><circle class="fg" cx="70" cy="70" r="68" pathLength="1"/></svg>
-      <span>Зажмите<br>чтобы начать</span>
+      <span>Зажмите,<br>чтобы начать</span>
     </button>
     <div class="gate-sub">Фильм о Liwan · полторы минуты<br>Лучше со звуком</div>
   </div>
@@ -231,8 +252,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 <div id="subs" aria-live="polite"></div>
 
 <div id="credits" aria-hidden="true"><div class="roll">
-  <div class="big">LIWAN</div>
-  <div class="sub">лаунж-бар и чайная</div>
+  <div class="sub">Liwan · лаунж-бар и чайная</div>
   <h4>В ролях</h4>
   <dl>
     <dt>Чай</dt><dd>мастер чайной церемонии</dd>
@@ -246,7 +266,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 </div></div>
 
 <section class="fin" aria-label="Бронирование и контакты">
-  <div class="num">Финал</div>
+  <div class="num">Бронирование</div>
   <h2>Ваш стол ждёт</h2>
   <p>Лаунж-бар и чайная на втором этаже фудмолла «Привоз».</p>
   <div class="acts">
@@ -289,7 +309,7 @@ const CH = [
     subs: [[7.2, 11.6, "Город остаётся за дверью."], [12.2, 16.4, "Здесь свет мягче, а время — медленнее."]] },
   { label: "Чай", media: "chai", fo: .5, k: 1, dark: .06, pm: 2, form: 0, tr: 2, dur: 17,
     card: ["Глава II", "Чай"],
-    subs: [[7.2, 11.6, "Чай заваривает мастер."], [12.2, 16.4, "Улуны, пуэры и марокканский — с мятой."]] },
+    subs: [[7.2, 11.6, "Чай здесь заваривает мастер."], [12.2, 16.4, "Улуны, пуэры и марокканский чай с мятой."]] },
   { label: "Живой звук", media: "muzyka", top: .085, fo: .55, k: 1, dark: .1, pm: 3, form: 0, tr: 1, dur: 17.5,
     card: ["Глава III", "Живой звук"],
     subs: [[7.2, 11.8, "По вечерам звучат ситар и табла."], [12.4, 16.9, "Музыка, ради которой остаются до закрытия."]] },
@@ -300,7 +320,7 @@ const CH = [
     card: ["Глава V", "Веранда"],
     subs: [[7.2, 11.6, "Зелень и плетёные лампы."], [12.2, 16.4, "Ковры, тёплый вечер и живой звук."]] },
   { label: "Финал", media: "about", fo: .5, k: 3, dark: .82, pm: 0, form: 1, tr: 0, dur: 0,
-    card: ["Финал", "Ваш стол"] }
+    card: ["Финал", "До встречи"] }
 ];
 const N = CH.length;
 const TRANS_MS = 2800;
@@ -318,7 +338,7 @@ const segs = $(".segs");
 CH.forEach((c, k) => {
   const b = document.createElement("button"); b.type = "button";
   b.innerHTML = "<i></i><span>" + c.label + "</span>"; b.setAttribute("aria-label", c.label);
-  b.addEventListener("click", () => { if (phase === "film") go(k); });
+  b.addEventListener("click", () => navTo(k));
   segs.appendChild(b);
 });
 const segBtns = $$("button", segs);
@@ -403,7 +423,7 @@ vec3 sky(vec2 uv){
   float halo=exp(-max(d1-R,0.)*16.)*.22*smoothstep(R*.6,R*1.1,d2);
   float mv=smoothstep(.5,.85,uCosmos);
   col+=(vec3(1.,.92,.76)*disk*1.15+vec3(.85,.6,.34)*halo)*mv;
-  col+=mix(vec3(.6,.74,1.),vec3(1.,.85,.65),.5)*exp(-abs(q.y-c.y)*150.)*exp(-abs(q.x-c.x)*2.2)*.35*mv;
+  col+=mix(vec3(.6,.74,1.),vec3(1.,.85,.65),.5)*exp(-abs(q.y-c.y)*150.)*exp(-abs(q.x-c.x)*(asp<1.?9.:2.2))*.35*mv;
   float per=7.;float k=floor(uTime/per),ph=fract(uTime/per)/.11;
   if(ph<1.){
     vec2 st=vec2((hq(vec2(k,1.))-.2)*asp*.9,.08+hq(vec2(k,2.))*.38);
@@ -653,9 +673,9 @@ logo.onload = () => {
 logo.onerror = () => loaded++;
 logo.src = "img/logo.png";
 
-let W = 0, H = 0, asp = 1, dpr = 1, rT = 0;
+let W = 0, H = 0, asp = 1, dpr = 1, rT = 0, qCap = 2;
 function resize() {
-  dpr = Math.min(devicePixelRatio || 1, small ? 1.5 : 2);
+  dpr = Math.min(devicePixelRatio || 1, small ? 1.5 : 2, qCap);
   W = innerWidth; H = innerHeight; asp = W / H;
   cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
   gl.viewport(0, 0, cv.width, cv.height);
@@ -712,7 +732,7 @@ function audioInit() {
   const lfo = ac.createOscillator(); lfo.frequency.value = .07; const lg = ac.createGain(); lg.gain.value = 240;
   lfo.connect(lg).connect(AU.windF.frequency); lfo.start();
   AU.plk = ac.createGain(); AU.plk.gain.value = .45; AU.plk.connect(AU.master);
-  const rv = ac.createDelay(1); rv.delayTime.value = .375; const rg = ac.createGain(); rg.gain.value = .34; const rl = ac.createBiquadFilter(); rl.frequency.value = 1700;
+  const rv = ac.createDelay(1); rv.delayTime.value = .375; const rg = ac.createGain(); rg.gain.value = .34; const rl = ac.createBiquadFilter(); rl.frequency.value = 1700; rl.Q.value = -6;
   AU.plk.connect(rv); rv.connect(rl).connect(rg).connect(rv); rg.connect(AU.master);
   AU.drm = ac.createGain(); AU.drm.gain.value = .5; AU.drm.connect(AU.master);
   AU.fx = ac.createGain(); AU.fx.gain.value = .9; AU.fx.connect(AU.master);
@@ -769,7 +789,7 @@ function pluck(t, f, v) {
   const g0 = ac.createGain(); g0.gain.value = v * .5;
   const d = ac.createDelay(.05); d.delayTime.value = 1 / f;
   const fb = ac.createGain(); fb.gain.value = .986;
-  const lp = ac.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 2400;
+  const lp = ac.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 2400; lp.Q.value = -6; /* без подъёма на срезе — петля не раскачивается */
   const out = ac.createGain();
   out.gain.setValueAtTime(1, t); out.gain.exponentialRampToValueAtTime(.001, t + 2.6);
   n.connect(g0).connect(d); d.connect(lp).connect(fb).connect(d); lp.connect(out).connect(AU.plk);
@@ -863,11 +883,10 @@ const card = $("#card"), subsEl = $("#subs"), credits = $("#credits"), fin = $("
 
 function go(k, instant) {
   k = clamp(k, 0, N - 1); if (k === cur && !instant) return;
-  let from = C;
-  if (Math.abs(k - from) > 1.01) from = k - Math.sign(k - from);
-  if (instant) { C = prevC = k; tw = null; } else { tw = { from, to: k, t0: performance.now(), dur: TRANS_MS }; whoosh(TRANS_MS / 1000 * .95, k === 4 ? 2400 : 1600); }
+  const from = tw ? tw.to : C;
+  if (instant) { C = prevC = k; tw = null; } else { tw = { from, to: k, fromI: Math.round(from), far: Math.abs(k - from) > 1.01, t0: performance.now(), dur: TRANS_MS }; whoosh(TRANS_MS / 1000 * .95, k === 4 ? 2400 : 1600); }
   cur = k; chT0 = performance.now(); shownCard = -1; subsKey = "";
-  card.className = card.className ? "on off" : ""; credits.classList.remove("on"); fin.classList.remove("on");
+  if (card.classList.contains("on")) card.classList.add("off"); credits.classList.remove("on"); fin.classList.remove("on");
 }
 function setPlaying(v) {
   playing = v; root.classList.toggle("paused", !v);
@@ -893,13 +912,22 @@ function startFilm(quiet) {
 setTimeout(() => { if (!ready) loaded = total; }, 9000);
 
 /* навигация по главам */
-let wAcc = 0, wLast = 0, navLock = 0;
-function step(d) { if (phase !== "film" || performance.now() < navLock) return; navLock = performance.now() + TRANS_MS * .7; go(cur + d); }
+let wAcc = 0, wLast = 0, wUsed = false, queued = 0;
+function step(d) {
+  if (phase !== "film" || !d) return;
+  if (tw) { queued = d; return; } /* переход идёт — дождаться конца, не дёргать кадр */
+  queued = 0; go(cur + d);
+}
+function navTo(k) { if (phase !== "film") return; if (tw) { queued = 0; pendingTo = k; return; } go(k); }
+let pendingTo = -1;
 addEventListener("wheel", e => {
   e.preventDefault();
-  const now = performance.now(); if (now - wLast > 220) wAcc = 0; wLast = now;
+  const now = performance.now();
+  if (now - wLast > 320) { wAcc = 0; wUsed = false; } /* пауза в событиях — начался новый жест */
+  wLast = now;
+  if (wUsed) return; /* инерция трекпада того же жеста — игнорируем */
   wAcc += e.deltaY * (e.deltaMode === 1 ? 33 : e.deltaMode === 2 ? H : 1);
-  if (Math.abs(wAcc) > 50) { step(Math.sign(wAcc)); wAcc = 0; }
+  if (Math.abs(wAcc) > 40) { wUsed = true; step(Math.sign(wAcc)); wAcc = 0; }
 }, { passive: false });
 let ty = null, tx = null;
 addEventListener("touchstart", e => { ty = e.touches[0].clientY; tx = e.touches[0].clientX; }, { passive: true });
@@ -912,8 +940,8 @@ addEventListener("touchend", e => {
 });
 addEventListener("keydown", e => {
   if (phase !== "film") return;
-  if (["ArrowDown", "ArrowRight", "PageDown"].includes(e.key)) { e.preventDefault(); navLock = 0; step(1); }
-  else if (["ArrowUp", "ArrowLeft", "PageUp"].includes(e.key)) { e.preventDefault(); navLock = 0; step(-1); }
+  if (["ArrowDown", "ArrowRight", "PageDown"].includes(e.key)) { e.preventDefault(); if (!e.repeat) step(1); }
+  else if (["ArrowUp", "ArrowLeft", "PageUp"].includes(e.key)) { e.preventDefault(); if (!e.repeat) step(-1); }
   else if (e.key === " " && !e.target.closest("a,button")) { e.preventDefault(); setPlaying(!playing); }
 });
 let hiddenAt = 0;
@@ -950,10 +978,11 @@ function textFrame(lt) {
       shownCard = cur;
       $(".kick", card).textContent = ch.card[0];
       $("h2", card).innerHTML = splitTitle(ch.card[1]); $("h2", card).setAttribute("aria-label", ch.card[1]);
-      card.className = ""; void card.offsetWidth; card.className = "on";
+      const side = cur === N - 1 ? " side" : "";
+      card.className = side.trim(); void card.offsetWidth; card.className = "on" + side;
       braam();
     }
-    if (shownCard === cur && lt > CARD_OUT && card.className === "on") card.className = "on off";
+    if (shownCard === cur && lt > CARD_OUT && !card.classList.contains("off")) card.classList.add("off");
   }
   const line = (ch.subs || []).find(s => lt >= s[0] && lt < s[1]);
   const key = line ? cur + ":" + line[0] : "";
@@ -1001,8 +1030,18 @@ function frame(now) {
   try { frameBody(now); } catch (e) { console.error(e); }
   requestAnimationFrame(frame);
 }
+let qT = 0, qN = 0, qSum = 0;
 function frameBody(now) {
-  const dt = Math.min((now - last) / 1000, .05); last = now;
+  const rawDt = (now - last) / 1000;
+  const dt = Math.min(rawDt, .05); last = now;
+  if (!document.hidden && rawDt < .25) {
+    qSum += rawDt; qN++;
+    if (now - qT > 1500) {
+      const avg = qSum / Math.max(qN, 1);
+      if (avg > .021 && qCap > 1) { qCap = Math.max(1, +(Math.min(qCap, dpr) * .8).toFixed(2)); resize(); }
+      qT = now; qN = 0; qSum = 0;
+    }
+  }
   const time = (now - t0) / 1000;
 
   loadShown = lerp(loadShown, loaded / total, 1 - Math.exp(-dt * 5));
@@ -1021,16 +1060,27 @@ function frameBody(now) {
 
   if (tw) {
     const k = clamp((now - tw.t0) / tw.dur, 0, 1);
-    C = lerp(tw.from, tw.to, ios(k)); if (k >= 1) { C = tw.to; tw = null; }
+    C = lerp(tw.from, tw.to, ios(k));
+    if (k >= 1) {
+      C = tw.to; tw = null;
+      if (pendingTo >= 0) { const t = pendingTo; pendingTo = -1; go(t); }
+      else if (queued) { const d = queued; queued = 0; go(cur + d); }
+    }
   }
   const v = (C - prevC) / Math.max(dt, .001); prevC = C;
   vel = lerp(vel, clamp(v * .2, -1, 1), 1 - Math.exp(-dt * 8));
   if (freezeT >= 0) chT0 = now - freezeT * 1000;
-  const lt = phase === "film" ? (now - chT0) / 1000 : 0;
-  if (phase === "film" && playing && !tw && CH[cur].dur && lt > CH[cur].dur && cur < N - 1) go(cur + 1);
+  if (phase === "film" && playing && !tw && CH[cur].dur && (now - chT0) / 1000 > CH[cur].dur && cur < N - 1) go(cur + 1);
+  const lt = phase === "film" ? (now - chT0) / 1000 : 0; /* считаем после возможного перехода — иначе новая глава получает время старой */
 
-  const i = Math.min(Math.floor(C), N - 2), f = C - i, fe = ss(f);
-  const A = CH[i], B = CH[i + 1];
+  let i = Math.min(Math.floor(C), N - 2), f = C - i;
+  let A = CH[i], B = CH[i + 1];
+  if (tw && tw.far) { /* прыжок через несколько глав — один переход сразу к цели */
+    const k = ios(clamp((now - tw.t0) / tw.dur, 0, 1));
+    if (tw.to > tw.fromI) { i = tw.fromI; A = CH[tw.fromI]; B = CH[tw.to]; f = k; }
+    else { i = tw.to; A = CH[tw.to]; B = CH[tw.fromI]; f = 1 - k; }
+  }
+  const fe = ss(f);
   const P = key => lerp(A[key], B[key], fe);
 
   mouse.sx = lerp(mouse.sx, mouse.x, 1 - Math.exp(-dt * 2.5));
@@ -1059,7 +1109,7 @@ function frameBody(now) {
   const leak = phase === "film" ? .08 + Math.sin(f * Math.PI) * .25 + beat * .15 : .03;
 
   cosmosV = phase === "gate" ? 1 : clamp((dark - .3) / .55, 0, 1);
-  const M0 = wide ? [asp * .3, .27, .05] : [.12, .36, .04], M6 = wide ? [-asp * .21 + .2, .3, .036] : [.14, .43, .028];
+  const M0 = wide ? [asp * .3, .27, .05] : [.13, .29, .036], M6 = wide ? [-asp * .21 + .2, .3, .036] : [-.13, .31, .024];
   const moon = [lerp(M0[0], M6[0], lt6), lerp(M0[1], M6[1], lt6), lerp(M0[2], M6[2], lt6)];
   playNear(C);
   const ta = TEX[A.media], tb = TEX[B.media];
@@ -1108,9 +1158,10 @@ function frameBody(now) {
     gl.enableVertexAttribArray(aRnd); gl.vertexAttribPointer(aRnd, 4, gl.FLOAT, false, 24, 8);
     const q = PT.u;
     gl.uniform1f(q.uTime, time); gl.uniform1f(q.uForm, form); gl.uniform1f(q.uAsp, asp);
-    gl.uniform1f(q.uPR, dpr * (small ? 1.25 : 1)); gl.uniform1f(q.uVel, vel); gl.uniform1f(q.uBeat, beat);
+    const dens = clamp(ls / .75, .5, 1);
+    gl.uniform1f(q.uPR, dpr * (small ? 1.25 : 1) * (.65 + .35 * dens)); gl.uniform1f(q.uVel, vel); gl.uniform1f(q.uBeat, beat);
     gl.uniform1f(q.uMA, A.pm); gl.uniform1f(q.uMB, B.pm); gl.uniform1f(q.uMM, fe);
-    gl.uniform1f(q.uAlpha, (phase === "film" ? 1 : .8) * (.6 + .4 * Math.min(1, loadShown * 1.2)) * (1 - cardDim * .7) * (1 - Math.sin(f * Math.PI) * .5 * (1 - P("form"))));
+    gl.uniform1f(q.uAlpha, Math.pow(dens, 1.3) * (phase === "film" ? 1 : .8) * (.6 + .4 * Math.min(1, loadShown * 1.2)) * (1 - cardDim * .7) * (1 - Math.sin(f * Math.PI) * .5 * (1 - P("form"))));
     gl.uniform1f(q.uScale, ls); gl.uniform1f(q.uHold, phase === "gate" ? hp : 0); gl.uniform1f(q.uSwirl, swirl); gl.uniform1f(q.uWarp, warpV);
     gl.uniform2f(q.uOff, lx, ly); gl.uniform2f(q.uMouse, mouse.spx, mouse.spy);
     gl.uniform2f(q.uCen, wide ? asp * .28 : 0, wide ? .02 : .28);
@@ -1120,7 +1171,7 @@ function frameBody(now) {
 
   /* звезда */
   gDraw = lerp(gDraw, ready ? 1 : loadShown, 1 - Math.exp(-dt * 3));
-  geoEls.forEach((el, n) => { el.style.strokeDashoffset = 1 - clamp(gDraw * 1.6 - n * .07, 0, 1); });
+  if (gDraw < .9995 || !geo._done) { geoEls.forEach((el, n) => { el.style.strokeDashoffset = (1 - clamp(gDraw * 1.6 - n / geoEls.length * .6, 0, 1)).toFixed(4); }); geo._done = gDraw >= .9995; }
   const finA = clamp(C - (N - 2), 0, 1);
   let gOp, gs;
   if (phase === "gate") { gOp = .5 + hp * .3; gs = 1 - hp * .1; }
