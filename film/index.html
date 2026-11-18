@@ -21,7 +21,7 @@
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;background:var(--ink);color:var(--cream);overflow:hidden;
-  overscroll-behavior:none;touch-action:none;-webkit-tap-highlight-color:transparent}
+  overscroll-behavior:none;touch-action:none;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
 body{font:300 16px/1.55 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
 a{color:inherit;text-decoration:none}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
@@ -172,7 +172,8 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   .logo{width:24px}
   .book{padding:12px 15px 12px 17px;letter-spacing:.16em;font-size:10px}
   .segs{top:calc(var(--pad) + 46px);left:var(--pad);right:var(--pad);transform:none;gap:4px}
-  .segs button{flex:1;width:auto}
+  .segs button{flex:1;width:auto;height:40px}
+  .segs button:before,.segs button i{top:19px}
   #card{top:36%}
   #card.side{left:0;right:0;width:auto;text-align:center;top:68%}
   #card.side .rule{margin-left:auto}
@@ -216,6 +217,19 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   background:linear-gradient(0deg,rgba(14,9,7,.94),rgba(14,9,7,.2) 70%),var(--bg) center/cover}
 .nogl #plain h2{font:400 clamp(40px,8vw,90px)/1 "Tenor Sans",serif;text-transform:uppercase;margin:10px 0 16px}
 .nogl #plain small{font:400 10px/1 Inter;letter-spacing:.34em;text-transform:uppercase;color:var(--brass)}
+/* вырез и полоска «домой» на iPhone */
+.logo,.book,.segs{margin-top:env(safe-area-inset-top,0px)}
+.logo,.snd{margin-left:env(safe-area-inset-left,0px)}
+.book,.pp{margin-right:env(safe-area-inset-right,0px)}
+.ctl,#subs,#hint{margin-bottom:env(safe-area-inset-bottom,0px)}
+@media (max-width:760px), (max-aspect-ratio:1/1){.fin{margin-bottom:env(safe-area-inset-bottom,0px)}#credits{margin-bottom:env(safe-area-inset-bottom,0px)}}
+/* подсказка по управлению — один раз */
+#hint{position:fixed;left:50%;bottom:var(--subB,86px);transform:translate(-50%,8px);z-index:14;max-width:calc(100vw - 2*var(--pad));
+  padding:11px 18px;border-radius:30px;border:1px solid rgba(181,139,90,.35);background:rgba(14,9,7,.62);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+  font:400 10px/1.6 Inter;letter-spacing:.2em;text-transform:uppercase;color:rgba(249,238,210,.85);text-align:center;pointer-events:none;opacity:0;
+  transition:opacity .8s ease,transform .8s var(--out)}
+#hint.show{opacity:1;transform:translate(-50%,0)}
+@media (max-width:760px), (max-aspect-ratio:1/1){#hint{bottom:96px;letter-spacing:.14em}}
 </style>
 </head>
 <body>
@@ -250,6 +264,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 
 <div id="card" aria-live="polite"><div class="kick"></div><h2></h2><i class="rule"></i></div>
 <div id="subs" aria-live="polite"></div>
+<div id="hint" aria-hidden="true"></div>
 
 <div id="credits" aria-hidden="true"><div class="roll">
   <div class="sub">Liwan · лаунж-бар и чайная</div>
@@ -607,16 +622,16 @@ Object.entries(MEDIA).forEach(([name, m]) => {
   const t = { tex: mkTex(), ia: 16 / 9, el: null, last: -1 }; TEX[name] = t;
   let done = false; const once = () => { if (!done) { done = true; loaded++; } };
   const im = new Image(); im.crossOrigin = "anonymous";
-  im.onload = () => { if (t.last < 0) { put(t, im); t.ia = im.naturalWidth / im.naturalHeight; } if (m.i) once(); };
-  im.onerror = () => { if (m.i) once(); };
+  im.onload = () => { if (t.last < 0) { put(t, im); t.ia = im.naturalWidth / im.naturalHeight; } once(); };
+  im.onerror = once;
   im.src = m.p || m.i;
   if (m.v) {
     const v = document.createElement("video");
     v.muted = true; v.loop = true; v.playsInline = true; v.setAttribute("playsinline", ""); v.setAttribute("muted", "");
     v.crossOrigin = "anonymous"; v.preload = "auto";
-    v.addEventListener("loadeddata", () => { t.ia = v.videoWidth / v.videoHeight; once(); });
-    v.addEventListener("error", once);
-    v.src = m.v; t.el = v;
+    v.addEventListener("loadeddata", () => { t.ia = v.videoWidth / v.videoHeight; });
+    v.style.cssText = "position:fixed;left:-4px;top:-4px;width:2px;height:2px;opacity:0;pointer-events:none";
+    v.src = m.v; t.el = v; document.body.appendChild(v);
   }
 });
 function feed(t) {
@@ -626,7 +641,7 @@ function feed(t) {
 }
 function playNear(c) {
   const want = new Set();
-  CH.forEach((ch, k) => { if (Math.abs(c - k) < 1.25) want.add(TEX[ch.media]); });
+  if (playing || phase !== "film" || tw) CH.forEach((ch, k) => { if (Math.abs(c - k) < 1.25) want.add(TEX[ch.media]); });
   Object.values(TEX).forEach(t => {
     if (!t.el) return;
     if (want.has(t) && t.el.paused) { const p = t.el.play(); if (p && p.catch) p.catch(() => {}); }
@@ -635,7 +650,7 @@ function playNear(c) {
 }
 
 /* сетка песчинок перехода: по зерну на каждые ~3 пикселя экрана */
-const gBuf = gl.createBuffer(); let gCount = 0, gCols = 1;
+const gBuf = gl.createBuffer(); let gCount = 0, gCols = 1, gFrac = 1;
 function buildGrains() {
   const target = small ? 85000 : 170000;
   gCols = Math.max(40, Math.round(Math.sqrt(target * asp)));
@@ -646,8 +661,10 @@ function buildGrains() {
     arr[o++] = (y + .5 + (Math.random() - .5) * .5) / rows;
     arr[o++] = Math.random(); arr[o++] = Math.random(); arr[o++] = Math.random(); arr[o++] = Math.random();
   }
+  const n = gCols * rows, tmp = new Float32Array(6);
+  for (let i = n - 1; i > 0; i--) { const j = Math.random() * (i + 1) | 0; tmp.set(arr.subarray(i * 6, i * 6 + 6)); arr.copyWithin(i * 6, j * 6, j * 6 + 6); arr.set(tmp, j * 6); }
   gl.bindBuffer(gl.ARRAY_BUFFER, gBuf); gl.bufferData(gl.ARRAY_BUFFER, arr, gl.STATIC_DRAW);
-  gCount = gCols * rows;
+  gCount = n;
 }
 
 /* знак LIWAN из маски (белый знак на чёрном) */
@@ -710,6 +727,7 @@ const PAT = [
 function audioInit() {
   if (AU.ac) return;
   const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return;
+  try { if (navigator.audioSession) navigator.audioSession.type = "playback"; } catch (e) {} /* iPhone: звук и при беззвучном режиме */
   const ac = AU.ac = new AC();
   const comp = ac.createDynamicsCompressor(); comp.threshold.value = -18; comp.ratio.value = 4; comp.connect(ac.destination);
   AU.master = ac.createGain(); AU.master.gain.value = 0; AU.master.connect(comp);
@@ -842,7 +860,7 @@ function beatNow(ch, time) {
 }
 
 /* ===== состояние фильма ===== */
-let cosmosV = 1, freezeT = -1, phase = "gate", ready = false, holding = false, hp = 0;
+let readyAt = 0, cosmosV = 1, freezeT = -1, phase = "gate", ready = false, holding = false, hp = 0;
 let cur = 0, C = 0, prevC = 0, vel = 0, tw = null, chT0 = 0, playing = true, enterT = 0;
 let shownCard = -1, subsKey = "";
 const gate = $("#gate"), holdBtn = $(".hold"), ring = $(".hold .fg"), pct = $(".pct");
@@ -888,10 +906,10 @@ function go(k, instant) {
   cur = k; chT0 = performance.now(); shownCard = -1; subsKey = "";
   if (card.classList.contains("on")) card.classList.add("off"); credits.classList.remove("on"); fin.classList.remove("on");
 }
-function setPlaying(v) {
+function setPlaying(v, quiet) {
   playing = v; root.classList.toggle("paused", !v);
   $(".lbl", ppBtn).textContent = v ? "Пауза" : "Смотреть"; ppBtn.setAttribute("aria-label", v ? "Пауза" : "Смотреть");
-  if (v && cur === N - 1) go(1);
+  if (v && cur === N - 1 && !quiet) go(1);
 }
 ppBtn.addEventListener("click", () => setPlaying(!playing));
 $(".again").addEventListener("click", () => { go(1); setPlaying(true); });
@@ -907,7 +925,15 @@ holdBtn.addEventListener("keyup", e => { if (e.key === "Enter" || e.key === " ")
 function startFilm(quiet) {
   phase = "film"; holding = false; root.classList.add("film"); gate.classList.add("out");
   enterT = performance.now(); go(0, true); chT0 = enterT;
-  setVol(); if (!quiet) { whoosh(3.2, 1200); boom(2.3); }
+  setVol(); if (!quiet) { whoosh(3.2, 1200); boom(2.3); showHint(); }
+}
+function showHint() {
+  let seen = false; try { seen = localStorage.getItem("lw-x-hint") === "1"; localStorage.setItem("lw-x-hint", "1"); } catch (e) {}
+  if (seen) return;
+  const h = $("#hint");
+  h.textContent = coarse ? "Тап справа — дальше · слева — назад · удерживайте — пауза" : "Колесо или стрелки — главы · пробел — пауза";
+  setTimeout(() => h.classList.add("show"), 900);
+  setTimeout(() => h.classList.remove("show"), 3500);
 }
 setTimeout(() => { if (!ready) loaded = total; }, 9000);
 
@@ -929,15 +955,29 @@ addEventListener("wheel", e => {
   wAcc += e.deltaY * (e.deltaMode === 1 ? 33 : e.deltaMode === 2 ? H : 1);
   if (Math.abs(wAcc) > 40) { wUsed = true; step(Math.sign(wAcc)); wAcc = 0; }
 }, { passive: false });
-let ty = null, tx = null;
-addEventListener("touchstart", e => { ty = e.touches[0].clientY; tx = e.touches[0].clientX; }, { passive: true });
-addEventListener("touchmove", e => { if (e.cancelable) e.preventDefault(); }, { passive: false });
-addEventListener("touchend", e => {
+let ty = null, tx = null, tT = 0, tMoved = false, tUi = false, tHold = 0, heldPause = false, heldWas = false;
+const isUi = el => !!(el && el.closest && el.closest("a,button,.fin,.segs,#gate"));
+addEventListener("touchstart", e => {
+  if (e.touches.length > 1) { ty = null; return; }
+  ty = e.touches[0].clientY; tx = e.touches[0].clientX; tT = performance.now(); tMoved = false; tUi = isUi(e.target);
+  clearTimeout(tHold);
+  if (!tUi && phase === "film") tHold = setTimeout(() => { if (!tMoved) { heldPause = true; heldWas = playing; if (playing) setPlaying(false, true); } }, 380);
+}, { passive: true });
+addEventListener("touchmove", e => {
+  if (ty !== null && (Math.abs(e.touches[0].clientY - ty) > 10 || Math.abs(e.touches[0].clientX - tx) > 10)) { tMoved = true; clearTimeout(tHold); }
+  if (e.cancelable) e.preventDefault();
+}, { passive: false });
+const endTouch = e => {
+  clearTimeout(tHold);
+  if (heldPause) { heldPause = false; if (heldWas) setPlaying(true, true); ty = null; return; } /* отпустили — смотрим дальше */
   if (ty === null) return;
-  const dy = ty - e.changedTouches[0].clientY, dx = tx - e.changedTouches[0].clientX; ty = null;
-  if (Math.abs(dy) > 45 && Math.abs(dy) > Math.abs(dx)) step(Math.sign(dy));
-  else if (Math.abs(dx) > 60) step(Math.sign(dx));
-});
+  const p = e.changedTouches[0], dy = ty - p.clientY, dx = tx - p.clientX, dt = performance.now() - tT; ty = null;
+  if (Math.abs(dy) > 45 && Math.abs(dy) > Math.abs(dx)) { step(Math.sign(dy)); return; }
+  if (Math.abs(dx) > 60) { step(Math.sign(dx)); return; }
+  if (!tUi && !tMoved && dt < 350 && phase === "film") step(p.clientX < W * .3 ? -1 : 1); /* тап: справа — дальше, слева — назад */
+};
+addEventListener("touchend", endTouch);
+addEventListener("touchcancel", () => { clearTimeout(tHold); if (heldPause) { heldPause = false; if (heldWas) setPlaying(true, true); } ty = null; });
 addEventListener("keydown", e => {
   if (phase !== "film") return;
   if (["ArrowDown", "ArrowRight", "PageDown"].includes(e.key)) { e.preventDefault(); if (!e.repeat) step(1); }
@@ -1039,6 +1079,7 @@ function frameBody(now) {
     if (now - qT > 1500) {
       const avg = qSum / Math.max(qN, 1);
       if (avg > .021 && qCap > 1) { qCap = Math.max(1, +(Math.min(qCap, dpr) * .8).toFixed(2)); resize(); }
+      else if (avg > .024 && gFrac > .4 && tw) gFrac = Math.max(.4, gFrac * .8); /* слабый телефон: меньше зёрен, крупнее */
       qT = now; qN = 0; qSum = 0;
     }
   }
@@ -1047,7 +1088,7 @@ function frameBody(now) {
   loadShown = lerp(loadShown, loaded / total, 1 - Math.exp(-dt * 5));
   if (!ready) {
     pct.textContent = Math.round(loadShown * 100) + "%";
-    if (loaded >= total && loadShown > .985) { ready = true; gate.classList.add("ready"); }
+    if (loaded >= total && loadShown > .985) { ready = true; readyAt = Math.round(performance.now()); gate.classList.add("ready"); }
   }
   if (phase === "gate") {
     hp = clamp(hp + (holding ? dt / 1.2 : -dt / .5), 0, 1);
@@ -1070,6 +1111,7 @@ function frameBody(now) {
   const v = (C - prevC) / Math.max(dt, .001); prevC = C;
   vel = lerp(vel, clamp(v * .2, -1, 1), 1 - Math.exp(-dt * 8));
   if (freezeT >= 0) chT0 = now - freezeT * 1000;
+  else if (!playing && phase === "film" && !tw) chT0 += Math.min(rawDt, .25) * 1000; /* на паузе время главы стоит */
   if (phase === "film" && playing && !tw && CH[cur].dur && (now - chT0) / 1000 > CH[cur].dur && cur < N - 1) go(cur + 1);
   const lt = phase === "film" ? (now - chT0) / 1000 : 0; /* считаем после возможного перехода — иначе новая глава получает время старой */
 
@@ -1110,7 +1152,7 @@ function frameBody(now) {
 
   cosmosV = phase === "gate" ? 1 : clamp((dark - .3) / .55, 0, 1);
   const M0 = wide ? [asp * .5 - .2, .3, .045] : [.13, .3, .034], M6 = wide ? [-asp * .21 + .36, .33, .034] : [0, .5, 0];
-  const moon = [lerp(M0[0], M6[0], lt6), lerp(M0[1], M6[1], lt6), lerp(M0[2], M6[2], lt6)];
+  const moon = [lerp(M0[0], M6[0], lt6), lerp(M0[1], M6[1], lt6), lerp(M0[2], M6[2], lt6) * (wide ? 1 : 1 - enterAmt)]; /* на телефоне луна только на входе: дальше её место занимает знак */
   playNear(C);
   const ta = TEX[A.media], tb = TEX[B.media];
   feed(ta); if (tb !== ta) feed(tb);
@@ -1140,12 +1182,13 @@ function frameBody(now) {
     gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
     gl.useProgram(GR.p);
     common(GR, A, B, ta, tb, mixV, time, dark, lt);
-    gl.uniform1f(GR.u.uPt, (cv.width / gCols) * 1.75);
+    gl.uniform1f(GR.u.uPt, (cv.width / gCols) * 1.75 / Math.sqrt(gFrac));
     gl.bindBuffer(gl.ARRAY_BUFFER, gBuf);
     gl.enableVertexAttribArray(aUv); gl.vertexAttribPointer(aUv, 2, gl.FLOAT, false, 24, 0);
     gl.enableVertexAttribArray(aR); gl.vertexAttribPointer(aR, 4, gl.FLOAT, false, 24, 8);
-    gl.uniform1f(GR.u.uSide, 0); gl.drawArrays(gl.POINTS, 0, gCount);
-    gl.uniform1f(GR.u.uSide, 1); gl.drawArrays(gl.POINTS, 0, gCount);
+    const gShow = Math.floor(gCount * gFrac);
+    gl.uniform1f(GR.u.uSide, 0); gl.drawArrays(gl.POINTS, 0, gShow);
+    gl.uniform1f(GR.u.uSide, 1); gl.drawArrays(gl.POINTS, 0, gShow);
     gl.disableVertexAttribArray(aUv); gl.disableVertexAttribArray(aR);
   }
 
@@ -1203,7 +1246,7 @@ if (dbg) {
   if (tt) freezeT = tv;
   setPlaying(false);
 }
-window.__lw = () => ({ phase, cur, C, playing, loaded, total, grains: gCount });
+window.__lw = () => ({ readyAt, phase, cur, C, playing, loaded, total, grains: gCount });
 requestAnimationFrame(frame);
 })();
 </script>
