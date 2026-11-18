@@ -94,7 +94,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 
 /* титульная карточка: буквы поднимаются из-под маски */
 #card{position:fixed;left:0;right:0;top:50%;z-index:8;text-align:center;pointer-events:none;transform:translateY(-50%)}
-#card .kick{font:400 11px/1 Inter;letter-spacing:.5em;text-transform:uppercase;color:var(--brass);padding-left:.5em;margin-bottom:28px;
+#card .kick{font:500 12px/1 Inter;letter-spacing:.5em;text-transform:uppercase;color:#D9B98A;text-shadow:0 0 14px rgba(14,9,7,.9),0 0 3px rgba(14,9,7,.9);padding-left:.5em;margin-bottom:28px;
   opacity:0;transition:opacity 2s ease .6s}
 #card h2{font:400 clamp(56px,11vw,190px)/.92 "Tenor Sans",serif;text-transform:uppercase;letter-spacing:.02em}
 #card:before{content:"";position:absolute;left:-10%;right:-10%;top:52%;height:2px;margin-top:-1px;pointer-events:none;
@@ -421,9 +421,9 @@ vec3 sky(vec2 uv){
   float d1=length(q-c),d2=length(q-(c+vec2(R*.45,R*.2)));
   float disk=smoothstep(R,R-.0025,d1)*smoothstep(R*.93-.0025,R*.93,d2);
   float halo=exp(-max(d1-R,0.)*16.)*.22*smoothstep(R*.6,R*1.1,d2);
-  float mv=smoothstep(.5,.85,uCosmos);
+  float mv=smoothstep(.5,.85,uCosmos)*step(.004,R);
   col+=(vec3(1.,.92,.76)*disk*1.15+vec3(.85,.6,.34)*halo)*mv;
-  col+=mix(vec3(.6,.74,1.),vec3(1.,.85,.65),.5)*exp(-abs(q.y-c.y)*150.)*exp(-abs(q.x-c.x)*(asp<1.?9.:2.2))*.35*mv;
+  col+=mix(vec3(.6,.74,1.),vec3(1.,.85,.65),.5)*exp(-abs(q.y-c.y)*150.)*exp(-abs(q.x-c.x)*(asp<1.?10.:5.5))*.3*mv;
   float per=7.;float k=floor(uTime/per),ph=fract(uTime/per)/.11;
   if(ph<1.){
     vec2 st=vec2((hq(vec2(k,1.))-.2)*asp*.9,.08+hq(vec2(k,2.))*.38);
@@ -1109,7 +1109,7 @@ function frameBody(now) {
   const leak = phase === "film" ? .08 + Math.sin(f * Math.PI) * .25 + beat * .15 : .03;
 
   cosmosV = phase === "gate" ? 1 : clamp((dark - .3) / .55, 0, 1);
-  const M0 = wide ? [asp * .3, .27, .05] : [.13, .29, .036], M6 = wide ? [-asp * .21 + .2, .3, .036] : [-.13, .31, .024];
+  const M0 = wide ? [asp * .5 - .2, .3, .045] : [.13, .3, .034], M6 = wide ? [-asp * .21 + .36, .33, .034] : [0, .5, 0];
   const moon = [lerp(M0[0], M6[0], lt6), lerp(M0[1], M6[1], lt6), lerp(M0[2], M6[2], lt6)];
   playNear(C);
   const ta = TEX[A.media], tb = TEX[B.media];
@@ -1175,7 +1175,7 @@ function frameBody(now) {
   const finA = clamp(C - (N - 2), 0, 1);
   let gOp, gs;
   if (phase === "gate") { gOp = .5 + hp * .3; gs = 1 - hp * .1; }
-  else { gOp = lerp(.6 * (1 - enterK * 2.5 > 0 ? 1 - enterK * 2.5 : 0), lerp(.08 + cardDim * .9, .28, finA), enterAmt) + (cur === 0 ? .22 * enterAmt * (1 - lt6) : 0); gs = lerp(1.15, .8, finA) + cardDim * .12; }
+  else { gOp = lerp(.6 * (1 - enterK * 2.5 > 0 ? 1 - enterK * 2.5 : 0), lerp(.08 + cardDim * .9, .28, finA), enterAmt) + (cur === 0 ? .22 * enterAmt * (1 - lt6) : 0); gs = lerp(1.15, wide ? .8 : .62, finA) + cardDim * .12; }
   geo.style.opacity = gOp;
   geo.style.transform = `translate(${lx / asp * W / 2}px,${-ly * H / 2}px) rotate(${C * 12 + hp * 30}deg) scale(${gs})`;
   geo.style.setProperty("--txt", (gDraw * .9).toFixed(3));
