@@ -93,25 +93,31 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 
 /* титульная карточка: буквы поднимаются из-под маски */
 #card{position:fixed;left:0;right:0;top:50%;z-index:8;text-align:center;pointer-events:none;transform:translateY(-50%)}
-#card .kick{font:400 11px/1 Inter;letter-spacing:1.3em;text-transform:uppercase;color:var(--brass);padding-left:.5em;margin-bottom:28px;
-  opacity:0;transition:opacity 1.4s var(--out),letter-spacing 2.4s var(--out)}
+#card .kick{font:400 11px/1 Inter;letter-spacing:.5em;text-transform:uppercase;color:var(--brass);padding-left:.5em;margin-bottom:28px;
+  opacity:0;transition:opacity 2s ease .6s}
 #card h2{font:400 clamp(56px,11vw,190px)/.92 "Tenor Sans",serif;text-transform:uppercase;letter-spacing:.02em}
+#card:before{content:"";position:absolute;left:-10%;right:-10%;top:52%;height:2px;margin-top:-1px;pointer-events:none;
+  background:radial-gradient(closest-side,rgba(255,236,205,.95),rgba(181,139,90,.45) 45%,transparent);filter:blur(.6px);
+  transform:scaleX(0);opacity:0;transition:transform 2.6s cubic-bezier(.22,1,.36,1) .25s,opacity 2.6s ease .25s}
+#card:after{content:"";position:absolute;left:50%;top:52%;width:min(60vw,700px);height:180px;margin:-90px 0 0 calc(min(60vw,700px)/-2);pointer-events:none;
+  background:radial-gradient(closest-side,rgba(255,214,160,.16),transparent);opacity:0;transition:opacity 2.4s ease .2s}
+#card.on:before{transform:scaleX(1);opacity:.7}
+#card.on:after{opacity:1}
 #card .rule{display:block;width:min(340px,50vw);height:1px;margin:32px auto 0;background:linear-gradient(90deg,transparent,var(--brass),transparent);
   transform:scaleX(0);transition:transform 2s var(--out) .4s}
-#card.on .kick{opacity:1;letter-spacing:.5em}
+#card.on .kick{opacity:1}
+#card{transition:opacity 1.6s ease}
+#card.off{opacity:0}
 #card.on .rule{transform:none}
-#card.off .kick{opacity:0;transition:opacity .8s}
-#card.off .rule{transform:scaleX(0);transition:transform 1s var(--in)}
 .w{display:inline-block;white-space:nowrap;overflow:hidden;vertical-align:top;padding:.04em .02em .1em}
-.ch{display:inline-block;transform:translateY(112%);transition:transform 1.5s var(--out);transition-delay:calc(var(--i)*42ms + .1s)}
+.ch{display:inline-block;transform:translateY(105%);transition:transform 2.2s cubic-bezier(.22,1,.36,1);transition-delay:calc(var(--i)*70ms + .15s);will-change:transform}
 .on .ch{transform:none}
-#card.off .ch{transform:translateY(-112%);transition:transform 1s var(--in);transition-delay:calc(var(--i)*22ms)}
 
 /* субтитры */
 #subs{position:fixed;left:50%;transform:translateX(-50%);bottom:var(--subB,86px);z-index:9;width:min(860px,calc(100vw - 2*var(--pad)));
   text-align:center;pointer-events:none;font:300 clamp(16px,1.45vw,20px)/1.5 Inter;letter-spacing:.04em;color:var(--cream);text-shadow:0 1px 18px rgba(0,0,0,.8)}
-#subs span{display:inline-block;opacity:0;letter-spacing:.14em;transition:opacity 1.2s var(--out),letter-spacing 2s var(--out)}
-#subs span.on{opacity:1;letter-spacing:.04em}
+#subs span{display:inline-block;opacity:0;transition:opacity 1.4s ease}
+#subs span.on{opacity:1}
 #subs a{pointer-events:auto;border-bottom:1px solid var(--brass)}
 
 /* финал: титры и бронь */
@@ -119,7 +125,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   -webkit-mask-image:linear-gradient(transparent,#000 22%,#000 78%,transparent);mask-image:linear-gradient(transparent,#000 22%,#000 78%,transparent);opacity:0;transition:opacity 1.2s}
 #credits.on{opacity:1}
 #credits .roll{position:absolute;left:0;right:0;top:100%;text-align:center}
-#credits.on .roll{animation:roll 8s linear forwards}
+#credits.on .roll{animation:roll 13s linear forwards}
 @keyframes roll{to{transform:translateY(calc(-100% - 100vh))}}
 .roll .big{font:400 54px/1 "Tenor Sans",serif;letter-spacing:.08em}
 .roll .sub{font:400 10px/1 Inter;letter-spacing:.36em;text-transform:uppercase;color:var(--brass);margin:16px 0 70px}
@@ -211,7 +217,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
       <svg viewBox="0 0 140 140"><circle class="bg" cx="70" cy="70" r="68"/><circle class="fg" cx="70" cy="70" r="68" pathLength="1"/></svg>
       <span>Зажмите<br>чтобы начать</span>
     </button>
-    <div class="gate-sub">Фильм о Liwan · 1 минута<br>Лучше со звуком</div>
+    <div class="gate-sub">Фильм о Liwan · полторы минуты<br>Лучше со звуком</div>
   </div>
 </div>
 
@@ -276,23 +282,23 @@ const small = coarse || innerWidth < 820;
    tr — песочный переход В главу: 0 ветер слева, 1 смерч, 2 восходящий поток, 3 взрыв из центра, 4 косой ветер
    pm — фоновые песчинки: 0 золотая пыль, 1 искры, 2 пар, 3 звуковые кольца, 5 светлячки */
 const CH = [
-  { label: "Пролог", media: "about", fo: .5, k: 0, dark: .9, pm: 6, form: 1, tr: 0, dur: 7.5,
-    subs: [[3.4, 7.3, "Лаунж-бар и чайная в Жулебино"]] },
-  { label: "Привал", media: "atmosfera", fo: .5, k: 3, dark: .06, pm: 1, form: 0, tr: 0, dur: 11.5,
+  { label: "Пролог", media: "about", fo: .5, k: 0, dark: .9, pm: 6, form: 1, tr: 0, dur: 9,
+    subs: [[3.8, 8.4, "Лаунж-бар и чайная в Жулебино"]] },
+  { label: "Привал", media: "atmosfera", fo: .5, k: 3, dark: .06, pm: 1, form: 0, tr: 0, dur: 17,
     card: ["Глава I", "Привал"],
-    subs: [[4.6, 7.8, "Город остаётся за дверью."], [8, 11.3, "Здесь свет мягче, а время — медленнее."]] },
-  { label: "Чай", media: "chai", fo: .5, k: 1, dark: .06, pm: 2, form: 0, tr: 2, dur: 11.5,
+    subs: [[7.2, 11.6, "Город остаётся за дверью."], [12.2, 16.4, "Здесь свет мягче, а время — медленнее."]] },
+  { label: "Чай", media: "chai", fo: .5, k: 1, dark: .06, pm: 2, form: 0, tr: 2, dur: 17,
     card: ["Глава II", "Чай"],
-    subs: [[4.6, 7.8, "Чай заваривает мастер."], [8, 11.3, "Улуны, пуэры и марокканский — с мятой."]] },
-  { label: "Живой звук", media: "muzyka", top: .085, fo: .55, k: 1, dark: .1, pm: 3, form: 0, tr: 1, dur: 12,
+    subs: [[7.2, 11.6, "Чай заваривает мастер."], [12.2, 16.4, "Улуны, пуэры и марокканский — с мятой."]] },
+  { label: "Живой звук", media: "muzyka", top: .085, fo: .55, k: 1, dark: .1, pm: 3, form: 0, tr: 1, dur: 17.5,
     card: ["Глава III", "Живой звук"],
-    subs: [[4.6, 8, "По вечерам звучат ситар и табла."], [8.2, 11.8, "Музыка, ради которой остаются до закрытия."]] },
-  { label: "Ночь", media: "dj", fo: .5, k: 4, dark: .14, pm: 0, form: 0, tr: 3, dur: 12,
+    subs: [[7.2, 11.8, "По вечерам звучат ситар и табла."], [12.4, 16.9, "Музыка, ради которой остаются до закрытия."]] },
+  { label: "Ночь", media: "dj", fo: .5, k: 4, dark: .14, pm: 0, form: 0, tr: 3, dur: 17.5,
     card: ["Глава IV", "Ночь"],
-    subs: [[4.6, 8, "По выходным за пультом — DJ."], [8.2, 11.8, 'Афиша недели — в нашем <a href="https://t.me/loungeliwan" target="_blank" rel="noopener">Telegram</a>.']] },
-  { label: "Веранда", media: "veranda", fo: .4, k: 1, dark: .1, pm: 5, form: 0, tr: 4, dur: 11.5,
+    subs: [[7.2, 11.8, "По выходным за пультом — DJ."], [12.4, 16.9, 'Афиша недели — в нашем <a href="https://t.me/loungeliwan" target="_blank" rel="noopener">Telegram</a>.']] },
+  { label: "Веранда", media: "veranda", fo: .4, k: 1, dark: .1, pm: 5, form: 0, tr: 4, dur: 17,
     card: ["Глава V", "Веранда"],
-    subs: [[4.6, 7.8, "Зелень и плетёные лампы."], [8, 11.3, "Ковры, тёплый вечер и живой звук."]] },
+    subs: [[7.2, 11.6, "Зелень и плетёные лампы."], [12.2, 16.4, "Ковры, тёплый вечер и живой звук."]] },
   { label: "Финал", media: "about", fo: .5, k: 3, dark: .82, pm: 0, form: 1, tr: 0, dur: 0,
     card: ["Финал", "Ваш стол"] }
 ];
@@ -331,8 +337,11 @@ if (!gl || gl.getParameter(gl.MAX_VERTEX_TEXTURE_IMAGE_UNITS) < 2) { root.classL
 
 /* общий код кадра и песочного перехода: фон и песчинки считают одно и то же, поэтому стыкуются без шва */
 const COMMON = `
-uniform float uIA,uIB,uFA,uFB,uTA,uTB,uPA,uPB,uMix,uTr,uTime,uFit,uDark;
+uniform float uIA,uIB,uFA,uFB,uTA,uTB,uPA,uPB,uMix,uTr,uTime,uFit,uDark,uWarp;
 uniform vec2 uRes,uMouse;
+uniform vec3 uCamA,uCamB;
+vec2 camFwd(vec2 uv,vec3 cm){float asp=uRes.x/uRes.y;vec2 q=(uv-.5)*vec2(asp,1.);float c=cos(cm.y),s=sin(cm.y);q=mat2(c,-s,s,c)*q*cm.x;q.y+=cm.z;return q/vec2(asp,1.)+.5;}
+vec2 camInv(vec2 uv,vec3 cm){float asp=uRes.x/uRes.y;vec2 q=(uv-.5)*vec2(asp,1.);q.y-=cm.z;q/=cm.x;float c=cos(-cm.y),s=sin(-cm.y);q=mat2(c,-s,s,c)*q;return q/vec2(asp,1.)+.5;}
 float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
 float hq(vec2 p){vec3 q=fract(vec3(p.xyx)*.1031);q+=dot(q,q.yzx+33.33);return fract((q.x+q.y)*q.z);}
 float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(h(i),h(i+vec2(1.,0.)),f.x),mix(h(i+vec2(0.,1.)),h(i+1.),f.x),f.y);}
@@ -371,7 +380,7 @@ varying vec2 vUv;
 uniform sampler2D uA,uB;uniform float uKA,uKB,uVel,uBeat,uLeak,uCosmos;uniform vec3 uMoon;
 ${COMMON}
 vec3 sky(vec2 uv){
-  float asp=uRes.x/uRes.y;vec2 q=(uv-.5)*vec2(asp,1.);
+  float asp=uRes.x/uRes.y;vec2 q=(uv-.5)*vec2(asp,1.)/(1.+uWarp*1.8);
   float band=exp(-pow((q.y-q.x*.32+.05)*2.4,2.));
   float n1=fbm(q*1.7+vec2(uTime*.012,0.)),n2=fbm(q*3.4+n1*1.6-uTime*.008);
   vec3 col=vec3(.34,.07,.11)*pow(n2,2.2)*1.3+vec3(.6,.42,.22)*pow(n1,3.2)*.9+vec3(.07,.06,.17)*n1*.7;
@@ -392,7 +401,9 @@ vec3 sky(vec2 uv){
   float d1=length(q-c),d2=length(q-(c+vec2(R*.45,R*.2)));
   float disk=smoothstep(R,R-.0025,d1)*smoothstep(R*.93-.0025,R*.93,d2);
   float halo=exp(-max(d1-R,0.)*16.)*.22*smoothstep(R*.6,R*1.1,d2);
-  col+=(vec3(1.,.92,.76)*disk*1.15+vec3(.85,.6,.34)*halo)*smoothstep(.5,.85,uCosmos);
+  float mv=smoothstep(.5,.85,uCosmos);
+  col+=(vec3(1.,.92,.76)*disk*1.15+vec3(.85,.6,.34)*halo)*mv;
+  col+=mix(vec3(.6,.74,1.),vec3(1.,.85,.65),.5)*exp(-abs(q.y-c.y)*150.)*exp(-abs(q.x-c.x)*2.2)*.35*mv;
   float per=7.;float k=floor(uTime/per),ph=fract(uTime/per)/.11;
   if(ph<1.){
     vec2 st=vec2((hq(vec2(k,1.))-.2)*asp*.9,.08+hq(vec2(k,2.))*.38);
@@ -415,22 +426,32 @@ void main(){
   vec2 uv=vUv;
   vec3 col;
   if(uMix>0.){
-    float d=front(uv),to=tOut(d),ti=tIn(d);
+    vec2 ua=camInv(uv,uCamA),ub=camInv(uv,uCamB);
+    float to=tOut(front(ua)),ti=tIn(front(ub));
     float aV=1.-smoothstep(0.,.4,to),bV=smoothstep(.55,1.,ti);
-    vec3 a=aV>0.?samp(uA,uv,uIA,uKA,uFA,uTA,uPA):vec3(0.);
-    vec3 b=bV>0.?samp(uB,uv,uIB,uKB,uFB,uTB,uPB):vec3(0.);
+    vec3 a=aV>0.?samp(uA,ua,uIA,uKA,uFA,uTA,uPA):vec3(0.);
+    vec3 b=bV>0.?samp(uB,ub,uIB,uKB,uFB,uTB,uPB):vec3(0.);
     col=a*aV+b*bV*(1.-aV);
     col=grade(col);
     float haze=(1.-aV)*(1.-bV);
     col+=vec3(.42,.3,.18)*haze*.07*(.6+.4*fbm(uv*6.+uTime*.3));
   }else{
-    col=grade(samp(uA,uv,uIA,uKA,uFA,uTA,uPA));
+    col=grade(samp(uA,camInv(uv,uCamA),uIA,uKA,uFA,uTA,uPA));
   }
   col*=1.-uDark;
   float cz=uCosmos;
   if(uFit>.5)cz=max(cz,(1.-edge(mapUV(uv,uIA,uFA,uTA,uPA)))*.9);
   if(cz>0.)col+=sky(uv)*cz*clamp(1.-dot(col,vec3(.33))*1.5,0.,1.);
   col*=vign(vUv);
+  if(uMix>0.&&uMix<1.){
+    float asp2=uRes.x/uRes.y;float fa=sin(uMix*3.1416);
+    vec2 lc=vec2(mix(-.25,1.25,uMix),.44+.08*sin(uTr*2.1+1.));
+    float dy=abs(uv.y-lc.y),dx=abs(uv.x-lc.x);
+    float streak=exp(-dy*140.)*exp(-dx*1.3);
+    float core=exp(-length((uv-lc)*vec2(asp2,1.))*9.);
+    float ghost=exp(-length((uv-(1.-lc))*vec2(asp2,1.))*22.)*.25;
+    col+=(mix(vec3(.55,.72,1.),vec3(1.,.78,.5),.55)*streak*.9+vec3(1.,.82,.6)*core*.6+vec3(.6,.75,1.)*ghost)*fa;
+  }
   vec2 lp=vec2(.12+.3*sin(uTime*.17),.86+.1*cos(uTime*.23));
   col+=vec3(1.,.55,.25)*uLeak*smoothstep(1.,0.,length((uv-lp)*vec2(uRes.x/uRes.y,1.)))*.35;
   col+=(hq(vUv*uRes+mod(floor(uTime*24.),113.)*vec2(7.1,3.7))-.5)*.035;
@@ -444,18 +465,22 @@ ${COMMON}
 varying vec3 vC;varying float vA;
 void main(){
   vec2 uv=aUv;
+  vec3 cm=uSide<.5?uCamA:uCamB;
   vec2 c=uSide<.5?mapUV(uv,uIA,uFA,uTA,uPA):mapUV(uv,uIB,uFB,uTB,uPB);
   float ed=edge(c);
   float d=clamp(front(uv)+(aR.x-.5)*.03,0.,1.);
   float t=uSide<.5?tOut(d):1.-tIn(d);
   if(t<=.001||t>=.999||ed<.03){gl_Position=vec4(-9.,-9.,0.,1.);gl_PointSize=0.;vC=vec3(0.);vA=0.;return;}
   float asp=uRes.x/uRes.y;
-  vec2 p=(uv-.5)*vec2(asp,1.)*2.;
+  vec2 p=(camFwd(uv,cm)-.5)*vec2(asp,1.)*2.;
   vec2 w=wind(p);
   float e=t*t;
   float ph=aR.z*6.2832;
   vec2 sw=vec2(sin(p.y*2.3+uTime*1.1+ph),cos(p.x*2.1-uTime*.9+ph))+vec2(sin(p.y*5.3+uTime*2.1+ph*2.),cos(p.x*4.9+uTime*1.7+ph))*.5;
   vec2 pos=p+w*e*(.8+aR.y*1.6)*1.5+sw*.16*sin(t*3.1416)*(.35+aR.w)+vec2(0.,e*.16*(aR.x-.35));
+  float z=e*(aR.z*1.7-.55)*.95;
+  float pj=1./max(1.-z*.75,.22);
+  pos*=pj;
   gl_Position=vec4(pos.x/asp,pos.y,0.,1.);
   vec3 col=(uSide<.5?texture2D(uA,c).rgb:texture2D(uB,c).rgb)*ed;
   col=grade(col)*(1.-uDark)*vign(uv);
@@ -464,15 +489,16 @@ void main(){
   col=mix(col,vec3(1.,.84,.58)*(.35+dot(col,vec3(.4))),glint*.75);
   col+=vec3(.75,.52,.3)*.05*lift;
   float big=step(.988,aR.y);
-  gl_PointSize=uPt*mix(1.,.5,t)*(1.+big*3.);
-  vA=(1.-smoothstep(.55,1.,t))*mix(1.,.22,big);
+  float near=clamp(z*1.6,0.,1.);
+  gl_PointSize=uPt*mix(1.,.5,t)*(1.+big*3.)*pj*(1.+near*2.5);
+  vA=(1.-smoothstep(.55,1.,t))*mix(1.,.22,big)*mix(1.,.3*smoothstep(.12,.45,dot(col,vec3(.33))),near);
   vC=col;}`;
 const FS_G = `precision mediump float;varying vec3 vC;varying float vA;
 void main(){float r=length(gl_PointCoord-.5);float a=smoothstep(.5,.32,r)*vA;gl_FragColor=vec4(vC*a,a);}`;
 
 /* знак и фоновая пыль */
 const VS_P = `attribute vec2 aHome;attribute vec4 aRnd;
-uniform float uTime,uForm,uAsp,uPR,uVel,uBeat,uAlpha,uScale,uHold,uSwirl,uMA,uMB,uMM;uniform vec2 uOff,uMouse,uCen;
+uniform float uTime,uForm,uAsp,uPR,uVel,uBeat,uAlpha,uScale,uHold,uSwirl,uMA,uMB,uMM,uWarp;uniform vec2 uOff,uMouse,uCen;
 varying float vA;varying vec3 vC;
 void mode(float m,out vec2 p,out float sz,out float al,out vec3 col){
   float t=uTime;vec3 brass=vec3(.71,.55,.35),cream=vec3(.98,.93,.82);
@@ -498,7 +524,7 @@ void mode(float m,out vec2 p,out float sz,out float al,out vec3 col){
     float th=arm*2.0944+r*5.4+sc*1.3-t*.1/(r+.22);
     vec2 g=vec2(cos(th),sin(th))*r+vec2(aRnd.w-.5,aRnd.z-.5)*.05*(1.-r);
     g.y*=.5;float tl=-.32;g=mat2(cos(tl),-sin(tl),sin(tl),cos(tl))*g;
-    p=uOff+g*1.2;sz=.6+aRnd.w*1.7;
+    p=uOff+g*1.2*(1.+uWarp*(2.2+aRnd.w*2.));sz=(.6+aRnd.w*1.7)*(1.+uWarp*1.5);
     al=(.1+.38*exp(-pow((r-.38)*2.8,2.)))*(.65+.35*sin(t*2.+aRnd.w*30.));
     col=mix(vec3(.98,.93,.82),vec3(.71,.55,.35),r)+vec3(.35,.05,.12)*step(.86,aRnd.w);
   }
@@ -730,6 +756,13 @@ function boom(delay) {
   o.connect(g).connect(AU.fx); o.start(t); o.stop(t + 2.5);
   pluck(t + .05, hz(0), .9); pluck(t + .05, hz(7), .6); pluck(t + .07, hz(12), .5);
 }
+function braam() { /* низкий киношный удар под титул */
+  const ac = AU.ac; if (!ac) return; const t = ac.currentTime + .03;
+  const lp = ac.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.setValueAtTime(260, t); lp.frequency.linearRampToValueAtTime(900, t + .5); lp.frequency.linearRampToValueAtTime(300, t + 3.2);
+  const g = ac.createGain(); g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(.32, t + .06); g.gain.exponentialRampToValueAtTime(.0001, t + 3.6);
+  lp.connect(g).connect(AU.fx);
+  [36.71, 73.42, 110, 146.83].forEach((f, i) => { const o = ac.createOscillator(); o.type = i ? "sawtooth" : "sine"; o.frequency.value = f; o.detune.value = (i % 2 ? 6 : -5); o.connect(lp); o.start(t); o.stop(t + 3.7); });
+}
 function pluck(t, f, v) {
   const ac = AU.ac;
   const n = ac.createBufferSource(); n.buffer = AU.white;
@@ -834,7 +867,7 @@ function go(k, instant) {
   if (Math.abs(k - from) > 1.01) from = k - Math.sign(k - from);
   if (instant) { C = prevC = k; tw = null; } else { tw = { from, to: k, t0: performance.now(), dur: TRANS_MS }; whoosh(TRANS_MS / 1000 * .95, k === 4 ? 2400 : 1600); }
   cur = k; chT0 = performance.now(); shownCard = -1; subsKey = "";
-  card.className = ""; credits.classList.remove("on"); fin.classList.remove("on");
+  card.className = card.className ? "on off" : ""; credits.classList.remove("on"); fin.classList.remove("on");
 }
 function setPlaying(v) {
   playing = v; root.classList.toggle("paused", !v);
@@ -905,7 +938,7 @@ addEventListener("pointermove", e => {
 document.addEventListener("pointerleave", () => { mouse.px = mouse.py = -9; });
 
 /* карточки и субтитры */
-const CARD_IN = 2.0, CARD_OUT = 4.3;
+const CARD_IN = 2.4, CARD_OUT = 6.6;
 function splitTitle(s) {
   let i = 0;
   return s.split(" ").map(w => '<span class="w">' + [...w].map(c => '<span class="ch" style="--i:' + (i++) + '">' + c + "</span>").join("") + "</span>").join(" ");
@@ -918,23 +951,25 @@ function textFrame(lt) {
       $(".kick", card).textContent = ch.card[0];
       $("h2", card).innerHTML = splitTitle(ch.card[1]); $("h2", card).setAttribute("aria-label", ch.card[1]);
       card.className = ""; void card.offsetWidth; card.className = "on";
+      braam();
     }
     if (shownCard === cur && lt > CARD_OUT && card.className === "on") card.className = "on off";
   }
   const line = (ch.subs || []).find(s => lt >= s[0] && lt < s[1]);
   const key = line ? cur + ":" + line[0] : "";
   if (key !== subsKey) {
-    const old = $("span", subsEl);
-    if (old) { old.classList.remove("on"); setTimeout(() => old.remove(), 900); }
-    if (line) {
-      const sp = document.createElement("span"); sp.innerHTML = line[2]; subsEl.appendChild(sp);
-      requestAnimationFrame(() => requestAnimationFrame(() => sp.classList.add("on")));
-    }
     subsKey = key;
+    const olds = $$("span", subsEl), had = olds.some(o => o.classList.contains("on"));
+    olds.forEach(o => { o.classList.remove("on"); setTimeout(() => o.remove(), 1500); });
+    if (line) {
+      const sp = document.createElement("span"); sp.innerHTML = line[2];
+      const show = () => { if (subsKey !== key) return; subsEl.querySelectorAll("span:not(.on)").forEach(o => { if (o !== sp) o.remove(); }); subsEl.appendChild(sp); requestAnimationFrame(() => requestAnimationFrame(() => sp.classList.add("on"))); };
+      if (had) setTimeout(show, 1500); else show();
+    }
   }
   if (cur === N - 1) {
-    if (lt > 4.4) credits.classList.add("on");
-    if (lt > 11) { fin.classList.add("on"); credits.classList.remove("on"); }
+    if (lt > 7) credits.classList.add("on");
+    if (lt > 19.5) { fin.classList.add("on"); credits.classList.remove("on"); }
   }
 }
 
@@ -944,8 +979,11 @@ const aQ = gl.getAttribLocation(BG.p, "p");
 const aUv = gl.getAttribLocation(GR.p, "aUv"), aR = gl.getAttribLocation(GR.p, "aR");
 const aHome = gl.getAttribLocation(PT.p, "aHome"), aRnd = gl.getAttribLocation(PT.p, "aRnd");
 
+let camA = [1, 0, 0], camB = [1, 0, 0], warpV = 0;
 function common(pr, A, B, ta, tb, f, time, dark, lt) {
   const u = pr.u;
+  gl.uniform3f(u.uCamA, camA[0], camA[1], camA[2]); gl.uniform3f(u.uCamB, camB[0], camB[1], camB[2]);
+  gl.uniform1f(u.uWarp, warpV);
   gl.uniform1f(u.uIA, ta.ia); gl.uniform1f(u.uIB, tb.ia);
   gl.uniform1f(u.uFA, A.fo); gl.uniform1f(u.uFB, B.fo);
   gl.uniform1f(u.uTA, A.top || 0); gl.uniform1f(u.uTB, B.top || 0);
@@ -960,6 +998,10 @@ function common(pr, A, B, ta, tb, f, time, dark, lt) {
 }
 
 function frame(now) {
+  try { frameBody(now); } catch (e) { console.error(e); }
+  requestAnimationFrame(frame);
+}
+function frameBody(now) {
   const dt = Math.min((now - last) / 1000, .05); last = now;
   const time = (now - t0) / 1000;
 
@@ -1023,6 +1065,13 @@ function frame(now) {
   const ta = TEX[A.media], tb = TEX[B.media];
   feed(ta); if (tb !== ta) feed(tb);
   const mixV = A.media === B.media ? 0 : f;
+  {
+    const sg = (i % 2 ? 1 : -1), ea = ss(clamp(mixV / .7, 0, 1)), eb = 1 - ss(clamp((mixV - .2) / .8, 0, 1));
+    camA = mixV > 0 ? [1 + ea * .2, ea * .06 * sg, -ea * .025] : [1, 0, 0];
+    camB = mixV > 0 ? [1 + eb * .16, -eb * .07 * sg, eb * .03] : [1, 0, 0];
+    const wk = phase === "film" ? (now - enterT) / 1000 : 0;
+    warpV = phase === "gate" ? hp * .25 : (phase === "film" && wk < 2.2 && cur === 0) ? Math.sin(clamp(wk / 2.2, 0, 1) * Math.PI) * 1.1 : 0;
+  }
 
   /* фон */
   gl.disable(gl.BLEND);
@@ -1030,7 +1079,7 @@ function frame(now) {
   common(BG, A, B, ta, tb, mixV, time, dark, lt);
   gl.uniform1f(BG.u.uKA, A.k); gl.uniform1f(BG.u.uKB, B.k);
   gl.uniform1f(BG.u.uVel, vel); gl.uniform1f(BG.u.uBeat, beat); gl.uniform1f(BG.u.uLeak, leak);
-  gl.uniform1f(BG.u.uCosmos, cosmosV); gl.uniform3f(BG.u.uMoon, moon[0], moon[1], moon[2]);
+  gl.uniform1f(BG.u.uCosmos, cosmosV); gl.uniform1f(BG.u.uWarp, warpV); gl.uniform3f(BG.u.uMoon, moon[0], moon[1], moon[2]);
   gl.bindBuffer(gl.ARRAY_BUFFER, triBuf);
   gl.enableVertexAttribArray(aQ); gl.vertexAttribPointer(aQ, 2, gl.FLOAT, false, 0, 0);
   gl.drawArrays(gl.TRIANGLES, 0, 3);
@@ -1062,7 +1111,7 @@ function frame(now) {
     gl.uniform1f(q.uPR, dpr * (small ? 1.25 : 1)); gl.uniform1f(q.uVel, vel); gl.uniform1f(q.uBeat, beat);
     gl.uniform1f(q.uMA, A.pm); gl.uniform1f(q.uMB, B.pm); gl.uniform1f(q.uMM, fe);
     gl.uniform1f(q.uAlpha, (phase === "film" ? 1 : .8) * (.6 + .4 * Math.min(1, loadShown * 1.2)) * (1 - cardDim * .7) * (1 - Math.sin(f * Math.PI) * .5 * (1 - P("form"))));
-    gl.uniform1f(q.uScale, ls); gl.uniform1f(q.uHold, phase === "gate" ? hp : 0); gl.uniform1f(q.uSwirl, swirl);
+    gl.uniform1f(q.uScale, ls); gl.uniform1f(q.uHold, phase === "gate" ? hp : 0); gl.uniform1f(q.uSwirl, swirl); gl.uniform1f(q.uWarp, warpV);
     gl.uniform2f(q.uOff, lx, ly); gl.uniform2f(q.uMouse, mouse.spx, mouse.spy);
     gl.uniform2f(q.uCen, wide ? asp * .28 : 0, wide ? .02 : .28);
     gl.drawArrays(gl.POINTS, 0, NP);
@@ -1091,16 +1140,16 @@ function frame(now) {
     });
     root.classList.toggle("lb", !small && cur > 0 && cur < N - 1);
   }
-  requestAnimationFrame(frame);
 }
 
 /* проверка: #c=2.5 — точка между главами (автопоказ на паузе); #c=4&t=2.5 — замереть на секунде главы */
-const dbg = /c=([\d.]+)/.exec(location.hash);
+const dbg = /^#c=(\d(?:\.\d+)?)/.exec(location.hash);
 if (dbg) {
   ready = true; gate.classList.add("ready"); startFilm(true); enterT -= 6000;
-  const c = +dbg[1]; go(Math.round(c), true); C = prevC = c; cur = Math.round(c);
-  const tt = /t=([\d.]+)/.exec(location.hash); chT0 = performance.now() - (tt ? +tt[1] : 6) * 1000;
-  if (tt) freezeT = +tt[1];
+  const c = clamp(Number(dbg[1]) || 0, 0, N - 1); go(Math.round(c), true); C = prevC = c; cur = Math.round(c);
+  const tt = /(?:^#|&)t=(\d{1,2}(?:\.\d+)?)/.exec(location.hash), tv = tt ? clamp(Number(tt[1]) || 0, 0, 60) : 6;
+  chT0 = performance.now() - tv * 1000;
+  if (tt) freezeT = tv;
   setPlaying(false);
 }
 window.__lw = () => ({ phase, cur, C, playing, loaded, total, grains: gCount });
