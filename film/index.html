@@ -1,0 +1,1111 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Liwan — фильм</title>
+<meta name="description" content="Liwan — лаунж-бар и чайная в Жулебино. Минутный фильм: чай, живой звук, ночь с DJ, веранда.">
+<meta property="og:title" content="Liwan — фильм">
+<meta property="og:description" content="Минутный фильм о лаунж-баре и чайной в Жулебино. Зажмите, чтобы начать.">
+<meta property="og:image" content="https://neonsky3214-commits.github.io/liwan-cdn/film/img/og.jpg">
+<meta name="theme-color" content="#0E0907">
+<link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Tenor+Sans&display=swap" rel="stylesheet">
+<style>
+:root{
+  --choc:#1B1310; --ink:#0E0907; --brass:#B58B5A; --cream:#F9EED2;
+  --pad:clamp(16px,3.6vw,52px); --bar:0px;
+  --ease:cubic-bezier(.2,.8,.2,1); --out:cubic-bezier(.16,1,.3,1); --in:cubic-bezier(.7,0,.84,0);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:var(--ink);color:var(--cream);overflow:hidden;
+  overscroll-behavior:none;touch-action:none;-webkit-tap-highlight-color:transparent}
+body{font:300 16px/1.55 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+:focus-visible{outline:1px solid var(--brass);outline-offset:4px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+#gl{position:fixed;inset:0;width:100%;height:100%;display:block}
+
+/* широкий экран */
+.bars i{position:fixed;left:0;right:0;height:var(--bar);background:var(--ink);z-index:4;transform:scaleY(0);transition:transform 2s var(--out)}
+.bars .bt{top:0;transform-origin:top}.bars .bb{bottom:0;transform-origin:bottom}
+.lb .bars i{transform:none}
+
+/* звезда-чертёж */
+.geo{position:fixed;left:50%;top:50%;width:min(92vmin,880px);aspect-ratio:1;
+  margin:calc(min(92vmin,880px)/-2) 0 0 calc(min(92vmin,880px)/-2);pointer-events:none;opacity:.5;z-index:3;will-change:transform,opacity}
+.geo *{fill:none;stroke:var(--brass);stroke-width:1;vector-effect:non-scaling-stroke;stroke-dasharray:1 1;stroke-dashoffset:1}
+.geo g{stroke-dasharray:none}
+.geo text{fill:var(--brass);stroke:none;stroke-dasharray:none;font:400 4.4px "Noto Naskh Arabic",Inter,serif;opacity:var(--txt,0)}
+.geo .st{fill:var(--cream);stroke:none;opacity:var(--txt,0)}
+
+/* вход */
+#gate{position:fixed;inset:0;display:grid;place-items:center;z-index:30;transition:opacity 1.4s var(--ease)}
+#gate.out{opacity:0;pointer-events:none}
+.gate-in{display:flex;flex-direction:column;align-items:center;gap:24px;text-align:center}
+.pct{font:400 11px/1 Inter;letter-spacing:.42em;color:var(--brass);padding-left:.42em;transition:opacity .6s}
+.hold{position:relative;width:140px;height:140px;border-radius:50%;display:grid;place-items:center;
+  opacity:0;transform:scale(.9);transition:opacity 1.2s var(--ease),transform 1.2s var(--ease);touch-action:none;user-select:none;-webkit-user-select:none}
+.ready .hold{opacity:1;transform:none}
+.ready .pct{opacity:0}
+.hold svg{position:absolute;inset:0;transform:rotate(-90deg)}
+.hold circle{fill:none;stroke-width:1}
+.hold .bg{stroke:rgba(181,139,90,.3)}
+.hold .fg{stroke:var(--cream);stroke-dasharray:1 1;stroke-dashoffset:1}
+.hold span{font:400 10px/1.7 Inter;letter-spacing:.3em;text-transform:uppercase;padding-left:.3em}
+.hold:before{content:"";position:absolute;inset:18px;border-radius:50%;border:1px solid rgba(181,139,90,.2);animation:breathe 3s ease-in-out infinite}
+@keyframes breathe{50%{transform:scale(1.08);opacity:.4}}
+.gate-sub{font:400 10px/1.9 Inter;letter-spacing:.32em;text-transform:uppercase;color:rgba(249,238,210,.5);opacity:0;transition:opacity 1.2s .3s}
+.ready .gate-sub{opacity:1}
+
+/* интерфейс */
+.ui{position:fixed;z-index:12;opacity:0;transition:opacity 1.6s var(--ease) 1.2s}
+.film .ui{opacity:1}
+.logo{top:calc(var(--pad) - 4px);left:var(--pad);width:28px;color:var(--cream)}
+.logo svg{width:100%;height:auto;display:block}
+.book{top:calc(var(--pad) - 10px);right:var(--pad);font:400 11px/1 Inter;letter-spacing:.24em;text-transform:uppercase;
+  padding:13px 20px 13px 22px;border:1px solid rgba(181,139,90,.6);border-radius:40px;transition:background .5s,color .5s,border-color .5s}
+.book:hover{background:var(--cream);color:var(--ink);border-color:var(--cream)}
+.segs{top:calc(var(--pad) + 4px);left:50%;transform:translateX(-50%);display:flex;gap:6px}
+.segs button{position:relative;width:clamp(26px,4.2vw,58px);height:24px}
+.segs button:before{content:"";position:absolute;left:0;right:0;top:11px;height:1px;background:rgba(249,238,210,.22)}
+.segs button i{position:absolute;left:0;top:11px;height:1px;width:calc(var(--p,0)*100%);background:var(--cream)}
+.segs button span{position:absolute;top:24px;left:50%;transform:translateX(-50%);white-space:nowrap;font:400 9px/1 Inter;letter-spacing:.24em;
+  text-transform:uppercase;color:rgba(249,238,210,.7);opacity:0;transition:opacity .4s;padding-left:.24em}
+.segs button:hover span{opacity:1}
+.ctl{bottom:calc(var(--pad) - 8px);display:flex;align-items:center;gap:12px;font:400 10px/1 Inter;letter-spacing:.28em;text-transform:uppercase;min-height:44px}
+.snd{left:var(--pad)}
+.pp{right:var(--pad)}
+.bars2{display:flex;gap:3px;align-items:flex-end;height:14px}
+.bars2 i{width:1px;height:100%;background:var(--brass);transform-origin:bottom;animation:bar 1.2s ease-in-out infinite}
+.bars2 i:nth-child(2){animation-delay:-.3s}.bars2 i:nth-child(3){animation-delay:-.6s}.bars2 i:nth-child(4){animation-delay:-.15s}
+.off .bars2 i{animation:none;transform:scaleY(.15)}
+@keyframes bar{0%,100%{transform:scaleY(.25)}50%{transform:scaleY(1)}}
+.pp .ic{width:12px;height:12px;position:relative}
+.pp .ic:before,.pp .ic:after{content:"";position:absolute;top:0;bottom:0;width:2px;background:var(--cream)}
+.pp .ic:before{left:2px}.pp .ic:after{right:2px}
+.paused .pp .ic:before{left:2px;width:0;height:0;background:none;border-style:solid;border-width:6px 0 6px 10px;border-color:transparent transparent transparent var(--cream)}
+.paused .pp .ic:after{display:none}
+
+/* титульная карточка: буквы поднимаются из-под маски */
+#card{position:fixed;left:0;right:0;top:50%;z-index:8;text-align:center;pointer-events:none;transform:translateY(-50%)}
+#card .kick{font:400 11px/1 Inter;letter-spacing:1.3em;text-transform:uppercase;color:var(--brass);padding-left:.5em;margin-bottom:28px;
+  opacity:0;transition:opacity 1.4s var(--out),letter-spacing 2.4s var(--out)}
+#card h2{font:400 clamp(56px,11vw,190px)/.92 "Tenor Sans",serif;text-transform:uppercase;letter-spacing:.02em}
+#card .rule{display:block;width:min(340px,50vw);height:1px;margin:32px auto 0;background:linear-gradient(90deg,transparent,var(--brass),transparent);
+  transform:scaleX(0);transition:transform 2s var(--out) .4s}
+#card.on .kick{opacity:1;letter-spacing:.5em}
+#card.on .rule{transform:none}
+#card.off .kick{opacity:0;transition:opacity .8s}
+#card.off .rule{transform:scaleX(0);transition:transform 1s var(--in)}
+.w{display:inline-block;white-space:nowrap;overflow:hidden;vertical-align:top;padding:.04em .02em .1em}
+.ch{display:inline-block;transform:translateY(112%);transition:transform 1.5s var(--out);transition-delay:calc(var(--i)*42ms + .1s)}
+.on .ch{transform:none}
+#card.off .ch{transform:translateY(-112%);transition:transform 1s var(--in);transition-delay:calc(var(--i)*22ms)}
+
+/* субтитры */
+#subs{position:fixed;left:50%;transform:translateX(-50%);bottom:var(--subB,86px);z-index:9;width:min(860px,calc(100vw - 2*var(--pad)));
+  text-align:center;pointer-events:none;font:300 clamp(16px,1.45vw,20px)/1.5 Inter;letter-spacing:.04em;color:var(--cream);text-shadow:0 1px 18px rgba(0,0,0,.8)}
+#subs span{display:inline-block;opacity:0;letter-spacing:.14em;transition:opacity 1.2s var(--out),letter-spacing 2s var(--out)}
+#subs span.on{opacity:1;letter-spacing:.04em}
+#subs a{pointer-events:auto;border-bottom:1px solid var(--brass)}
+
+/* финал: титры и бронь */
+#credits{position:fixed;z-index:9;right:calc(var(--pad) + 20px);top:0;bottom:0;width:min(460px,42vw);overflow:hidden;pointer-events:none;
+  -webkit-mask-image:linear-gradient(transparent,#000 22%,#000 78%,transparent);mask-image:linear-gradient(transparent,#000 22%,#000 78%,transparent);opacity:0;transition:opacity 1.2s}
+#credits.on{opacity:1}
+#credits .roll{position:absolute;left:0;right:0;top:100%;text-align:center}
+#credits.on .roll{animation:roll 8s linear forwards}
+@keyframes roll{to{transform:translateY(calc(-100% - 100vh))}}
+.roll .big{font:400 54px/1 "Tenor Sans",serif;letter-spacing:.08em}
+.roll .sub{font:400 10px/1 Inter;letter-spacing:.36em;text-transform:uppercase;color:var(--brass);margin:16px 0 70px}
+.roll h4{font:400 10px/1 Inter;letter-spacing:.42em;text-transform:uppercase;color:var(--brass);margin:0 0 30px}
+.roll dl{display:grid;grid-template-columns:1fr 1fr;gap:16px 22px;margin-bottom:70px}
+.roll dt{text-align:right;font:400 11px/1.5 Inter;letter-spacing:.2em;text-transform:uppercase;color:rgba(249,238,210,.6)}
+.roll dd{text-align:left;font:400 18px/1.25 "Tenor Sans",serif}
+.roll .star{font:400 30px/1.2 "Tenor Sans",serif;margin-bottom:70px}
+.roll .star small{display:block;font:400 10px/1 Inter;letter-spacing:.42em;text-transform:uppercase;color:var(--brass);margin-bottom:14px}
+
+.fin{position:fixed;z-index:10;right:calc(var(--pad) + 20px);top:50%;transform:translateY(-46%);width:min(470px,42vw);opacity:0;pointer-events:none;
+  transition:opacity 1.4s var(--out),transform 1.8s var(--out)}
+.fin.on{opacity:1;pointer-events:auto;transform:translateY(-50%)}
+.fin .num{font:400 10px/1 Inter;letter-spacing:.34em;text-transform:uppercase;color:var(--brass);margin-bottom:22px}
+.fin h2{font:400 clamp(42px,5.6vw,92px)/.98 "Tenor Sans",serif;text-transform:uppercase;margin-bottom:22px}
+.fin p{color:rgba(249,238,210,.8);max-width:420px}
+.acts{display:flex;flex-wrap:wrap;gap:12px;margin:28px 0 30px}
+.btn{display:inline-flex;align-items:center;gap:10px;min-height:50px;padding:0 26px;border-radius:50px;font:400 11px/1 Inter;letter-spacing:.24em;text-transform:uppercase;
+  border:1px solid rgba(181,139,90,.6);transition:background .5s,color .5s,border-color .5s}
+.btn.main{background:var(--cream);color:var(--ink);border-color:var(--cream)}
+.btn:hover{background:var(--brass);border-color:var(--brass);color:var(--ink)}
+.info{display:grid;grid-template-columns:auto 1fr;gap:10px 22px;font-size:14px;color:rgba(249,238,210,.75)}
+.info dt{font:400 10px/2 Inter;letter-spacing:.28em;text-transform:uppercase;color:var(--brass)}
+.info a{border-bottom:1px solid rgba(181,139,90,.5)}
+.again{margin-top:26px;font:400 10px/1 Inter;letter-spacing:.3em;text-transform:uppercase;color:rgba(249,238,210,.6);min-height:44px}
+.again:hover{color:var(--cream)}
+
+/* курсор */
+.cur{position:fixed;left:0;top:0;z-index:40;pointer-events:none;width:36px;height:36px;margin:-18px 0 0 -18px;border-radius:50%;
+  border:1px solid rgba(249,238,210,.5);transition:width .5s var(--out),height .5s var(--out),margin .5s var(--out),background .5s,opacity .4s;opacity:0}
+.cur.on{opacity:1}
+.cur.big{width:70px;height:70px;margin:-35px 0 0 -35px;background:rgba(249,238,210,.08);border-color:rgba(249,238,210,.8)}
+.dot{position:fixed;left:0;top:0;z-index:40;width:4px;height:4px;margin:-2px 0 0 -2px;border-radius:50%;background:var(--cream);pointer-events:none;opacity:0}
+.dot.on{opacity:1}
+@media (pointer:coarse){.cur,.dot{display:none}}
+
+/* телефон */
+@media (max-width:760px){
+  .logo{width:24px}
+  .book{padding:12px 15px 12px 17px;letter-spacing:.16em;font-size:10px}
+  .segs{top:calc(var(--pad) + 46px);left:var(--pad);right:var(--pad);transform:none;gap:4px}
+  .segs button{flex:1;width:auto}
+  #card{top:36%}
+  #card h2{font-size:clamp(46px,14vw,70px)}
+  #card .kick{margin-bottom:18px}
+  #subs{bottom:96px;font-size:16px}
+  #credits{right:0;left:0;width:auto;top:30%;bottom:90px}
+  .roll .big{font-size:40px}.roll dd{font-size:16px}
+  .fin{left:var(--pad);right:var(--pad);width:auto;top:auto;bottom:calc(var(--pad) + 46px);transform:translateY(20px)}
+  .fin.on{transform:none}
+  .fin h2{font-size:clamp(36px,10.5vw,50px);margin-bottom:14px}
+  .acts{margin:18px 0 20px;gap:10px}
+  .btn{min-height:46px;padding:0 20px}
+  .info{font-size:13px;gap:5px 16px}
+  .again{display:none}
+}
+@media (max-width:760px) and (max-height:720px){.fin p{display:none}.acts{margin-top:6px}}
+
+/* без WebGL — простая страница */
+.nogl body{overflow:auto;touch-action:auto}
+.nogl #gl,.nogl #gate,.nogl .geo,.nogl .bars,.nogl #card,.nogl #subs,.nogl #credits,.nogl .segs,.nogl .ctl,.nogl .cur,.nogl .dot{display:none}
+.nogl .ui{opacity:1}
+.nogl .fin{position:relative;inset:auto;transform:none;opacity:1;pointer-events:auto;width:auto;padding:80px var(--pad)}
+#plain{display:none}
+.nogl #plain{display:block}
+.nogl #plain section{min-height:90vh;display:flex;flex-direction:column;justify-content:flex-end;padding:100px var(--pad) 60px;
+  background:linear-gradient(0deg,rgba(14,9,7,.94),rgba(14,9,7,.2) 70%),var(--bg) center/cover}
+.nogl #plain h2{font:400 clamp(40px,8vw,90px)/1 "Tenor Sans",serif;text-transform:uppercase;margin:10px 0 16px}
+.nogl #plain small{font:400 10px/1 Inter;letter-spacing:.34em;text-transform:uppercase;color:var(--brass)}
+</style>
+</head>
+<body>
+<canvas id="gl" aria-hidden="true"></canvas>
+<div class="bars" aria-hidden="true"><i class="bt"></i><i class="bb"></i></div>
+
+<svg class="geo" viewBox="-100 -100 200 200" aria-hidden="true">
+  <circle r="96" pathLength="1"/><circle r="88" pathLength="1"/><circle r="62" pathLength="1"/><circle r="34" pathLength="1"/>
+  <rect x="-62" y="-62" width="124" height="124" pathLength="1"/>
+  <rect x="-62" y="-62" width="124" height="124" transform="rotate(45)" pathLength="1"/>
+  <polygon points="0,-88 23.9,-57.7 62.2,-62.2 57.7,-23.9 88,0 57.7,23.9 62.2,62.2 23.9,57.7 0,88 -23.9,57.7 -62.2,62.2 -57.7,23.9 -88,0 -57.7,-23.9 -62.2,-62.2 -23.9,-57.7" pathLength="1"/>
+  <polygon points="0,-34 24,-24 34,0 24,24 0,34 -24,24 -34,0 -24,-24" pathLength="1"/>
+  <path d="M0-96V96M-96 0H96M-67.9-67.9 67.9 67.9M-67.9 67.9 67.9-67.9" pathLength="1"/>
+</svg>
+
+<div id="gate">
+  <div class="gate-in">
+    <div class="pct" aria-live="polite">0%</div>
+    <button class="hold" type="button" aria-label="Зажмите, чтобы начать фильм">
+      <svg viewBox="0 0 140 140"><circle class="bg" cx="70" cy="70" r="68"/><circle class="fg" cx="70" cy="70" r="68" pathLength="1"/></svg>
+      <span>Зажмите<br>чтобы начать</span>
+    </button>
+    <div class="gate-sub">Фильм о Liwan · 1 минута<br>Лучше со звуком</div>
+  </div>
+</div>
+
+<a class="ui logo" href="https://liwan-lounge.ru" aria-label="Liwan — основной сайт"></a>
+<nav class="ui segs" aria-label="Главы фильма"></nav>
+<a class="ui book" href="https://yandex.ru/partner-reserve/forms/03fcde06-37b9-4221-a463-c06049b48a12" target="_blank" rel="noopener">Бронирование</a>
+<button class="ui ctl snd" type="button" aria-pressed="true"><span class="bars2"><i></i><i></i><i></i><i></i></span><span class="lbl">Звук</span></button>
+<button class="ui ctl pp" type="button" aria-label="Пауза"><span class="lbl">Пауза</span><span class="ic"></span></button>
+
+<div id="card" aria-live="polite"><div class="kick"></div><h2></h2><i class="rule"></i></div>
+<div id="subs" aria-live="polite"></div>
+
+<div id="credits" aria-hidden="true"><div class="roll">
+  <div class="big">LIWAN</div>
+  <div class="sub">лаунж-бар и чайная</div>
+  <h4>В ролях</h4>
+  <dl>
+    <dt>Чай</dt><dd>мастер чайной церемонии</dd>
+    <dt>Звук</dt><dd>ситар и табла</dd>
+    <dt>Ночь</dt><dd>DJ выходного дня</dd>
+    <dt>Свет</dt><dd>резные фонари</dd>
+    <dt>Веранда</dt><dd>зелень и плетёные лампы</dd>
+  </dl>
+  <div class="star"><small>Главная роль</small>Вы</div>
+  <div class="sub">Снято под звёздами · Liwan · Жулебино</div>
+</div></div>
+
+<section class="fin" aria-label="Бронирование и контакты">
+  <div class="num">Финал</div>
+  <h2>Ваш стол ждёт</h2>
+  <p>Лаунж-бар и чайная на втором этаже фудмолла «Привоз».</p>
+  <div class="acts">
+    <a class="btn main" href="https://yandex.ru/partner-reserve/forms/03fcde06-37b9-4221-a463-c06049b48a12" target="_blank" rel="noopener">Бронирование</a>
+    <a class="btn" href="https://yandex.ru/maps/org/66056015280" target="_blank" rel="noopener">Как добраться</a>
+  </div>
+  <dl class="info">
+    <dt>Адрес</dt><dd>Москва, ул.&nbsp;Авиаконструктора Миля,&nbsp;3А, 2-й этаж</dd>
+    <dt>Часы</dt><dd>Ежедневно 14:00–01:00, пт–сб до&nbsp;02:00</dd>
+    <dt>Связь</dt><dd><a href="tel:+79267219990">+7 926 721-99-90</a> · <a href="https://t.me/loungeliwan" target="_blank" rel="noopener">Telegram</a></dd>
+  </dl>
+  <button class="again" type="button">↺ Смотреть ещё раз</button>
+</section>
+
+<main id="plain"><h1 class="sr">Liwan — лаунж-бар и чайная в Жулебино</h1></main>
+
+<div class="cur" aria-hidden="true"></div><div class="dot" aria-hidden="true"></div>
+
+<script>
+(() => {
+"use strict";
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const root = document.documentElement;
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const lerp = (a, b, t) => a + (b - a) * t;
+const ss = t => t * t * (3 - 2 * t);
+const ios = t => .5 - .5 * Math.cos(Math.PI * t);
+const coarse = matchMedia("(pointer:coarse)").matches;
+const small = coarse || innerWidth < 820;
+
+/* ===== сценарий =====
+   tr — песочный переход В главу: 0 ветер слева, 1 смерч, 2 восходящий поток, 3 взрыв из центра, 4 косой ветер
+   pm — фоновые песчинки: 0 золотая пыль, 1 искры, 2 пар, 3 звуковые кольца, 5 светлячки */
+const CH = [
+  { label: "Пролог", media: "about", fo: .5, k: 0, dark: .9, pm: 6, form: 1, tr: 0, dur: 7.5,
+    subs: [[3.4, 7.3, "Лаунж-бар и чайная в Жулебино"]] },
+  { label: "Привал", media: "atmosfera", fo: .5, k: 3, dark: .06, pm: 1, form: 0, tr: 0, dur: 11.5,
+    card: ["Глава I", "Привал"],
+    subs: [[4.6, 7.8, "Город остаётся за дверью."], [8, 11.3, "Здесь свет мягче, а время — медленнее."]] },
+  { label: "Чай", media: "chai", fo: .5, k: 1, dark: .06, pm: 2, form: 0, tr: 2, dur: 11.5,
+    card: ["Глава II", "Чай"],
+    subs: [[4.6, 7.8, "Чай заваривает мастер."], [8, 11.3, "Улуны, пуэры и марокканский — с мятой."]] },
+  { label: "Живой звук", media: "muzyka", top: .085, fo: .55, k: 1, dark: .1, pm: 3, form: 0, tr: 1, dur: 12,
+    card: ["Глава III", "Живой звук"],
+    subs: [[4.6, 8, "По вечерам звучат ситар и табла."], [8.2, 11.8, "Музыка, ради которой остаются до закрытия."]] },
+  { label: "Ночь", media: "dj", fo: .5, k: 4, dark: .14, pm: 0, form: 0, tr: 3, dur: 12,
+    card: ["Глава IV", "Ночь"],
+    subs: [[4.6, 8, "По выходным за пультом — DJ."], [8.2, 11.8, 'Афиша недели — в нашем <a href="https://t.me/loungeliwan" target="_blank" rel="noopener">Telegram</a>.']] },
+  { label: "Веранда", media: "veranda", fo: .4, k: 1, dark: .1, pm: 5, form: 0, tr: 4, dur: 11.5,
+    card: ["Глава V", "Веранда"],
+    subs: [[4.6, 7.8, "Зелень и плетёные лампы."], [8, 11.3, "Ковры, тёплый вечер и живой звук."]] },
+  { label: "Финал", media: "about", fo: .5, k: 3, dark: .82, pm: 0, form: 1, tr: 0, dur: 0,
+    card: ["Финал", "Ваш стол"] }
+];
+const N = CH.length;
+const TRANS_MS = 2800;
+const MEDIA = {
+  atmosfera: { v: "../assets/video/atmosfera.mp4", p: "../assets/poster/atmosfera.jpg" },
+  chai: { v: "../assets/video/chai.mp4", p: "../assets/poster/chai.jpg" },
+  muzyka: { v: "../assets/video/muzyka.mp4", p: "../assets/poster/muzyka.jpg" },
+  dj: { v: "../assets/video/dj.mp4", p: "../assets/poster/dj.jpg" },
+  veranda: { v: "../assets/video/veranda.mp4", p: "../assets/poster/veranda.jpg" },
+  about: { i: "img/about.jpg" }
+};
+
+fetch("img/mark.svg").then(r => r.text()).then(t => { $(".logo").innerHTML = t; }).catch(() => {});
+const segs = $(".segs");
+CH.forEach((c, k) => {
+  const b = document.createElement("button"); b.type = "button";
+  b.innerHTML = "<i></i><span>" + c.label + "</span>"; b.setAttribute("aria-label", c.label);
+  b.addEventListener("click", () => { if (phase === "film") go(k); });
+  segs.appendChild(b);
+});
+const segBtns = $$("button", segs);
+const plain = $("#plain");
+CH.forEach(c => {
+  if (!c.card || !MEDIA[c.media].p) return;
+  const s = document.createElement("section"); s.style.setProperty("--bg", "url(" + MEDIA[c.media].p + ")");
+  s.innerHTML = "<small>" + c.card[0] + "</small><h2>" + c.card[1] + "</h2><p>" + (c.subs || []).map(x => x[2]).join(" ") + "</p>";
+  plain.appendChild(s);
+});
+
+/* ===== WebGL ===== */
+const cv = $("#gl");
+const gl = cv.getContext("webgl", { antialias: false, alpha: false, premultipliedAlpha: false, powerPreference: "high-performance" });
+if (!gl || gl.getParameter(gl.MAX_VERTEX_TEXTURE_IMAGE_UNITS) < 2) { root.classList.add("nogl"); return; }
+
+/* общий код кадра и песочного перехода: фон и песчинки считают одно и то же, поэтому стыкуются без шва */
+const COMMON = `
+uniform float uIA,uIB,uFA,uFB,uTA,uTB,uPA,uPB,uMix,uTr,uTime,uFit,uDark;
+uniform vec2 uRes,uMouse;
+float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+float hq(vec2 p){vec3 q=fract(vec3(p.xyx)*.1031);q+=dot(q,q.yzx+33.33);return fract((q.x+q.y)*q.z);}
+float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(h(i),h(i+vec2(1.,0.)),f.x),mix(h(i+vec2(0.,1.)),h(i+1.),f.x),f.y);}
+float fbm(vec2 p){float s=0.,a=.5;for(int i=0;i<4;i++){s+=a*n(p);p*=2.03;a*=.5;}return s;}
+vec2 cover(vec2 uv,float ia,float fo,float tc){
+  float sa=uRes.x/uRes.y;vec2 s=sa>ia?vec2(1.,ia/sa):vec2(sa/ia,1.);vec2 ce=vec2(.5);
+  if(uFit>.5&&sa<ia*.7){float K=min(ia/sa*.5,2.);s*=K;ce.y=.64;}
+  vec2 c=(uv-ce)*s+.5;
+  c.x+=clamp(fo-.5,-(1.-s.x)*.5+.02,(1.-s.x)*.5-.02);
+  return vec2((c.x-.5)*(1.-tc)+.5,c.y*(1.-tc));}
+vec2 mapUV(vec2 uv,float ia,float fo,float tc,float push){vec2 c=cover(uv,ia,fo,tc);return (c-.5)/(1.05+push)+.5+uMouse*.016;}
+float edge(vec2 c){float fe=.08;return smoothstep(0.,fe,c.y)*smoothstep(1.,1.-fe,c.y)*smoothstep(0.,.01,c.x)*smoothstep(1.,.99,c.x);}
+vec3 grade(vec3 col){float L=dot(col,vec3(.299,.587,.114));col=mix(col,L*vec3(1.16,.93,.68),.34);return clamp((col-.45)*1.1+.45,0.,1.);}
+float vign(vec2 uv){return mix(.42,1.,smoothstep(1.15,.25,length((uv-.5)*vec2(uRes.x/uRes.y,1.))));}
+float front(vec2 uv){
+  vec2 p=(uv-.5)*vec2(uRes.x/uRes.y,1.);float f;
+  if(uTr<.5)f=uv.x*.8+fbm(uv*vec2(3.,5.)+7.)*.2;
+  else if(uTr<1.5){float r=length(p),a=atan(p.y,p.x);f=fract(a/6.2832+.5+r*.55)*.78+fbm(uv*4.)*.22;}
+  else if(uTr<2.5)f=uv.y*.8+fbm(uv*vec2(5.,3.)+3.)*.2;
+  else if(uTr<3.5)f=clamp(length(p)/length(vec2(uRes.x/uRes.y,1.)*.5),0.,1.)*.8+fbm(uv*4.+1.)*.2;
+  else f=(uv.x*.55+(1.-uv.y)*.45)*.8+fbm(uv*3.+5.)*.2;
+  return clamp(f,0.,1.);}
+vec2 wind(vec2 p){
+  if(uTr<.5)return normalize(vec2(1.,.22));
+  if(uTr<1.5)return normalize(vec2(-p.y,p.x)*1.2-p*.45+vec2(1e-4));
+  if(uTr<2.5)return normalize(vec2(.25,1.));
+  if(uTr<3.5)return normalize(p+vec2(1e-4,0.));
+  return normalize(vec2(.85,-.5));}
+float tOut(float d){return clamp((uMix-d*.62)/.22,0.,1.);}
+float tIn(float d){return clamp((uMix-d*.62-.1)/.26,0.,1.);}
+`;
+
+const VS_Q = `attribute vec2 p;varying vec2 vUv;void main(){vUv=p*.5+.5;gl_Position=vec4(p,0.,1.);}`;
+const FS_BG = `precision highp float;
+varying vec2 vUv;
+uniform sampler2D uA,uB;uniform float uKA,uKB,uVel,uBeat,uLeak,uCosmos;uniform vec3 uMoon;
+${COMMON}
+vec3 sky(vec2 uv){
+  float asp=uRes.x/uRes.y;vec2 q=(uv-.5)*vec2(asp,1.);
+  float band=exp(-pow((q.y-q.x*.32+.05)*2.4,2.));
+  float n1=fbm(q*1.7+vec2(uTime*.012,0.)),n2=fbm(q*3.4+n1*1.6-uTime*.008);
+  vec3 col=vec3(.34,.07,.11)*pow(n2,2.2)*1.3+vec3(.6,.42,.22)*pow(n1,3.2)*.9+vec3(.07,.06,.17)*n1*.7;
+  col*=.35+band*1.1;
+  for(int l=0;l<3;l++){
+    float fl=float(l);float sc=55.+fl*70.;
+    vec2 g=q*sc+uMouse*(6.+fl*8.);vec2 cell=floor(g);vec2 f=fract(g)-.5;
+    float r=hq(cell+fl*17.3);
+    float th=.955-band*.05;
+    if(r>th){
+      vec2 o=(vec2(hq(cell+3.1),hq(cell+7.7))-.5)*.6;float d=length(f-o);
+      float tw=.55+.45*sin(uTime*(.8+r*3.)+r*61.);
+      float s=smoothstep(.09+.05*(1.-fl*.4),0.,d)*tw*(1.-fl*.25);
+      col+=mix(vec3(1.,.93,.8),vec3(.95,.7,.45),hq(cell+9.))*s*1.3;
+    }
+  }
+  vec2 c=uMoon.xy;float R=uMoon.z;
+  float d1=length(q-c),d2=length(q-(c+vec2(R*.45,R*.2)));
+  float disk=smoothstep(R,R-.0025,d1)*smoothstep(R*.93-.0025,R*.93,d2);
+  float halo=exp(-max(d1-R,0.)*16.)*.22*smoothstep(R*.6,R*1.1,d2);
+  col+=(vec3(1.,.92,.76)*disk*1.15+vec3(.85,.6,.34)*halo)*smoothstep(.5,.85,uCosmos);
+  float per=7.;float k=floor(uTime/per),ph=fract(uTime/per)/.11;
+  if(ph<1.){
+    vec2 st=vec2((hq(vec2(k,1.))-.2)*asp*.9,.08+hq(vec2(k,2.))*.38);
+    vec2 dir=normalize(vec2(-.85-hq(vec2(k,3.))*.4,-.38));
+    vec2 hd=st+dir*ph*.7;vec2 tl=hd-dir*.2*min(ph*3.,1.);
+    vec2 pa=q-tl,ba=hd-tl;float hh=clamp(dot(pa,ba)/dot(ba,ba),0.,1.);
+    float dd=length(pa-ba*hh);
+    col+=vec3(1.,.9,.75)*smoothstep(.0028,0.,dd)*hh*(1.-ph)*1.4;
+  }
+  return col;}
+vec3 samp(sampler2D t,vec2 uv,float ia,float k,float fo,float tc,float push){
+  vec2 c=mapUV(uv,ia,fo,tc,push);
+  if(k>3.5&&k<4.5)c=(c-.5)*(1.-uBeat*.02)+.5;
+  if(k>2.5&&k<3.5)c.x+=sin(uTime*.6+c.y*3.)*.001;
+  float o=abs(uVel)*.006+.0006;
+  vec3 col=vec3(texture2D(t,c+vec2(o,0.)).r,texture2D(t,c).g,texture2D(t,c-vec2(o,0.)).b);
+  if(k>2.5&&k<3.5)col*=1.+.06*(n(vec2(uTime*4.,k))-.5);
+  return col*edge(c);}
+void main(){
+  vec2 uv=vUv;
+  vec3 col;
+  if(uMix>0.){
+    float d=front(uv),to=tOut(d),ti=tIn(d);
+    float aV=1.-smoothstep(0.,.4,to),bV=smoothstep(.55,1.,ti);
+    vec3 a=aV>0.?samp(uA,uv,uIA,uKA,uFA,uTA,uPA):vec3(0.);
+    vec3 b=bV>0.?samp(uB,uv,uIB,uKB,uFB,uTB,uPB):vec3(0.);
+    col=a*aV+b*bV*(1.-aV);
+    col=grade(col);
+    float haze=(1.-aV)*(1.-bV);
+    col+=vec3(.42,.3,.18)*haze*.07*(.6+.4*fbm(uv*6.+uTime*.3));
+  }else{
+    col=grade(samp(uA,uv,uIA,uKA,uFA,uTA,uPA));
+  }
+  col*=1.-uDark;
+  float cz=uCosmos;
+  if(uFit>.5)cz=max(cz,(1.-edge(mapUV(uv,uIA,uFA,uTA,uPA)))*.9);
+  if(cz>0.)col+=sky(uv)*cz*clamp(1.-dot(col,vec3(.33))*1.5,0.,1.);
+  col*=vign(vUv);
+  vec2 lp=vec2(.12+.3*sin(uTime*.17),.86+.1*cos(uTime*.23));
+  col+=vec3(1.,.55,.25)*uLeak*smoothstep(1.,0.,length((uv-lp)*vec2(uRes.x/uRes.y,1.)))*.35;
+  col+=(hq(vUv*uRes+mod(floor(uTime*24.),113.)*vec2(7.1,3.7))-.5)*.035;
+  gl_FragColor=vec4(col,1.);}`;
+
+/* песчинки перехода: кадр рассыпается на зёрна своего цвета, ветер уносит их, следующий кадр оседает из зёрен */
+const VS_G = `precision highp float;
+attribute vec2 aUv;attribute vec4 aR;
+uniform sampler2D uA,uB;uniform float uSide,uPt;
+${COMMON}
+varying vec3 vC;varying float vA;
+void main(){
+  vec2 uv=aUv;
+  vec2 c=uSide<.5?mapUV(uv,uIA,uFA,uTA,uPA):mapUV(uv,uIB,uFB,uTB,uPB);
+  float ed=edge(c);
+  float d=clamp(front(uv)+(aR.x-.5)*.03,0.,1.);
+  float t=uSide<.5?tOut(d):1.-tIn(d);
+  if(t<=.001||t>=.999||ed<.03){gl_Position=vec4(-9.,-9.,0.,1.);gl_PointSize=0.;vC=vec3(0.);vA=0.;return;}
+  float asp=uRes.x/uRes.y;
+  vec2 p=(uv-.5)*vec2(asp,1.)*2.;
+  vec2 w=wind(p);
+  float e=t*t;
+  float ph=aR.z*6.2832;
+  vec2 sw=vec2(sin(p.y*2.3+uTime*1.1+ph),cos(p.x*2.1-uTime*.9+ph))+vec2(sin(p.y*5.3+uTime*2.1+ph*2.),cos(p.x*4.9+uTime*1.7+ph))*.5;
+  vec2 pos=p+w*e*(.8+aR.y*1.6)*1.5+sw*.16*sin(t*3.1416)*(.35+aR.w)+vec2(0.,e*.16*(aR.x-.35));
+  gl_Position=vec4(pos.x/asp,pos.y,0.,1.);
+  vec3 col=(uSide<.5?texture2D(uA,c).rgb:texture2D(uB,c).rgb)*ed;
+  col=grade(col)*(1.-uDark)*vign(uv);
+  float lift=sin(t*3.1416);
+  float glint=step(.93,aR.w)*lift;
+  col=mix(col,vec3(1.,.84,.58)*(.35+dot(col,vec3(.4))),glint*.75);
+  col+=vec3(.75,.52,.3)*.05*lift;
+  float big=step(.988,aR.y);
+  gl_PointSize=uPt*mix(1.,.5,t)*(1.+big*3.);
+  vA=(1.-smoothstep(.55,1.,t))*mix(1.,.22,big);
+  vC=col;}`;
+const FS_G = `precision mediump float;varying vec3 vC;varying float vA;
+void main(){float r=length(gl_PointCoord-.5);float a=smoothstep(.5,.32,r)*vA;gl_FragColor=vec4(vC*a,a);}`;
+
+/* знак и фоновая пыль */
+const VS_P = `attribute vec2 aHome;attribute vec4 aRnd;
+uniform float uTime,uForm,uAsp,uPR,uVel,uBeat,uAlpha,uScale,uHold,uSwirl,uMA,uMB,uMM;uniform vec2 uOff,uMouse,uCen;
+varying float vA;varying vec3 vC;
+void mode(float m,out vec2 p,out float sz,out float al,out vec3 col){
+  float t=uTime;vec3 brass=vec3(.71,.55,.35),cream=vec3(.98,.93,.82);
+  if(m<.5){
+    float x=fract(aRnd.x+t*(.01+aRnd.z*.03))*2.4-1.2;float y=aRnd.y*2.-1.+sin(t*.5+aRnd.w*6.28+x*3.)*.05;
+    p=vec2(x*uAsp,y);sz=.7+aRnd.w*1.7;al=step(aRnd.z,.5)*(.16+aRnd.x*.22)*(1.+uBeat*1.5);col=mix(brass,cream,aRnd.y*aRnd.y*.55);
+  }else if(m<1.5){
+    float y=fract(aRnd.y+t*(.025+aRnd.z*.05))*2.4-1.2;float x=(aRnd.x*2.-1.)*uAsp+sin(t*.6+aRnd.w*20.+y*2.)*.07;
+    p=vec2(x,y);sz=1.+aRnd.w*2.4;al=step(aRnd.z,.12)*(.5+.5*sin(t*6.+aRnd.w*60.))*smoothstep(1.2,.4,abs(y))*.8;col=mix(vec3(1.,.45,.15),vec3(1.,.82,.5),aRnd.x);
+  }else if(m<2.5){
+    float life=fract(aRnd.y+t*(.04+aRnd.z*.045));float y=-1.1+life*2.2;
+    float x=uCen.x+(aRnd.x-.5)*.55*(.3+life)+sin(life*6.+aRnd.w*6.+t*.5)*.2*life;
+    p=vec2(x,y);sz=(2.+aRnd.w*6.)*(.5+life);al=step(aRnd.z,.4)*.1*sin(life*3.1416);col=cream;
+  }else if(m<3.5){
+    float ring=floor(aRnd.x*7.);float r=.15+ring*.085;float dir=mod(ring,2.)*2.-1.;float a=aRnd.y*6.2832+t*(.1+ring*.025)*dir;
+    r+=sin(a*(3.+ring)+t*(1.6+ring*.3))*.018*(1.+uBeat*3.);p=uCen+vec2(cos(a),sin(a))*r;sz=.8+aRnd.w;al=.22;col=mix(brass,cream,aRnd.w);
+  }else if(m<5.5){
+    float x=(aRnd.x*2.-1.)*uAsp*.95+sin(t*.3+aRnd.w*30.)*.12;float y=aRnd.y*1.8-.9+cos(t*.25+aRnd.z*30.)*.1;
+    p=vec2(x,y);sz=1.6+aRnd.w*2.6;al=step(aRnd.z,.05)*(pow(max(0.,sin(t*1.3+aRnd.w*40.)),5.)*.9+.03);col=vec3(1.,.86,.45);
+  }else{
+    float arm=floor(aRnd.x*3.);float r=pow(aRnd.y,.75)*.95+.03;
+    float sc=(aRnd.z-.5)*(.6-r*.35);
+    float th=arm*2.0944+r*5.4+sc*1.3-t*.1/(r+.22);
+    vec2 g=vec2(cos(th),sin(th))*r+vec2(aRnd.w-.5,aRnd.z-.5)*.05*(1.-r);
+    g.y*=.5;float tl=-.32;g=mat2(cos(tl),-sin(tl),sin(tl),cos(tl))*g;
+    p=uOff+g*1.2;sz=.6+aRnd.w*1.7;
+    al=(.1+.38*exp(-pow((r-.38)*2.8,2.)))*(.65+.35*sin(t*2.+aRnd.w*30.));
+    col=mix(vec3(.98,.93,.82),vec3(.71,.55,.35),r)+vec3(.35,.05,.12)*step(.86,aRnd.w);
+  }
+}
+void main(){
+  vec2 pA,pB;float sA,sB,aA,aB;vec3 cA,cB;
+  mode(uMA,pA,sA,aA,cA);mode(uMB,pB,sB,aB,cB);
+  vec2 p=mix(pA,pB,uMM);float sz=mix(sA,sB,uMM),al=mix(aA,aB,uMM);vec3 col=mix(cA,cB,uMM);
+  float t=uTime;
+  vec2 home=aHome*uScale+uOff+vec2(sin(t*1.1+aRnd.w*40.),cos(t*.9+aRnd.x*40.))*(.0015+uHold*.012);
+  float f=clamp(uForm*1.6-aRnd.z*.6,0.,1.);f=f*f*(3.-2.*f);
+  p=mix(p,home,f);
+  float sw=f*(1.-f)*4.;
+  float ang=(1.-f)*uSwirl*(2.2+aRnd.y*2.);vec2 q=p-uOff;
+  p=uOff+mat2(cos(ang),-sin(ang),sin(ang),cos(ang))*q*(1.+(1.-f)*uSwirl*.25);
+  p+=vec2(sin(p.y*4.+t+aRnd.w*6.),cos(p.x*4.+t*1.3))*.13*sw*(1.+uSwirl);
+  vec2 d=p-uMouse;float l=length(d);p+=d/(l+.0001)*.09*exp(-l*l/.012);
+  p.x+=uVel*.3*(aRnd.y-.25);
+  gl_Position=vec4(p.x/uAsp,p.y,0.,1.);
+  gl_PointSize=mix(sz,(.8+aRnd.w*1.8)*1.1,f)*uPR*(1.+uBeat*.4*(1.-f));
+  float sweep=mod(t*.22,2.6)-1.3;
+  float shine=exp(-pow((aHome.x-aHome.y*.45-sweep)*7.,2.))*f;
+  vA=uAlpha*mix(al,.9,f);
+  vC=mix(col,mix(vec3(.71,.55,.35),vec3(.98,.93,.82),aRnd.y*aRnd.y),f)+vec3(1.,.9,.7)*shine*.9;}`;
+const FS_P = `precision mediump float;varying float vA;varying vec3 vC;
+void main(){float r=length(gl_PointCoord-.5);float a=smoothstep(.5,.06,r)*vA;gl_FragColor=vec4(vC*a,a);}`;
+
+function prog(vs, fs) {
+  const p = gl.createProgram();
+  for (const [t, src] of [[gl.VERTEX_SHADER, vs], [gl.FRAGMENT_SHADER, fs]]) {
+    const s = gl.createShader(t); gl.shaderSource(s, src); gl.compileShader(s);
+    if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) console.error(gl.getShaderInfoLog(s));
+    gl.attachShader(p, s);
+  }
+  gl.linkProgram(p);
+  if (!gl.getProgramParameter(p, gl.LINK_STATUS)) console.error(gl.getProgramInfoLog(p));
+  const u = {}; const n = gl.getProgramParameter(p, gl.ACTIVE_UNIFORMS);
+  for (let i = 0; i < n; i++) { const nm = gl.getActiveUniform(p, i).name; u[nm] = gl.getUniformLocation(p, nm); }
+  return { p, u };
+}
+const BG = prog(VS_Q, FS_BG), GR = prog(VS_G, FS_G), PT = prog(VS_P, FS_P);
+const triBuf = gl.createBuffer();
+gl.bindBuffer(gl.ARRAY_BUFFER, triBuf);
+gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+
+/* медиа */
+const TEX = {};
+let loaded = 0; const total = Object.keys(MEDIA).length + 1;
+function mkTex() {
+  const t = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, t);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([14, 9, 7, 255]));
+  for (const [k, v] of [[gl.TEXTURE_MIN_FILTER, gl.LINEAR], [gl.TEXTURE_MAG_FILTER, gl.LINEAR], [gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE], [gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE]]) gl.texParameteri(gl.TEXTURE_2D, k, v);
+  return t;
+}
+function put(t, src) {
+  gl.bindTexture(gl.TEXTURE_2D, t.tex); gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+  try { gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, src); } catch (e) {}
+}
+Object.entries(MEDIA).forEach(([name, m]) => {
+  const t = { tex: mkTex(), ia: 16 / 9, el: null, last: -1 }; TEX[name] = t;
+  let done = false; const once = () => { if (!done) { done = true; loaded++; } };
+  const im = new Image(); im.crossOrigin = "anonymous";
+  im.onload = () => { if (t.last < 0) { put(t, im); t.ia = im.naturalWidth / im.naturalHeight; } if (m.i) once(); };
+  im.onerror = () => { if (m.i) once(); };
+  im.src = m.p || m.i;
+  if (m.v) {
+    const v = document.createElement("video");
+    v.muted = true; v.loop = true; v.playsInline = true; v.setAttribute("playsinline", ""); v.setAttribute("muted", "");
+    v.crossOrigin = "anonymous"; v.preload = "auto";
+    v.addEventListener("loadeddata", () => { t.ia = v.videoWidth / v.videoHeight; once(); });
+    v.addEventListener("error", once);
+    v.src = m.v; t.el = v;
+  }
+});
+function feed(t) {
+  const v = t.el;
+  if (!v || v.readyState < 2 || v.currentTime === t.last) return;
+  t.last = v.currentTime; put(t, v);
+}
+function playNear(c) {
+  const want = new Set();
+  CH.forEach((ch, k) => { if (Math.abs(c - k) < 1.25) want.add(TEX[ch.media]); });
+  Object.values(TEX).forEach(t => {
+    if (!t.el) return;
+    if (want.has(t) && t.el.paused) { const p = t.el.play(); if (p && p.catch) p.catch(() => {}); }
+    else if (!want.has(t) && !t.el.paused) t.el.pause();
+  });
+}
+
+/* сетка песчинок перехода: по зерну на каждые ~3 пикселя экрана */
+const gBuf = gl.createBuffer(); let gCount = 0, gCols = 1;
+function buildGrains() {
+  const target = small ? 85000 : 170000;
+  gCols = Math.max(40, Math.round(Math.sqrt(target * asp)));
+  const rows = Math.max(30, Math.round(target / gCols));
+  const arr = new Float32Array(gCols * rows * 6); let o = 0;
+  for (let y = 0; y < rows; y++) for (let x = 0; x < gCols; x++) {
+    arr[o++] = (x + .5 + (Math.random() - .5) * .5) / gCols;
+    arr[o++] = (y + .5 + (Math.random() - .5) * .5) / rows;
+    arr[o++] = Math.random(); arr[o++] = Math.random(); arr[o++] = Math.random(); arr[o++] = Math.random();
+  }
+  gl.bindBuffer(gl.ARRAY_BUFFER, gBuf); gl.bufferData(gl.ARRAY_BUFFER, arr, gl.STATIC_DRAW);
+  gCount = gCols * rows;
+}
+
+/* знак LIWAN из маски (белый знак на чёрном) */
+const NP = small ? 12000 : 30000;
+let pBuf = null;
+const logo = new Image();
+logo.onload = () => {
+  const W = 320, H = Math.round(W * logo.naturalHeight / logo.naturalWidth);
+  const c = document.createElement("canvas"); c.width = W; c.height = H;
+  const x = c.getContext("2d"); x.drawImage(logo, 0, 0, W, H);
+  const d = x.getImageData(0, 0, W, H).data, pts = [];
+  for (let y = 0; y < H; y++) for (let i = 0; i < W; i++) { const o = (y * W + i) * 4; if (d[o + 3] > 120 && d[o] > 120) pts.push(i, y); }
+  const arr = new Float32Array(NP * 6), cnt = pts.length / 2;
+  for (let i = 0; i < NP; i++) {
+    const j = (Math.random() * cnt | 0) * 2;
+    arr[i * 6] = (pts[j] + Math.random() - W / 2) / H;
+    arr[i * 6 + 1] = -(pts[j + 1] + Math.random() - H / 2) / H;
+    for (let q = 2; q < 6; q++) arr[i * 6 + q] = Math.random();
+  }
+  pBuf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, pBuf); gl.bufferData(gl.ARRAY_BUFFER, arr, gl.STATIC_DRAW);
+  loaded++;
+};
+logo.onerror = () => loaded++;
+logo.src = "img/logo.png";
+
+let W = 0, H = 0, asp = 1, dpr = 1, rT = 0;
+function resize() {
+  dpr = Math.min(devicePixelRatio || 1, small ? 1.5 : 2);
+  W = innerWidth; H = innerHeight; asp = W / H;
+  cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+  gl.viewport(0, 0, cv.width, cv.height);
+  const bar = !small && asp > 1.3 ? Math.max(0, Math.round((H - W / 2.35) / 2)) : 0;
+  root.style.setProperty("--bar", bar + "px");
+  root.style.setProperty("--subB", (bar >= 64 ? Math.round(bar / 2 - 16) : 86) + "px");
+  clearTimeout(rT); rT = setTimeout(buildGrains, 120);
+}
+resize(); buildGrains(); addEventListener("resize", resize);
+
+/* ===== звук ===== */
+const AU = { ac: null, on: true };
+try { AU.on = localStorage.getItem("lw-x-snd") !== "0"; } catch (e) {}
+const sndBtn = $(".snd");
+function paintSnd() {
+  sndBtn.classList.toggle("off", !AU.on); sndBtn.setAttribute("aria-pressed", AU.on);
+  $(".lbl", sndBtn).textContent = AU.on ? "Звук" : "Без звука";
+}
+paintSnd();
+const BPM = 96, S16 = 60 / BPM / 4;
+const SCALE = [-5, -4, -2, 0, 1, 4, 5, 7, 8, 10, 12]; /* хиджаз от ре */
+const hz = s => 146.83 * Math.pow(2, s / 12);
+const PAT = [
+  { p: .06 },
+  { p: .17 },
+  { p: .14, tek: [4, 12] },
+  { p: .3, dum: [0, 7, 10], tek: [3, 5, 13, 15] },
+  { p: .18, kick: [0, 4, 8, 12], hat: [2, 6, 10, 14], clap: [4, 12] },
+  { p: .22, dum: [0, 10], tek: [6, 14] },
+  { p: .1 }
+];
+function audioInit() {
+  if (AU.ac) return;
+  const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return;
+  const ac = AU.ac = new AC();
+  const comp = ac.createDynamicsCompressor(); comp.threshold.value = -18; comp.ratio.value = 4; comp.connect(ac.destination);
+  AU.master = ac.createGain(); AU.master.gain.value = 0; AU.master.connect(comp);
+  const sr = ac.sampleRate;
+  const brown = ac.createBuffer(1, sr * 4, sr), bd = brown.getChannelData(0); let last = 0;
+  for (let i = 0; i < bd.length; i++) { const w = Math.random() * 2 - 1; last = (last + .02 * w) / 1.02; bd[i] = last * 3.5; }
+  const white = ac.createBuffer(1, sr * 2, sr), wd = white.getChannelData(0);
+  for (let i = 0; i < wd.length; i++) wd[i] = Math.random() * 2 - 1;
+  AU.white = white; AU.brown = brown;
+  const src = ac.createBufferSource(); src.buffer = brown; src.loop = true;
+  AU.windF = ac.createBiquadFilter(); AU.windF.type = "bandpass"; AU.windF.frequency.value = 450; AU.windF.Q.value = .6;
+  AU.windG = ac.createGain(); AU.windG.gain.value = .3;
+  src.connect(AU.windF).connect(AU.windG).connect(AU.master); src.start();
+  const lp = ac.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 600;
+  const dg = ac.createGain(); dg.gain.value = .06; lp.connect(dg).connect(AU.master);
+  [[73.42, "sine", .5], [110, "sine", .3], [110.5, "sine", .2], [146.83, "triangle", .08]].forEach(([f, t, g]) => {
+    const o = ac.createOscillator(); o.type = t; o.frequency.value = f;
+    const gg = ac.createGain(); gg.gain.value = g; o.connect(gg).connect(lp); o.start();
+  });
+  const lfo = ac.createOscillator(); lfo.frequency.value = .07; const lg = ac.createGain(); lg.gain.value = 240;
+  lfo.connect(lg).connect(AU.windF.frequency); lfo.start();
+  AU.plk = ac.createGain(); AU.plk.gain.value = .45; AU.plk.connect(AU.master);
+  const rv = ac.createDelay(1); rv.delayTime.value = .375; const rg = ac.createGain(); rg.gain.value = .34; const rl = ac.createBiquadFilter(); rl.frequency.value = 1700;
+  AU.plk.connect(rv); rv.connect(rl).connect(rg).connect(rv); rg.connect(AU.master);
+  AU.drm = ac.createGain(); AU.drm.gain.value = .5; AU.drm.connect(AU.master);
+  AU.fx = ac.createGain(); AU.fx.gain.value = .9; AU.fx.connect(AU.master);
+  AU.pad = ac.createGain(); AU.pad.gain.value = 0; AU.pad.connect(AU.master);
+  const pl = ac.createBiquadFilter(); pl.type = "lowpass"; pl.frequency.value = 2600; pl.connect(AU.pad);
+  const trem = ac.createGain(); trem.gain.value = .7; trem.connect(pl);
+  const tlo = ac.createOscillator(); tlo.frequency.value = .18; const tg = ac.createGain(); tg.gain.value = .3; tlo.connect(tg).connect(trem.gain); tlo.start();
+  [[587.33, 0], [880, 3], [881.2, -4], [1174.66, 2]].forEach(([f, dt]) => {
+    const o = ac.createOscillator(); o.frequency.value = f; o.detune.value = dt;
+    const g = ac.createGain(); g.gain.value = .25; o.connect(g).connect(trem); o.start();
+  });
+  AU.next = ac.currentTime + .1; AU.step = 0; AU.idx = 3; AU.hits = [];
+  setVol();
+}
+function setVol() {
+  if (!AU.ac) return;
+  if (AU.on && AU.ac.state === "suspended") AU.ac.resume();
+  AU.master.gain.setTargetAtTime(AU.on && !document.hidden ? .62 : 0, AU.ac.currentTime, .5);
+}
+sndBtn.addEventListener("click", () => {
+  AU.on = !AU.on; try { localStorage.setItem("lw-x-snd", AU.on ? "1" : "0"); } catch (e) {}
+  paintSnd(); audioInit(); setVol();
+});
+function whoosh(dur, peak) { /* порыв ветра на переход */
+  const ac = AU.ac; if (!ac) return; const t = ac.currentTime + .02;
+  const s = ac.createBufferSource(); s.buffer = AU.brown; s.loop = true;
+  const f = ac.createBiquadFilter(); f.type = "bandpass"; f.Q.value = .9;
+  f.frequency.setValueAtTime(220, t); f.frequency.exponentialRampToValueAtTime(peak || 1600, t + dur * .45); f.frequency.exponentialRampToValueAtTime(300, t + dur);
+  const g = ac.createGain(); g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(1.1, t + dur * .4); g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+  const hiS = ac.createBufferSource(); hiS.buffer = AU.white; hiS.loop = true;
+  const hf = ac.createBiquadFilter(); hf.type = "highpass"; hf.frequency.value = 5000;
+  const hg = ac.createGain(); hg.gain.setValueAtTime(.0001, t); hg.gain.exponentialRampToValueAtTime(.06, t + dur * .45); hg.gain.exponentialRampToValueAtTime(.0001, t + dur);
+  s.connect(f).connect(g).connect(AU.fx); hiS.connect(hf).connect(hg).connect(AU.fx);
+  s.start(t, Math.random() * 2); s.stop(t + dur + .1); hiS.start(t, Math.random()); hiS.stop(t + dur + .1);
+}
+function boom(delay) {
+  const ac = AU.ac; if (!ac) return; const t = ac.currentTime + delay;
+  const o = ac.createOscillator(), g = ac.createGain();
+  o.frequency.setValueAtTime(70, t); o.frequency.exponentialRampToValueAtTime(38, t + 1.6);
+  g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(.9, t + .03); g.gain.exponentialRampToValueAtTime(.0001, t + 2.4);
+  o.connect(g).connect(AU.fx); o.start(t); o.stop(t + 2.5);
+  pluck(t + .05, hz(0), .9); pluck(t + .05, hz(7), .6); pluck(t + .07, hz(12), .5);
+}
+function pluck(t, f, v) {
+  const ac = AU.ac;
+  const n = ac.createBufferSource(); n.buffer = AU.white;
+  const g0 = ac.createGain(); g0.gain.value = v * .5;
+  const d = ac.createDelay(.05); d.delayTime.value = 1 / f;
+  const fb = ac.createGain(); fb.gain.value = .986;
+  const lp = ac.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 2400;
+  const out = ac.createGain();
+  out.gain.setValueAtTime(1, t); out.gain.exponentialRampToValueAtTime(.001, t + 2.6);
+  n.connect(g0).connect(d); d.connect(lp).connect(fb).connect(d); lp.connect(out).connect(AU.plk);
+  n.start(t, Math.random() * .5, .025);
+  setTimeout(() => { try { out.disconnect(); fb.disconnect(); d.disconnect(); lp.disconnect(); } catch (e) {} }, (t - ac.currentTime + 3) * 1000);
+}
+function osc(t, f0, f1, dur, v) {
+  const ac = AU.ac, o = ac.createOscillator(), g = ac.createGain();
+  o.frequency.setValueAtTime(f0, t); o.frequency.exponentialRampToValueAtTime(f1, t + dur * .5);
+  g.gain.setValueAtTime(v, t); g.gain.exponentialRampToValueAtTime(.001, t + dur);
+  o.connect(g).connect(AU.drm); o.start(t); o.stop(t + dur + .05);
+}
+function noise(t, type, f, q, dur, v) {
+  const ac = AU.ac, s = ac.createBufferSource(); s.buffer = AU.white;
+  const fl = ac.createBiquadFilter(); fl.type = type; fl.frequency.value = f; fl.Q.value = q;
+  const g = ac.createGain(); g.gain.setValueAtTime(v, t); g.gain.exponentialRampToValueAtTime(.001, t + dur);
+  s.connect(fl).connect(g).connect(AU.drm); s.start(t, Math.random() * 1.5, dur + .05);
+}
+function score(ch) {
+  const ac = AU.ac; if (!ac) return;
+  const P = PAT[ch] || PAT[0];
+  while (AU.next < ac.currentTime + .15) {
+    const t = AU.next, st = AU.step % 16;
+    if (st % 2 === 0 && Math.random() < P.p) {
+      if (Math.random() < .25) AU.idx += AU.idx > 3 ? -1 : 1;
+      else AU.idx += [-2, -1, -1, 1, 1, 2][Math.random() * 6 | 0];
+      AU.idx = clamp(AU.idx, 0, SCALE.length - 1);
+      pluck(t, hz(SCALE[AU.idx]), .5 + Math.random() * .4);
+      if (Math.random() < .16) pluck(t + S16 / 2, hz(SCALE[Math.min(SCALE.length - 1, AU.idx + 1)]), .35);
+    }
+    if (P.kick && P.kick.includes(st)) { osc(t, 140, 44, .42, .9); AU.hits.push(t); }
+    if (P.hat && P.hat.includes(st)) noise(t, "highpass", 7500, .7, .05, .18);
+    if (P.clap && P.clap.includes(st)) { noise(t, "bandpass", 1500, 1.2, .14, .42); noise(t + .012, "bandpass", 1500, 1.2, .1, .3); }
+    if (P.dum && P.dum.includes(st)) { osc(t, 120, 58, .34, .75); AU.hits.push(t); }
+    if (P.tek && P.tek.includes(st)) noise(t, "bandpass", 3300, 1.6, .06, .42);
+    AU.next += S16; AU.step++;
+  }
+  AU.windG.gain.setTargetAtTime(.24 + Math.min(Math.abs(vel) * 1.5, .8), ac.currentTime, .2);
+  if (AU.pad) AU.pad.gain.setTargetAtTime(cosmosV * .045, ac.currentTime, .8);
+  while (AU.hits.length > 4) AU.hits.shift();
+}
+function beatNow(ch, time) {
+  if (AU.ac && AU.on) {
+    const now = AU.ac.currentTime; let b = 0;
+    for (const t of AU.hits) if (t <= now) b = Math.max(b, Math.exp(-(now - t) * 7));
+    return b;
+  }
+  if (ch === 3 || ch === 4) { const ph = (time % (60 / BPM)) / (60 / BPM); return Math.exp(-ph * 7); }
+  return 0;
+}
+
+/* ===== состояние фильма ===== */
+let cosmosV = 1, freezeT = -1, phase = "gate", ready = false, holding = false, hp = 0;
+let cur = 0, C = 0, prevC = 0, vel = 0, tw = null, chT0 = 0, playing = true, enterT = 0;
+let shownCard = -1, subsKey = "";
+const gate = $("#gate"), holdBtn = $(".hold"), ring = $(".hold .fg"), pct = $(".pct");
+const geo = $(".geo");
+const AST = (() => {
+  const NS = "http://www.w3.org/2000/svg"; geo.innerHTML = "";
+  const mk = (tag, at, par) => { const e = document.createElementNS(NS, tag); for (const k in at) e.setAttribute(k, at[k]); (par || geo).appendChild(e); return e; };
+  const P = (r, a) => [(Math.sin(a * Math.PI / 180) * r).toFixed(2), (-Math.cos(a * Math.PI / 180) * r).toFixed(2)];
+  const gOut = mk("g", {}), gNum = mk("g", {}), gIn = mk("g", {}), gRete = mk("g", {}), gCore = mk("g", {});
+  [97, 92.5, 80].forEach(r => mk("circle", { r, pathLength: 1 }, gOut));
+  let d = "";
+  for (let a = 0; a < 360; a += 2.5) { const r1 = a % 30 === 0 ? 87.5 : a % 10 === 0 ? 90 : 91.2; const [x1, y1] = P(r1, a), [x2, y2] = P(92.5, a); d += "M" + x1 + " " + y1 + "L" + x2 + " " + y2; }
+  mk("path", { d, pathLength: 1 }, gOut);
+  const AR = "\u0660\u0661\u0662\u0663\u0664\u0665\u0666\u0667\u0668\u0669";
+  for (let i = 1; i <= 12; i++) {
+    const a = i * 30, [x, y] = P(84, a);
+    const t = mk("text", { x, y, transform: "rotate(" + a + " " + x + " " + y + ")", "text-anchor": "middle", "dominant-baseline": "middle" }, gNum);
+    t.textContent = String(a).split("").map(c => AR[+c]).join("");
+  }
+  for (let i = 0; i < 6; i++) mk("circle", { r: (16 + i * 10).toFixed(1), cy: (-i * 5.2).toFixed(1), pathLength: 1 }, gIn);
+  mk("path", { d: "M-80 0H80M0-80V80", pathLength: 1 }, gIn);
+  mk("circle", { r: 62, pathLength: 1 }, gIn);
+  mk("circle", { r: 46, cy: 14, pathLength: 1 }, gRete);
+  mk("circle", { r: 55, pathLength: 1 }, gRete);
+  for (let k = 0; k < 11; k++) {
+    const a = k * 32.7 + (k % 2 ? 9 : 0), rb = 55, rt = 63 + (k % 3) * 6;
+    const [x1, y1] = P(rb, a - 5), [cx, cy] = P(rt - 3, a - 7), [tx, ty] = P(rt, a), [cx2, cy2] = P(rt - 6, a + 2), [x2, y2] = P(rb, a + 4);
+    mk("path", { d: "M" + x1 + " " + y1 + "Q" + cx + " " + cy + " " + tx + " " + ty + "Q" + cx2 + " " + cy2 + " " + x2 + " " + y2, pathLength: 1 }, gRete);
+    mk("circle", { cx: tx, cy: ty, r: 1.25, class: "st" }, gRete);
+  }
+  mk("rect", { x: -22, y: -22, width: 44, height: 44, pathLength: 1 }, gCore);
+  mk("rect", { x: -22, y: -22, width: 44, height: 44, transform: "rotate(45)", pathLength: 1 }, gCore);
+  mk("circle", { r: 7, pathLength: 1 }, gCore);
+  return { gNum, gIn, gRete };
+})();
+const geoEls = $$("[pathLength]", geo);
+const card = $("#card"), subsEl = $("#subs"), credits = $("#credits"), fin = $(".fin"), ppBtn = $(".pp");
+
+function go(k, instant) {
+  k = clamp(k, 0, N - 1); if (k === cur && !instant) return;
+  let from = C;
+  if (Math.abs(k - from) > 1.01) from = k - Math.sign(k - from);
+  if (instant) { C = prevC = k; tw = null; } else { tw = { from, to: k, t0: performance.now(), dur: TRANS_MS }; whoosh(TRANS_MS / 1000 * .95, k === 4 ? 2400 : 1600); }
+  cur = k; chT0 = performance.now(); shownCard = -1; subsKey = "";
+  card.className = ""; credits.classList.remove("on"); fin.classList.remove("on");
+}
+function setPlaying(v) {
+  playing = v; root.classList.toggle("paused", !v);
+  $(".lbl", ppBtn).textContent = v ? "Пауза" : "Смотреть"; ppBtn.setAttribute("aria-label", v ? "Пауза" : "Смотреть");
+  if (v && cur === N - 1) go(1);
+}
+ppBtn.addEventListener("click", () => setPlaying(!playing));
+$(".again").addEventListener("click", () => { go(1); setPlaying(true); });
+
+const startHold = e => { if (!ready || phase !== "gate") return; holding = true; audioInit(); if (e && e.pointerId != null) try { holdBtn.setPointerCapture(e.pointerId); } catch (_) {} };
+const endHold = () => { holding = false; };
+holdBtn.addEventListener("pointerdown", startHold);
+holdBtn.addEventListener("pointerup", endHold);
+holdBtn.addEventListener("pointercancel", endHold);
+holdBtn.addEventListener("contextmenu", e => e.preventDefault());
+holdBtn.addEventListener("keydown", e => { if ((e.key === "Enter" || e.key === " ") && !e.repeat) { e.preventDefault(); startHold(); } });
+holdBtn.addEventListener("keyup", e => { if (e.key === "Enter" || e.key === " ") endHold(); });
+function startFilm(quiet) {
+  phase = "film"; holding = false; root.classList.add("film"); gate.classList.add("out");
+  enterT = performance.now(); go(0, true); chT0 = enterT;
+  setVol(); if (!quiet) { whoosh(3.2, 1200); boom(2.3); }
+}
+setTimeout(() => { if (!ready) loaded = total; }, 9000);
+
+/* навигация по главам */
+let wAcc = 0, wLast = 0, navLock = 0;
+function step(d) { if (phase !== "film" || performance.now() < navLock) return; navLock = performance.now() + TRANS_MS * .7; go(cur + d); }
+addEventListener("wheel", e => {
+  e.preventDefault();
+  const now = performance.now(); if (now - wLast > 220) wAcc = 0; wLast = now;
+  wAcc += e.deltaY * (e.deltaMode === 1 ? 33 : e.deltaMode === 2 ? H : 1);
+  if (Math.abs(wAcc) > 50) { step(Math.sign(wAcc)); wAcc = 0; }
+}, { passive: false });
+let ty = null, tx = null;
+addEventListener("touchstart", e => { ty = e.touches[0].clientY; tx = e.touches[0].clientX; }, { passive: true });
+addEventListener("touchmove", e => { if (e.cancelable) e.preventDefault(); }, { passive: false });
+addEventListener("touchend", e => {
+  if (ty === null) return;
+  const dy = ty - e.changedTouches[0].clientY, dx = tx - e.changedTouches[0].clientX; ty = null;
+  if (Math.abs(dy) > 45 && Math.abs(dy) > Math.abs(dx)) step(Math.sign(dy));
+  else if (Math.abs(dx) > 60) step(Math.sign(dx));
+});
+addEventListener("keydown", e => {
+  if (phase !== "film") return;
+  if (["ArrowDown", "ArrowRight", "PageDown"].includes(e.key)) { e.preventDefault(); navLock = 0; step(1); }
+  else if (["ArrowUp", "ArrowLeft", "PageUp"].includes(e.key)) { e.preventDefault(); navLock = 0; step(-1); }
+  else if (e.key === " " && !e.target.closest("a,button")) { e.preventDefault(); setPlaying(!playing); }
+});
+let hiddenAt = 0;
+document.addEventListener("visibilitychange", () => {
+  setVol();
+  if (document.hidden) hiddenAt = performance.now(); else if (hiddenAt) { chT0 += performance.now() - hiddenAt; hiddenAt = 0; }
+});
+
+const mouse = { x: 0, y: 0, sx: 0, sy: 0, px: -9, py: -9, spx: -9, spy: -9, cx: null, cy: null, rx: 0, ry: 0 };
+const cur$ = $(".cur"), dot = $(".dot");
+addEventListener("pointermove", e => {
+  mouse.x = e.clientX / W * 2 - 1; mouse.y = -(e.clientY / H * 2 - 1);
+  mouse.px = mouse.x * asp; mouse.py = mouse.y;
+  if (e.pointerType === "mouse") {
+    if (mouse.cx === null) { mouse.rx = e.clientX; mouse.ry = e.clientY; }
+    mouse.cx = e.clientX; mouse.cy = e.clientY;
+    cur$.classList.add("on"); dot.classList.add("on");
+    dot.style.transform = `translate(${e.clientX}px,${e.clientY}px)`;
+    cur$.classList.toggle("big", !!e.target.closest("a,button"));
+  }
+});
+document.addEventListener("pointerleave", () => { mouse.px = mouse.py = -9; });
+
+/* карточки и субтитры */
+const CARD_IN = 2.0, CARD_OUT = 4.3;
+function splitTitle(s) {
+  let i = 0;
+  return s.split(" ").map(w => '<span class="w">' + [...w].map(c => '<span class="ch" style="--i:' + (i++) + '">' + c + "</span>").join("") + "</span>").join(" ");
+}
+function textFrame(lt) {
+  const ch = CH[cur];
+  if (ch.card) {
+    if (shownCard !== cur && lt > CARD_IN) {
+      shownCard = cur;
+      $(".kick", card).textContent = ch.card[0];
+      $("h2", card).innerHTML = splitTitle(ch.card[1]); $("h2", card).setAttribute("aria-label", ch.card[1]);
+      card.className = ""; void card.offsetWidth; card.className = "on";
+    }
+    if (shownCard === cur && lt > CARD_OUT && card.className === "on") card.className = "on off";
+  }
+  const line = (ch.subs || []).find(s => lt >= s[0] && lt < s[1]);
+  const key = line ? cur + ":" + line[0] : "";
+  if (key !== subsKey) {
+    const old = $("span", subsEl);
+    if (old) { old.classList.remove("on"); setTimeout(() => old.remove(), 900); }
+    if (line) {
+      const sp = document.createElement("span"); sp.innerHTML = line[2]; subsEl.appendChild(sp);
+      requestAnimationFrame(() => requestAnimationFrame(() => sp.classList.add("on")));
+    }
+    subsKey = key;
+  }
+  if (cur === N - 1) {
+    if (lt > 4.4) credits.classList.add("on");
+    if (lt > 11) { fin.classList.add("on"); credits.classList.remove("on"); }
+  }
+}
+
+/* ===== кадр ===== */
+let last = performance.now(), t0 = last, loadShown = 0, gDraw = 0;
+const aQ = gl.getAttribLocation(BG.p, "p");
+const aUv = gl.getAttribLocation(GR.p, "aUv"), aR = gl.getAttribLocation(GR.p, "aR");
+const aHome = gl.getAttribLocation(PT.p, "aHome"), aRnd = gl.getAttribLocation(PT.p, "aRnd");
+
+function common(pr, A, B, ta, tb, f, time, dark, lt) {
+  const u = pr.u;
+  gl.uniform1f(u.uIA, ta.ia); gl.uniform1f(u.uIB, tb.ia);
+  gl.uniform1f(u.uFA, A.fo); gl.uniform1f(u.uFB, B.fo);
+  gl.uniform1f(u.uTA, A.top || 0); gl.uniform1f(u.uTB, B.top || 0);
+  const ci = Math.round(C);
+  const push = k => .012 + (ci === k ? Math.min(lt, 14) * .004 : .03);
+  gl.uniform1f(u.uPA, push(CH.indexOf(A))); gl.uniform1f(u.uPB, push(CH.indexOf(B)));
+  gl.uniform1f(u.uMix, f); gl.uniform1f(u.uTr, B.tr);
+  gl.uniform1f(u.uTime, time); gl.uniform1f(u.uFit, small ? 1 : 0); gl.uniform1f(u.uDark, dark);
+  gl.uniform2f(u.uRes, cv.width, cv.height); gl.uniform2f(u.uMouse, mouse.sx, mouse.sy);
+  gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, ta.tex); gl.uniform1i(u.uA, 0);
+  gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, tb.tex); gl.uniform1i(u.uB, 1);
+}
+
+function frame(now) {
+  const dt = Math.min((now - last) / 1000, .05); last = now;
+  const time = (now - t0) / 1000;
+
+  loadShown = lerp(loadShown, loaded / total, 1 - Math.exp(-dt * 5));
+  if (!ready) {
+    pct.textContent = Math.round(loadShown * 100) + "%";
+    if (loaded >= total && loadShown > .985) { ready = true; gate.classList.add("ready"); }
+  }
+  if (phase === "gate") {
+    hp = clamp(hp + (holding ? dt / 1.2 : -dt / .5), 0, 1);
+    ring.style.strokeDashoffset = 1 - hp;
+    if (AU.ac && AU.windG) AU.windG.gain.setTargetAtTime(.24 + hp * 1.2, AU.ac.currentTime, .1);
+    if (hp >= 1) startFilm();
+  }
+  const enterK = phase === "film" ? clamp((now - enterT) / 3000, 0, 1) : 0;
+  const enterAmt = ss(enterK);
+
+  if (tw) {
+    const k = clamp((now - tw.t0) / tw.dur, 0, 1);
+    C = lerp(tw.from, tw.to, ios(k)); if (k >= 1) { C = tw.to; tw = null; }
+  }
+  const v = (C - prevC) / Math.max(dt, .001); prevC = C;
+  vel = lerp(vel, clamp(v * .2, -1, 1), 1 - Math.exp(-dt * 8));
+  if (freezeT >= 0) chT0 = now - freezeT * 1000;
+  const lt = phase === "film" ? (now - chT0) / 1000 : 0;
+  if (phase === "film" && playing && !tw && CH[cur].dur && lt > CH[cur].dur && cur < N - 1) go(cur + 1);
+
+  const i = Math.min(Math.floor(C), N - 2), f = C - i, fe = ss(f);
+  const A = CH[i], B = CH[i + 1];
+  const P = key => lerp(A[key], B[key], fe);
+
+  mouse.sx = lerp(mouse.sx, mouse.x, 1 - Math.exp(-dt * 2.5));
+  mouse.sy = lerp(mouse.sy, mouse.y, 1 - Math.exp(-dt * 2.5));
+  mouse.spx = lerp(mouse.spx, mouse.px, 1 - Math.exp(-dt * 8));
+  mouse.spy = lerp(mouse.spy, mouse.py, 1 - Math.exp(-dt * 8));
+  if (mouse.cx !== null) {
+    mouse.rx = lerp(mouse.rx, mouse.cx, .16); mouse.ry = lerp(mouse.ry, mouse.cy, .16);
+    cur$.style.transform = `translate(${mouse.rx}px,${mouse.ry}px)`;
+  }
+
+  const chNow = Math.round(C);
+  if (phase === "film") score(chNow); else if (AU.ac) score(0);
+  const beat = beatNow(chNow, time) * (phase === "film" ? 1 : 0) * (chNow === 3 || chNow === 4 ? 1 : .3);
+
+  const wide = asp > 1.05;
+  const L0 = { s: wide ? .8 : Math.min(.8, asp * 1.5), x: 0, y: wide ? .02 : .14 };
+  const L6 = wide ? { s: .7, x: -asp * .42, y: 0 } : { s: Math.min(.4, asp * .78), x: 0, y: .55 };
+  const lt6 = clamp(C - (N - 2), 0, 1);
+  const ls = lerp(L0.s, L6.s, lt6), lx = lerp(L0.x, L6.x, lt6), ly = lerp(L0.y, L6.y, lt6);
+
+  const cardDim = (CH[cur].card && phase === "film" && !tw) ? Math.sin(clamp((lt - CARD_IN + .3) / (CARD_OUT - CARD_IN + 1.2), 0, 1) * Math.PI) * .42 : 0;
+  const form = phase === "gate" ? hp * .5 : P("form") * enterAmt;
+  const swirl = phase === "gate" ? hp : phase === "film" ? (1 - enterAmt) * 1.2 + (cur === 0 ? 0 : 0) : 0;
+  const dark = phase !== "film" ? .94 : clamp(lerp(.94, P("dark"), enterAmt) + cardDim * (1 - P("dark")), 0, 1);
+  const leak = phase === "film" ? .08 + Math.sin(f * Math.PI) * .25 + beat * .15 : .03;
+
+  cosmosV = phase === "gate" ? 1 : clamp((dark - .3) / .55, 0, 1);
+  const M0 = wide ? [asp * .3, .27, .05] : [.12, .36, .04], M6 = wide ? [-asp * .21 + .2, .3, .036] : [.14, .43, .028];
+  const moon = [lerp(M0[0], M6[0], lt6), lerp(M0[1], M6[1], lt6), lerp(M0[2], M6[2], lt6)];
+  playNear(C);
+  const ta = TEX[A.media], tb = TEX[B.media];
+  feed(ta); if (tb !== ta) feed(tb);
+  const mixV = A.media === B.media ? 0 : f;
+
+  /* фон */
+  gl.disable(gl.BLEND);
+  gl.useProgram(BG.p);
+  common(BG, A, B, ta, tb, mixV, time, dark, lt);
+  gl.uniform1f(BG.u.uKA, A.k); gl.uniform1f(BG.u.uKB, B.k);
+  gl.uniform1f(BG.u.uVel, vel); gl.uniform1f(BG.u.uBeat, beat); gl.uniform1f(BG.u.uLeak, leak);
+  gl.uniform1f(BG.u.uCosmos, cosmosV); gl.uniform3f(BG.u.uMoon, moon[0], moon[1], moon[2]);
+  gl.bindBuffer(gl.ARRAY_BUFFER, triBuf);
+  gl.enableVertexAttribArray(aQ); gl.vertexAttribPointer(aQ, 2, gl.FLOAT, false, 0, 0);
+  gl.drawArrays(gl.TRIANGLES, 0, 3);
+  gl.disableVertexAttribArray(aQ);
+
+  /* песчинки перехода */
+  if (mixV > 0 && mixV < 1 && gCount) {
+    gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+    gl.useProgram(GR.p);
+    common(GR, A, B, ta, tb, mixV, time, dark, lt);
+    gl.uniform1f(GR.u.uPt, (cv.width / gCols) * 1.75);
+    gl.bindBuffer(gl.ARRAY_BUFFER, gBuf);
+    gl.enableVertexAttribArray(aUv); gl.vertexAttribPointer(aUv, 2, gl.FLOAT, false, 24, 0);
+    gl.enableVertexAttribArray(aR); gl.vertexAttribPointer(aR, 4, gl.FLOAT, false, 24, 8);
+    gl.uniform1f(GR.u.uSide, 0); gl.drawArrays(gl.POINTS, 0, gCount);
+    gl.uniform1f(GR.u.uSide, 1); gl.drawArrays(gl.POINTS, 0, gCount);
+    gl.disableVertexAttribArray(aUv); gl.disableVertexAttribArray(aR);
+  }
+
+  /* знак и пыль */
+  if (pBuf) {
+    gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE);
+    gl.useProgram(PT.p);
+    gl.bindBuffer(gl.ARRAY_BUFFER, pBuf);
+    gl.enableVertexAttribArray(aHome); gl.vertexAttribPointer(aHome, 2, gl.FLOAT, false, 24, 0);
+    gl.enableVertexAttribArray(aRnd); gl.vertexAttribPointer(aRnd, 4, gl.FLOAT, false, 24, 8);
+    const q = PT.u;
+    gl.uniform1f(q.uTime, time); gl.uniform1f(q.uForm, form); gl.uniform1f(q.uAsp, asp);
+    gl.uniform1f(q.uPR, dpr * (small ? 1.25 : 1)); gl.uniform1f(q.uVel, vel); gl.uniform1f(q.uBeat, beat);
+    gl.uniform1f(q.uMA, A.pm); gl.uniform1f(q.uMB, B.pm); gl.uniform1f(q.uMM, fe);
+    gl.uniform1f(q.uAlpha, (phase === "film" ? 1 : .8) * (.6 + .4 * Math.min(1, loadShown * 1.2)) * (1 - cardDim * .7) * (1 - Math.sin(f * Math.PI) * .5 * (1 - P("form"))));
+    gl.uniform1f(q.uScale, ls); gl.uniform1f(q.uHold, phase === "gate" ? hp : 0); gl.uniform1f(q.uSwirl, swirl);
+    gl.uniform2f(q.uOff, lx, ly); gl.uniform2f(q.uMouse, mouse.spx, mouse.spy);
+    gl.uniform2f(q.uCen, wide ? asp * .28 : 0, wide ? .02 : .28);
+    gl.drawArrays(gl.POINTS, 0, NP);
+    gl.disableVertexAttribArray(aHome); gl.disableVertexAttribArray(aRnd);
+  }
+
+  /* звезда */
+  gDraw = lerp(gDraw, ready ? 1 : loadShown, 1 - Math.exp(-dt * 3));
+  geoEls.forEach((el, n) => { el.style.strokeDashoffset = 1 - clamp(gDraw * 1.6 - n * .07, 0, 1); });
+  const finA = clamp(C - (N - 2), 0, 1);
+  let gOp, gs;
+  if (phase === "gate") { gOp = .5 + hp * .3; gs = 1 - hp * .1; }
+  else { gOp = lerp(.6 * (1 - enterK * 2.5 > 0 ? 1 - enterK * 2.5 : 0), lerp(.08 + cardDim * .9, .28, finA), enterAmt) + (cur === 0 ? .22 * enterAmt * (1 - lt6) : 0); gs = lerp(1.15, .8, finA) + cardDim * .12; }
+  geo.style.opacity = gOp;
+  geo.style.transform = `translate(${lx / asp * W / 2}px,${-ly * H / 2}px) rotate(${C * 12 + hp * 30}deg) scale(${gs})`;
+  geo.style.setProperty("--txt", (gDraw * .9).toFixed(3));
+  AST.gNum.setAttribute("transform", "rotate(" + (time * 1.1 + hp * 40).toFixed(2) + ")");
+  AST.gIn.setAttribute("transform", "rotate(" + (-time * .5).toFixed(2) + ")");
+  AST.gRete.setAttribute("transform", "rotate(" + (-time * 3.2 - C * 30 - hp * 120).toFixed(2) + ")");
+
+  if (phase === "film") {
+    textFrame(lt);
+    segBtns.forEach((b, k) => {
+      const p = k < cur ? 1 : k > cur ? 0 : (CH[k].dur ? clamp(lt / CH[k].dur, 0, 1) : 1);
+      b.style.setProperty("--p", p);
+    });
+    root.classList.toggle("lb", !small && cur > 0 && cur < N - 1);
+  }
+  requestAnimationFrame(frame);
+}
+
+/* проверка: #c=2.5 — точка между главами (автопоказ на паузе); #c=4&t=2.5 — замереть на секунде главы */
+const dbg = /c=([\d.]+)/.exec(location.hash);
+if (dbg) {
+  ready = true; gate.classList.add("ready"); startFilm(true); enterT -= 6000;
+  const c = +dbg[1]; go(Math.round(c), true); C = prevC = c; cur = Math.round(c);
+  const tt = /t=([\d.]+)/.exec(location.hash); chT0 = performance.now() - (tt ? +tt[1] : 6) * 1000;
+  if (tt) freezeT = +tt[1];
+  setPlaying(false);
+}
+window.__lw = () => ({ phase, cur, C, playing, loaded, total, grains: gCount });
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
