@@ -7,8 +7,8 @@
    "time": "22:00",
    "name": "«Прибытие»",
    "kind": "Кинопоказ",
-   "url": "https://t.me/loungeliwan/491",
-   "img": "491.jpg"
+   "url": "https://t.me/loungeliwan/493",
+   "img": "493.jpg"
   },
   {
    "date": "2026-11-20",
@@ -28,6 +28,16 @@
   }
  ],
  "items": [
+  {
+   "id": 493,
+   "url": "https://t.me/loungeliwan/493",
+   "date": "2026-11-18",
+   "when": [
+    "2026-11-18"
+   ],
+   "title": "Сегодня в 22:00 смотрим «Прибытие»",
+   "img": "493.jpg"
+  },
   {
    "id": 491,
    "url": "https://t.me/loungeliwan/491",
