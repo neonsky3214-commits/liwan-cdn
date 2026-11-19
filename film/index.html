@@ -155,10 +155,10 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   transition:opacity 1.4s var(--out),transform 1.8s var(--out)}
 .fin.on{opacity:1;pointer-events:auto;transform:translateY(-50%)}
 .fin .num{font:400 10px/1 Inter;letter-spacing:.34em;text-transform:uppercase;color:var(--brass);margin-bottom:22px}
-.fin h2{font:400 clamp(42px,5.6vw,92px)/.98 "Tenor Sans",serif;text-transform:uppercase;margin-bottom:22px}
+.fin h2{font:400 clamp(42px,min(5.6vw,8.4vh),92px)/.98 "Tenor Sans",serif;text-transform:uppercase;margin-bottom:22px}
 .fin p{color:rgba(249,238,210,.8);max-width:420px}
-.acts{display:flex;flex-wrap:wrap;gap:12px;margin:28px 0 30px}
-.btn{display:inline-flex;align-items:center;gap:10px;min-height:50px;padding:0 26px;border-radius:50px;font:400 11px/1 Inter;letter-spacing:.24em;text-transform:uppercase;
+.acts{display:flex;flex-wrap:wrap;gap:10px;margin:26px 0 26px}
+.btn{display:inline-flex;align-items:center;gap:10px;min-height:50px;padding:0 22px;border-radius:50px;font:400 11px/1 Inter;letter-spacing:.24em;text-transform:uppercase;
   border:1px solid rgba(181,139,90,.6);transition:background .5s,color .5s,border-color .5s}
 .btn.main{background:var(--cream);color:var(--ink);border-color:var(--cream)}
 .btn:hover{background:var(--brass);border-color:var(--brass);color:var(--ink)}
@@ -167,6 +167,8 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .info a{border-bottom:1px solid rgba(181,139,90,.5)}
 .again{margin-top:26px;font:400 10px/1 Inter;letter-spacing:.3em;text-transform:uppercase;color:rgba(249,238,210,.6);min-height:44px}
 .again:hover{color:var(--cream)}
+.fin .links{display:flex;flex-wrap:wrap;gap:4px 26px;margin-top:22px}
+.fin .links .again{margin-top:0;display:inline-flex;align-items:center}
 
 /* курсор */
 .cur{position:fixed;left:0;top:0;z-index:40;pointer-events:none;width:36px;height:36px;margin:-18px 0 0 -18px;border-radius:50%;
@@ -199,15 +201,29 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   .acts{margin:18px 0 20px;gap:10px}
   .btn{min-height:46px;padding:0 20px}
   .info{font-size:13px;gap:5px 16px}
-  .again{display:none}
+  .fin .links button.again{display:none}
+  .acts .route{display:none} /* на телефоне маршрут — по нажатию на адрес, кнопки встают в два ряда */
 }
-@media (max-width:760px) and (max-height:720px){.fin p{display:none}.acts{margin-top:6px}}
+@media (max-width:430px){.topr .book,.topr .mbtn{padding:0 11px 0 13px}}
+@media (max-width:760px) and (max-height:720px){.fin p,.fin .num{display:none}.acts{margin-top:6px}}
+@media (max-width:760px) and (max-height:600px){.fin h2{font-size:30px}.info{font-size:12px}.acts [data-menu]{display:none}} /* совсем маленький телефон: «Меню» остаётся в шапке */
+/* невысокий широкий экран (ноутбук): финал между шапкой и нижней строкой */
+@media (min-aspect-ratio:1/1) and (max-height:900px) and (min-height:521px){
+  .fin{top:calc(50% + 16px)}
+  .fin .num{margin-bottom:12px}
+  .fin h2{font-size:clamp(34px,min(5.6vw,7.2vh),92px);margin-bottom:12px}
+  .acts{margin:16px 0 16px}
+  .info{gap:4px 22px}
+  .fin .links{margin-top:8px}
+}
+@media (min-aspect-ratio:1/1) and (max-height:780px) and (min-height:521px){.fin p{display:none}}
 /* телефон боком: низкий экран — компактный финал */
 @media (max-height:520px) and (min-aspect-ratio:1/1){
   .fin{width:min(420px,46vw);right:var(--pad)}
-  .fin .num{margin-bottom:10px}
+  .fin .num{display:none}
   .fin h2{font-size:clamp(30px,4.4vw,44px);margin-bottom:10px}
-  .fin p,.again{display:none}
+  .fin p,.again,.fin .links button.again,.acts [data-menu],.acts .route{display:none} /* «Меню» — в шапке, маршрут — по адресу */
+  .fin .links{margin-top:4px}
   .acts{margin:12px 0;gap:8px}
   .btn{min-height:40px;padding:0 18px;font-size:10px}
   .info{font-size:12px;gap:2px 14px}
@@ -271,14 +287,15 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 @media (pointer:coarse){.m-zhint{display:block}}
 .m-scroll.zoom{overflow-x:auto}
 .m-scroll.zoom .m-page{width:220%;max-width:none;margin-left:0}
-.m-cta{text-align:center;margin:18px 0 8px}
+.m-cta{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin:18px 0 8px}
+@media (max-width:384px){.topr .priv{display:none}}
 #subs span{text-shadow:0 0 2px rgba(0,0,0,.9),0 1px 18px rgba(0,0,0,.85)}
 @media (pointer:coarse){.segs button{height:40px}.segs button:before,.segs button i{top:19px}}
-@media (max-width:1100px) and (min-aspect-ratio:1/1){.segs{top:calc(var(--pad) + 40px)}}
+@media (max-width:1280px) and (min-aspect-ratio:1/1){.segs{top:calc(var(--pad) + 40px)}}
 @media (max-height:520px) and (min-aspect-ratio:1/1){.fin{margin-right:env(safe-area-inset-right,0px)}.fin-on .segs{opacity:0;pointer-events:none}}
 .nogl body{display:flex;flex-direction:column}
 .nogl #plain{order:-1}
-.nogl .again{display:none}
+.nogl button.again{display:none}
 </style>
 </head>
 <body>
@@ -308,7 +325,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 
 <a class="ui logo" href="https://liwan-lounge.ru" aria-label="Liwan — основной сайт"></a>
 <nav class="ui segs" aria-label="Главы фильма"></nav>
-<div class="ui topr"><button class="mbtn" type="button" data-menu aria-haspopup="dialog">Меню</button><a class="book" href="https://reservation.yandex.ru/partner-reserve/forms/03fcde06-37b9-4221-a463-c06049b48a12" target="_blank" rel="noopener">Бронирование</a></div>
+<div class="ui topr"><button class="mbtn" type="button" data-menu aria-haspopup="dialog">Меню</button><a class="mbtn priv" href="https://app.loona.ai/4761/create" target="_blank" rel="noopener" aria-label="Система привилегий">Привилегии</a><a class="book" href="https://reservation.yandex.ru/partner-reserve/forms/03fcde06-37b9-4221-a463-c06049b48a12" target="_blank" rel="noopener">Бронирование</a></div>
 <button class="ui ctl snd" type="button" aria-pressed="true"><span class="bars2"><i></i><i></i><i></i><i></i></span><span class="lbl">Звук</span></button>
 <button class="ui ctl pp" type="button" aria-label="Пауза"><span class="lbl">Пауза</span><span class="ic"></span></button>
 
@@ -324,7 +341,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
     <img class="m-page" id="mp-3" src="../assets/menu-pages/menu-3.svg" width="595" height="842" alt="Меню Liwan — чай и лимонады" loading="lazy" decoding="async">
     <img class="m-page" id="mp-4" src="../assets/menu-pages/menu-4.svg" width="595" height="842" alt="Меню Liwan — китайский чай" loading="lazy" decoding="async">
     <p class="m-note">Цены указаны в рублях и могут меняться.</p>
-    <p class="m-cta"><a class="btn main" href="https://reservation.yandex.ru/partner-reserve/forms/03fcde06-37b9-4221-a463-c06049b48a12" target="_blank" rel="noopener">Забронировать стол</a></p>
+    <p class="m-cta"><a class="btn main" href="https://reservation.yandex.ru/partner-reserve/forms/03fcde06-37b9-4221-a463-c06049b48a12" target="_blank" rel="noopener">Забронировать стол</a><a class="btn" href="https://app.loona.ai/4761/create" target="_blank" rel="noopener">Система привилегий</a></p>
     <div class="sr" id="menu-text"><h2>Меню Liwan текстом</h2><h3>Холодные напитки</h3><ul><li>Kinza Гранат  330 мл — 390 ₽</li><li>Kinza Лимон-лайм zero  330 мл — 390 ₽</li><li>Kinza Лимон-лайм  330 мл — 390 ₽</li><li>Kinza Виноград  330 мл — 390 ₽</li><li>Milaf Финиковая кола  240 мл — 420 ₽</li><li>Боржоми  500 мл — 420 ₽</li><li>Вода Baikal — 420 ₽</li></ul><h3>Кофе</h3><ul><li>Кофе в турке — 490 ₽</li></ul><h3>Снеки</h3><ul><li>Сет орехов — 790 ₽</li><li>Сублимированные фрукты — 1 300 ₽</li></ul><h3>Лимонады, 400 мл</h3><ul><li>Мираж — 490 ₽</li><li>Дюны — 490 ₽</li><li>Бахар — 490 ₽</li><li>Тишина — 490 ₽</li><li>Мораккабат — 490 ₽</li></ul><h3>Чай, чайник 650 мл</h3><ul><li>Марокканский — 1 300 ₽</li><li>Розовый с яблоком — 1 600 ₽</li><li>Чай с чабрецом — 800 ₽</li></ul><h3>Китайский чай, чайник 1 000 мл</h3><ul><li>Цзинь Цзунь Мей — 1 100 ₽</li><li>Дянь Хун — 1 100 ₽</li><li>Те Гуань Инь — 1 100 ₽</li><li>Те Гуань Инь Вулкан — 1 100 ₽</li><li>Шу Гун Тин — 1 100 ₽</li><li>Бай Мудань — 1 100 ₽</li><li>Да Хун Пао — 1 100 ₽</li><li>Габа Бриллиант — 1 300 ₽</li><li>Тибетская Ромашка — 1 100 ₽</li><li>Гречишный — 1 100 ₽</li><li>Ян Ча — 1 100 ₽</li><li>Лао Гун Мей — 1 200 ₽</li><li>Шен Пуэр — 1 300 ₽</li><li>Молочный Улун — 1 100 ₽</li><li>Дун Фан Мей Жень — 1 500 ₽</li><li>Жасмин — 1 200 ₽</li><li>Фен Хуан Дан Цун — 1 600 ₽</li><li>Шуй Сян — 1 500 ₽</li><li>Джан Пин Шуй Сян — 1 500 ₽</li><li>Мен Хай Гу Шу — 1 500 ₽</li><li>Красный Чжун Го Хун — 1 400 ₽</li><li>Шен Иу — 1 900 ₽</li><li>Лао Ча Ван Тайвань — 1 900 ₽</li><li>Тайваньский Сы Цзи Чунь — 1 200 ₽</li><li>Да Хун Пао Традиционный — 2 900 ₽</li></ul></div>
   </div>
   <div class="m-top">
@@ -359,15 +376,16 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   <p>Чай, живой звук и вечера с DJ — ждём вас.</p>
   <div class="acts">
     <a class="btn main" href="https://reservation.yandex.ru/partner-reserve/forms/03fcde06-37b9-4221-a463-c06049b48a12" target="_blank" rel="noopener">Забронировать стол</a>
+    <a class="btn" href="https://app.loona.ai/4761/create" target="_blank" rel="noopener">Система привилегий</a>
     <button class="btn" type="button" data-menu aria-haspopup="dialog">Меню</button>
-    <a class="btn" href="https://yandex.ru/maps/org/66056015280" target="_blank" rel="noopener">Как добраться</a>
+    <a class="btn route" href="https://yandex.ru/maps/org/66056015280" target="_blank" rel="noopener">Как добраться</a>
   </div>
   <dl class="info">
-    <dt>Адрес</dt><dd>Москва, ул.&nbsp;Авиаконструктора Миля,&nbsp;3А, фудмолл «Привоз», 2-й&nbsp;этаж</dd>
+    <dt>Адрес</dt><dd><a href="https://yandex.ru/maps/org/66056015280" target="_blank" rel="noopener">Москва, ул.&nbsp;Авиаконструктора Миля,&nbsp;3А, фудмолл «Привоз», 2‑й&nbsp;этаж</a></dd>
     <dt>Часы</dt><dd>Вс–чт 14:00–01:00, пт–сб 14:00–02:00</dd>
     <dt>Связь</dt><dd><a href="tel:+79267219990">+7&nbsp;(926)&nbsp;721-99-90</a> · <a href="https://t.me/loungeliwan" target="_blank" rel="noopener">Telegram</a></dd>
   </dl>
-  <button class="again" type="button">↺ Смотреть ещё раз</button>
+  <div class="links"><button class="again" type="button">↺ Смотреть ещё раз</button><a class="again" href="https://liwan-lounge.ru/about">Всё о Liwan — меню, афиша, контакты&nbsp;→</a></div>
 </section>
 
 <h1 class="sr">Liwan — лаунж-бар и чайная в Жулебино</h1>
@@ -481,7 +499,7 @@ addEventListener("keydown", e => {
   }
 }, true);
 /* телефон: бронь в той же вкладке — во встроенных браузерах Telegram/Instagram новая вкладка может не открыться */
-if (coarse) $$('a[href*="reservation.yandex.ru"]').forEach(a => a.removeAttribute("target"));
+if (coarse) $$('a[href*="reservation.yandex.ru"],a[href*="app.loona.ai"]').forEach(a => a.removeAttribute("target"));
 
 /* ===== WebGL ===== */
 const cv = $("#gl");
@@ -801,7 +819,7 @@ function buildGrains() {
 /* знак LIWAN из маски (белый знак на чёрном) */
 const NP = small ? 12000 : 30000;
 let pBuf = null;
-const logo = new Image();
+const logo = new Image(); logo.crossOrigin = "anonymous"; /* знак с другого домена — без этого песок не соберётся (getImageData) */
 logo.onload = () => {
   const W = 320, H = Math.round(W * logo.naturalHeight / logo.naturalWidth);
   const c = document.createElement("canvas"); c.width = W; c.height = H;
@@ -821,7 +839,7 @@ logo.onload = () => {
 logo.onerror = () => loaded++;
 logo.src = "img/logo.png";
 
-let W = 0, H = 0, asp = 1, dpr = 1, rT = 0, qCap = 2, gAsp = -1;
+let W = 0, H = 0, asp = 1, dpr = 1, rT = 0, qCap = 2, gAsp = -1, finQ = 9, segB = 0, finBand = null;
 function resize() {
   dpr = Math.min(devicePixelRatio || 1, small ? 1.5 : 2, qCap);
   W = innerWidth; H = innerHeight; asp = W / H;
@@ -831,8 +849,12 @@ function resize() {
   root.style.setProperty("--bar", bar + "px");
   root.style.setProperty("--subB", (bar >= 64 ? Math.round(bar / 2 - 16) : 86) + "px");
   if (Math.abs(asp - gAsp) > .01) { clearTimeout(rT); rT = setTimeout(buildGrains, 120); }
+  const fe = document.querySelector(".fin"); finQ = fe ? (fe.getBoundingClientRect().left / W - .5) * asp : 9; /* левый край блока брони в координатах неба */
+  const se = document.querySelector(".segs"); segB = se ? se.getBoundingClientRect().bottom : 0;
+  finBand = fe && se && asp <= 1.05 ? [1 - 2 * (segB + 10) / H, 1 - 2 * (fe.offsetTop - 14) / H] : null; /* просвет для знака на телефоне, в долях экрана сверху вниз */
 }
 resize(); buildGrains(); addEventListener("resize", resize);
+if (document.fonts) document.fonts.ready.then(() => resize()); /* высота блока брони зависит от шрифтов */
 
 /* ===== звук ===== */
 const AU = { ac: null, on: true };
@@ -1290,7 +1312,7 @@ function frameBody(now) {
 
   const wide = asp > 1.05;
   const L0 = { s: wide ? .8 : Math.min(.8, asp * 1.5), x: 0, y: wide ? .02 : .14 };
-  const L6 = wide ? { s: .7, x: -asp * .42, y: 0 } : { s: Math.min(.4, asp * .78), x: 0, y: .55 };
+  const L6 = wide ? { s: .7, x: -asp * .42, y: 0 } : finBand ? { s: Math.max(.16, Math.min(.4, asp * .78, (finBand[0] - finBand[1]) * .95)), x: 0, y: (finBand[0] + finBand[1]) / 2 } : { s: Math.min(.4, asp * .78), x: 0, y: .55 };
   const lt6 = clamp(C - (N - 2), 0, 1);
   const ls = lerp(L0.s, L6.s, lt6), lx = lerp(L0.x, L6.x, lt6), ly = lerp(L0.y, L6.y, lt6);
 
@@ -1302,7 +1324,8 @@ function frameBody(now) {
 
   cosmosV = phase === "gate" ? 1 : clamp((dark - .3) / .55, 0, 1);
   const M0 = wide ? [asp * .5 - .2, .3, .045] : [.13, .3, .034], M6 = wide ? [-asp * .21 + .36, .33, .034] : [0, .5, 0];
-  const moon = [lerp(M0[0], M6[0], lt6), lerp(M0[1], M6[1], lt6), lerp(M0[2], M6[2], lt6) * (wide ? 1 : 1 - enterAmt)]; /* на телефоне луна только на входе: дальше её место занимает знак */
+  const moonFit = clamp((finQ - M6[0] - .07) / .04, 0, 1) * clamp(((.5 - M6[1] - M6[2]) * H - segB - 6) / 10, 0, 1); /* в финале луне нужен просвет до блока брони и под полосками глав, иначе прячем */
+  const moon = [lerp(M0[0], M6[0], lt6), lerp(M0[1], M6[1], lt6), lerp(M0[2], M6[2] * moonFit, lt6) * (wide ? 1 : 1 - enterAmt)]; /* на телефоне луна только на входе: дальше её место занимает знак */
   playNear(C);
   const ta = TEX[A.media], tb = TEX[B.media];
   feed(ta); if (tb !== ta) feed(tb);
@@ -1354,7 +1377,8 @@ function frameBody(now) {
     const dens = clamp(ls / .75, .5, 1);
     gl.uniform1f(q.uPR, dpr * (small ? 1.25 : 1) * (.65 + .35 * dens)); gl.uniform1f(q.uVel, vel); gl.uniform1f(q.uBeat, beat);
     gl.uniform1f(q.uMA, A.pm); gl.uniform1f(q.uMB, B.pm); gl.uniform1f(q.uMM, fe);
-    gl.uniform1f(q.uAlpha, Math.pow(dens, 1.3) * (phase === "film" ? 1 : .8) * (.6 + .4 * Math.min(1, loadShown * 1.2)) * (1 - cardDim * .7) * (1 - Math.sin(f * Math.PI) * .5 * (1 - P("form"))));
+    const logoFit = finBand ? lerp(1, clamp((finBand[0] - finBand[1] - .2) / .08, 0, 1), lt6) : 1; /* нет места над блоком брони — знак гаснет */
+    gl.uniform1f(q.uAlpha, logoFit * Math.pow(dens, 1.3) * (phase === "film" ? 1 : .8) * (.6 + .4 * Math.min(1, loadShown * 1.2)) * (1 - cardDim * .7) * (1 - Math.sin(f * Math.PI) * .5 * (1 - P("form"))));
     gl.uniform1f(q.uScale, ls); gl.uniform1f(q.uHold, phase === "gate" ? hp : 0); gl.uniform1f(q.uSwirl, swirl); gl.uniform1f(q.uWarp, warpV);
     gl.uniform2f(q.uOff, lx, ly); gl.uniform2f(q.uMouse, mouse.spx, mouse.spy);
     gl.uniform2f(q.uCen, wide ? asp * .28 : 0, wide ? .02 : .28);
