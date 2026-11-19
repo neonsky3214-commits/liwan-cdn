@@ -477,7 +477,12 @@ function openMenu() {
   if (menuOpen) return;
   menuOpen = true; menuFocus = document.activeElement;
   if (filmHooks.open) filmHooks.open();
-  menuInert = [...document.body.children].filter(el => el !== menuEl && el.tagName !== "SCRIPT" && !el.inert);
+  /* закрыть от фокуса всё вокруг меню: соседей меню и соседей каждого его родителя до body.
+     Не сами родители — на Tilda меню вложено в #allrecords, и блокировка контейнера заблокировала бы и меню */
+  menuInert = [];
+  for (let n = menuEl; n && n !== document.body && n.parentElement; n = n.parentElement)
+    for (const sib of n.parentElement.children)
+      if (sib !== n && !/^(SCRIPT|STYLE|LINK|NOSCRIPT)$/.test(sib.tagName) && !sib.inert) menuInert.push(sib);
   menuInert.forEach(el => { el.inert = true; });
   menuEl.classList.add("on"); menuEl.setAttribute("aria-hidden", "false"); root.classList.add("mopen");
   setTimeout(() => menuEl.querySelector(".m-x").focus(), 60);
@@ -869,7 +874,7 @@ if (document.fonts) document.fonts.ready.then(() => resize()); /* высота �
 
 /* ===== звук ===== */
 const AU = { ac: null, on: true };
-try { AU.on = localStorage.getItem("lw-x-snd") !== "0"; } catch (e) {}
+try { AU.on = sessionStorage.getItem("lw-x-snd") !== "0"; } catch (e) {} /* выключенный звук помним только до закрытия вкладки: новый визит — со звуком */
 const sndBtn = $(".snd");
 function paintSnd() {
   sndBtn.classList.toggle("off", !AU.on); sndBtn.setAttribute("aria-pressed", AU.on);
@@ -930,11 +935,13 @@ function audioInit() {
 }
 function setVol() {
   if (!AU.ac) return;
+  /* iPhone: без этого беззвучный режим глушит звук фильма; «playback» — как у обычного видео со звуком */
+  try { if (navigator.audioSession) navigator.audioSession.type = AU.on ? "playback" : "ambient"; } catch (e) {}
   if (AU.on && AU.ac.state === "suspended") AU.ac.resume();
   AU.master.gain.setTargetAtTime(AU.on && !document.hidden ? (menuOpen ? .18 : .62) : 0, AU.ac.currentTime, .5);
 }
 sndBtn.addEventListener("click", () => {
-  AU.on = !AU.on; try { localStorage.setItem("lw-x-snd", AU.on ? "1" : "0"); } catch (e) {}
+  AU.on = !AU.on; try { sessionStorage.setItem("lw-x-snd", AU.on ? "1" : "0"); } catch (e) {}
   paintSnd(); audioInit(); setVol();
 });
 function whoosh(dur, peak) { /* порыв ветра на переход */
@@ -1432,7 +1439,7 @@ if (dbg) {
   if (tt) freezeT = tv;
   setPlaying(false);
 }
-window.__lw = () => ({ readyAt, phase, cur, C, playing, loaded, total, grains: gCount });
+window.__lw = () => ({ readyAt, phase, cur, C, playing, loaded, total, grains: gCount, menuOpen, audio: AU.ac ? AU.ac.state : "нет", soundOn: AU.on, vol: AU.master ? +AU.master.gain.value.toFixed(2) : 0 });
 requestAnimationFrame(frame);
 })();
 </script>
