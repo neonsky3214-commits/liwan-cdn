@@ -71,7 +71,7 @@ def name_in(text):
     """имя артиста или название: «в кавычках», DJ Имя, слово капсом"""
     q = re.search(r"«([^»]{2,40})»", text)
     if q: return "«" + q.group(1).strip() + "»"
-    dj = re.search(r"\bDJ[ \t]+([A-ZА-ЯЁ][\w.\-]+(?:[ \t]+[A-ZА-ЯЁ]{2,}[\w.\-]*)?)", text)
+    dj = re.search(r"\bDJ[ \t]+([A-ZА-ЯЁ][\w.\-]+(?:[ \t]+[A-ZА-ЯЁ][\w.\-]+)?)", text)
     if dj: return "DJ " + dj.group(1)
     caps = [w for w in re.findall(r"\b[A-ZА-ЯЁ][A-ZА-ЯЁ0-9.\-]{3,}(?:[ \t]+[A-ZА-ЯЁ][A-ZА-ЯЁ0-9.\-]{2,})?\b", text) if w not in ("LIWAN", "DJ")]
     return caps[0] if caps else ""
@@ -88,18 +88,60 @@ def kind_of(text):
     return "Вечер в Liwan"
 
 
+ACT_SPLIT = re.compile(r"\s+(?:и|&|\+)\s+|\s*,\s*")
+GENERIC = {"группа", "группы", "dj", "диджей", "дуэт", "трио", "бэнд", "band", "live"}
+
+
+def span(m):
+    return m.group(1) + ("–" + m.group(2) if m.group(2) else "")
+
+
+def act_kind(name, fallback):
+    n = name.lower()
+    if re.search(r"\bdj\b|диджей", n): return "DJ-сет"
+    if re.search(r"групп|бэнд|band|дуэт|трио|квартет|концерт|live", n): return "Живая музыка"
+    return "Живая музыка" if fallback == "DJ-сет" else fallback  # не DJ в один вечер с DJ — скорее всего, живое выступление
+
+
+def acts_in(title, desc):
+    """несколько выступлений в один день: «Группа Taikat и DJ Arina Bles» + «В 19:00 играет группа Taikat,
+    а с 21:30 вечер продолжает DJ Arina Bles» → [(имя, время)]. Не уверены в разборе — пустой список."""
+    names = [clean(x) for x in ACT_SPLIT.split(title) if len(clean(x)) > 1]
+    times = list(TIME_RX.finditer(desc))
+    if len(names) < 2 or len(times) < len(names):
+        return []
+    if any(not re.match(r"[A-ZА-ЯЁ0-9«\"]", n) for n in names):  # «Чай и музыка» — название вечера, а не список исполнителей
+        return []
+    clauses = [c for c in re.split(r"[,.;!?\n]|\s+а\s+", desc) if TIME_RX.search(c)]
+    out = []
+    for k, n in enumerate(names):
+        toks = [t for t in re.findall(r"[\wёЁ]{3,}", n.lower()) if t not in GENERIC]
+        hit = next((c for c in clauses if any(t in c.lower() for t in toks)), None)
+        m = TIME_RX.search(hit) if hit else times[k]  # не нашли по имени — по порядку упоминания
+        out.append((n, span(m)))
+    return out if len({t for _, t in out}) == len(out) else []  # одно время на двоих — разбор не удался
+
+
 def events_in(post, posted):
-    """события поста: строка с датой + следующие строки до новой даты; одна дата — одно событие"""
+    """события поста: строка с датой + следующие строки до новой даты.
+    Обычно одна дата — одно событие; если у даты нет времени в строке, а в описании несколько выступлений
+    со своим временем, — по событию на каждое."""
     lines = post["text"].split("\n")
     idx = [i for i, l in enumerate(lines) if DATE_RX.search(l)]
     post_kind = kind_of(re.sub(r"(?i)кинопоказ|кино|экран|фильм|🎬", "", post["text"]))
     single = len({tuple(event_dates(lines[i], posted)[:1]) for i in idx} - {()}) <= 1  # все даты поста — один день  # для строк без своих слов; кино — только по своей строке
-    by_date = {}
+    by_date, multi = {}, {}
     for k, i in enumerate(idx):
         ds = event_dates(lines[i], posted)
         if not ds: continue
         block = "\n".join(lines[i: (idx[k + 1] if k + 1 < len(idx) else min(len(lines), i + 4))])
         tm = TIME_RX.search(block)
+        if not TIME_RX.search(lines[i]):  # время не в строке даты — возможно, в этот день несколько выступлений
+            rest = [l for l in block.split("\n")[1:] if l.strip()]
+            acts = acts_in(rest[0], "\n".join(rest[1:])) if len(rest) > 1 else []
+            if acts:
+                multi[ds[0]] = [dict(date=ds[0], time=t, name=n, kind=act_kind(n, kind_of(block))) for n, t in acts]
+                continue
         head = TIME_RX.sub(" ", NOISE.sub(" ", DATE_RX.sub(" ", "\n".join(block.split("\n")[:3]))))
         name = name_in(head)
         if not name and single:  # пост про одно событие: имя ищем по всему тексту
@@ -109,12 +151,14 @@ def events_in(post, posted):
             name = short[0] if short else ""
         kind = kind_of(post["text"]) if single else kind_of(block)
         if kind == "Вечер в Liwan": kind = post_kind
-        e = dict(date=ds[0], time=(tm.group(1) + ("–" + tm.group(2) if tm.group(2) else "")) if tm else None, name=clean(name), kind=kind)
+        e = dict(date=ds[0], time=span(tm) if tm else None, name=clean(name), kind=kind)
         old = by_date.get(ds[0])
         if not old or (e["time"] and not old["time"]) or (not old["name"] and e["name"]):
             if old and not e["name"]: e["name"] = old["name"]
             by_date[ds[0]] = e
-    return list(by_date.values())
+    out = [e for d, e in by_date.items() if d not in multi]
+    for acts in multi.values(): out += acts
+    return out
 
 
 def title_of(text):

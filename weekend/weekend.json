@@ -13,7 +13,15 @@
   {
    "date": "2026-11-21",
    "time": "19:00",
-   "name": "DJ Arina",
+   "name": "Группа Taikat",
+   "kind": "Живая музыка",
+   "url": "https://t.me/loungeliwan/491",
+   "img": "491.jpg"
+  },
+  {
+   "date": "2026-11-21",
+   "time": "21:30",
+   "name": "DJ Arina Bles",
    "kind": "DJ-сет",
    "url": "https://t.me/loungeliwan/491",
    "img": "491.jpg"
