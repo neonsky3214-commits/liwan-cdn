@@ -321,7 +321,7 @@
       '<div class="tg-foot"><p>Мастер заварит при вас и расскажет о чае подробнее.</p><div class="wk-acts"><a class="wk-btn main" href="' + BOOK + '" target="_blank" rel="noopener">Забронировать стол</a><a class="wk-btn" href="#menu" data-open="menu">Всё меню</a></div></div>';
     anchor.before(sec);
     const moods = $(".tg-moods", sec), list = $(".tg-list", sec);
-    const phone = matchMedia("(max-width: 767px)");
+    const phone = matchMedia("(max-width: 767px), (max-height: 520px) and (orientation: landscape)");
     function show(key, all) {
       [...moods.children].forEach((b) => b.setAttribute("aria-pressed", b.dataset.mood === key ? "true" : "false"));
       const on = moods.querySelector('[aria-pressed="true"]'); /* на телефоне лента листается: выбранное держим в поле зрения */

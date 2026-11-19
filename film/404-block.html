@@ -5,7 +5,7 @@
 /* страница 404 Liwan: «эту страницу замело песком». Все стили — внутри #lw404 */
 #lw404 {
   --choc: #1B1310; --cream: #F9EED2; --brass: #6A3F18; --ink: #2B170B; --sand: #D39B61;
-  --display: "Tenor Sans", "Cormorant Garamond", Georgia, serif;
+  --display: "Tenor Sans", Candara, "Trebuchet MS", "Segoe UI", system-ui, sans-serif;
   --text: Inter, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
   --ease: cubic-bezier(.22, .61, .36, 1);
   position: relative; height: 100vh; height: 100svh; min-height: 340px; overflow: hidden;
@@ -108,6 +108,7 @@
 @media (max-width: 600px) {
   #lw404 .brand .w { display: none; }
   #lw404 .acts { gap: 8px; }
+  #lw404 .btn:not(.btn-main) { flex: 1 1 0; } /* «Меню» и «Контакты» одной ширины */
   #lw404 .btn { flex: 1 1 auto; padding: 0 16px; }
   #lw404 .btn-main { flex-basis: 100%; }
   #lw404 .rake span { display: none; }
@@ -142,7 +143,7 @@
     <div class="copy">
       <p class="eyebrow">Ошибка 404</p>
       <h1>Эту страницу замело песком</h1>
-      <p class="lead">Такой страницы нет — ветер унёс её вместе с адресом. Пока вы здесь, проведите пальцем по песку.</p>
+      <p class="lead">Такой страницы нет — ветер унёс её вместе с адресом. Пока вы здесь, проведите по песку.</p>
       <div class="acts">
         <a class="btn btn-main" href="https://liwan-lounge.ru/">На главную Liwan</a>
         <a class="btn" href="https://liwan-lounge.ru/about#menu">Меню</a>

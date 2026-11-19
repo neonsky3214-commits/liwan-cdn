@@ -25,15 +25,17 @@
 :root{
   --choc:#1B1310; --ink:#0E0907; --brass:#B58B5A; --cream:#F9EED2;
   --pad:clamp(16px,3.6vw,52px); --bar:0px;
+  --finW:min(470px,42vw); --finR:calc(var(--pad) + 20px); /* колонка финала: бронь, титры, титул */
+  --sans:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; --disp:"Tenor Sans",Candara,"Trebuchet MS","Segoe UI",system-ui,sans-serif;
   --ease:cubic-bezier(.2,.8,.2,1); --out:cubic-bezier(.16,1,.3,1); --in:cubic-bezier(.7,0,.84,0);
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;background:var(--ink);color:var(--cream);overflow:hidden;
-  overscroll-behavior:none;touch-action:none;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
-body{font:300 16px/1.55 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  overscroll-behavior:none;touch-action:none;-webkit-text-size-adjust:100%;text-size-adjust:100%;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+body{font:300 16px/1.55 var(--sans);-webkit-font-smoothing:antialiased}
 a{color:inherit;text-decoration:none}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
-:focus-visible{outline:1px solid var(--brass);outline-offset:4px}
+:focus-visible,a:focus-visible,button:focus-visible{outline:1px solid var(--brass);outline-offset:4px} /* с тегом — чтобы пересилить синюю рамку Tilda */
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 
 #gl{position:fixed;inset:0;width:100%;height:100%;display:block}
@@ -42,6 +44,13 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .bars i{position:fixed;left:0;right:0;height:var(--bar);background:var(--ink);z-index:4;transform:scaleY(0);transition:transform 2s var(--out)}
 .bars .bt{top:0;transform-origin:top}.bars .bb{bottom:0;transform-origin:bottom}
 .lb .bars i{transform:none}
+
+/* затемнение под шапкой: на телефоне кадр подходит под кнопки, без подложки они теряются на светлом */
+.shade{display:none;position:fixed;left:0;right:0;top:0;height:calc(132px + env(safe-area-inset-top,0px));z-index:5;pointer-events:none;
+  background:linear-gradient(rgba(14,9,7,.82),rgba(14,9,7,.5) 55%,rgba(14,9,7,0));opacity:0;transition:opacity 1.6s var(--ease) 1.2s}
+.film .shade{opacity:1}
+@media (pointer:coarse), (max-aspect-ratio:1/1), (max-width:760px) and (min-height:521px){.shade{display:block}}
+@media (max-height:520px) and (min-aspect-ratio:1/1){.shade{height:100px}}
 
 /* звезда-чертёж */
 .geo{position:fixed;left:50%;top:50%;width:min(92vmin,880px);aspect-ratio:1;
@@ -54,8 +63,8 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 /* вход */
 #gate{position:fixed;inset:0;display:grid;place-items:center;z-index:30;transition:opacity 1.4s var(--ease)}
 #gate.out{opacity:0;pointer-events:none}
-.gate-in{display:flex;flex-direction:column;align-items:center;gap:24px;text-align:center}
-.pct{font:400 11px/1 Inter;letter-spacing:.42em;color:var(--brass);padding-left:.42em;transition:opacity .6s}
+.gate-in{position:relative;display:flex;flex-direction:column;align-items:center;gap:24px;text-align:center;transform:translateY(calc(13.5px - 1vh))} /* кнопка — в центре чертежа */
+.pct{font:400 11px/1 var(--sans);letter-spacing:.42em;color:var(--brass);padding-left:.42em;transition:opacity .6s}
 .hold{position:relative;width:140px;height:140px;border-radius:50%;display:grid;place-items:center;
   opacity:0;transform:scale(.9);transition:opacity 1.2s var(--ease),transform 1.2s var(--ease);touch-action:none;user-select:none;-webkit-user-select:none}
 .ready .hold{opacity:1;transform:none}
@@ -64,13 +73,15 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .hold circle{fill:none;stroke-width:1}
 .hold .bg{stroke:rgba(181,139,90,.3)}
 .hold .fg{stroke:var(--cream);stroke-dasharray:1 1;stroke-dashoffset:1}
-.hold span{font:400 10px/1.7 Inter;letter-spacing:.3em;text-transform:uppercase;padding-left:.3em;text-shadow:0 0 10px #0E0907,0 0 3px #0E0907}
+.hold span{font:400 10px/1.7 var(--sans);letter-spacing:.3em;text-transform:uppercase;padding-left:.3em;text-shadow:0 0 10px #0E0907,0 0 3px #0E0907}
 .hold:after{content:"";position:absolute;inset:6px;border-radius:50%;background:radial-gradient(closest-side,rgba(14,9,7,.75),rgba(14,9,7,0));z-index:-1}
 .hold:before{content:"";position:absolute;inset:18px;border-radius:50%;border:1px solid rgba(181,139,90,.2);animation:breathe 3s ease-in-out infinite}
 @keyframes breathe{50%{transform:scale(1.08);opacity:.4}}
-.gate-sub{font:400 10px/1.9 Inter;letter-spacing:.32em;text-transform:uppercase;color:rgba(249,238,210,.62);text-shadow:0 0 12px #0E0907,0 0 4px #0E0907;opacity:0;transition:opacity 1.2s .3s}
+.gate-sub{position:relative;font:400 10px/1.9 var(--sans);letter-spacing:.32em;text-transform:uppercase;color:rgba(249,238,210,.7);text-shadow:0 0 12px #0E0907,0 0 4px #0E0907;opacity:0;transition:opacity 1.2s .3s}
+.gate-sub:before{content:"";position:absolute;inset:-18px -60px;z-index:-1;background:radial-gradient(closest-side,rgba(14,9,7,.78),rgba(14,9,7,0))} /* линии чертежа не перечёркивают подпись */
 .ready .gate-sub{opacity:1}
-.gate-ev{font:400 10px/1.9 Inter;letter-spacing:.32em;text-transform:uppercase;color:#D9B98A;text-shadow:0 0 12px #0E0907,0 0 4px #0E0907;margin-top:-14px;opacity:0;transition:opacity 1.2s .6s}
+.gate-ev{font:400 10px/1.9 var(--sans);letter-spacing:.32em;text-transform:uppercase;color:#D9B98A;text-shadow:0 0 12px #0E0907,0 0 4px #0E0907;position:absolute;top:100%;left:50%;transform:translateX(-50%);margin-top:8px;width:max-content;max-width:min(520px,calc(100vw - 2*var(--pad)));text-wrap:balance;opacity:0;transition:opacity 1.2s .6s} /* вне потока: появление афиши ничего не сдвигает */
+.gate-ev:before{content:"";position:absolute;inset:-10px -50px;z-index:-1;background:radial-gradient(closest-side,rgba(14,9,7,.7),rgba(14,9,7,0))}
 .ready .gate-ev{opacity:1}
 .gate-ev[hidden]{display:none}
 
@@ -79,19 +90,18 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .film .ui{opacity:1}
 .logo{top:calc(var(--pad) - 4px);left:var(--pad);width:28px;color:var(--cream)}
 .logo svg{width:100%;height:auto;display:block}
+.logo:after{content:"";position:absolute;inset:-10px} /* область нажатия 44+ */
 .topr{top:calc(var(--pad) - 10px);right:var(--pad);display:flex;gap:10px}
-.book,.mbtn{display:inline-flex;align-items:center;font:400 11px/1 Inter;letter-spacing:.24em;text-transform:uppercase;min-height:44px;
+.book,.mbtn{display:inline-flex;align-items:center;font:400 11px/1 var(--sans);letter-spacing:.24em;text-transform:uppercase;min-height:44px;
   padding:0 20px 0 22px;border:1px solid rgba(181,139,90,.6);border-radius:40px;transition:background .5s,color .5s,border-color .5s}
 .mbtn{border-color:rgba(249,238,210,.22)}
-.book:hover,.mbtn:hover{background:var(--cream);color:var(--ink);border-color:var(--cream)}
-.segs{top:calc(var(--pad) + 4px);left:50%;transform:translateX(-50%);display:flex;gap:6px}
+.segs{top:calc(var(--pad) + .5px);left:50%;transform:translateX(-50%);display:flex;gap:6px}
 .segs button{position:relative;width:clamp(26px,4.2vw,58px);height:24px}
 .segs button:before{content:"";position:absolute;left:0;right:0;top:11px;height:1px;background:rgba(249,238,210,.22)}
 .segs button i{position:absolute;left:0;top:11px;height:1px;width:calc(var(--p,0)*100%);background:var(--cream)}
-.segs button span{position:absolute;top:24px;left:50%;transform:translateX(-50%);white-space:nowrap;font:400 9px/1 Inter;letter-spacing:.24em;
-  text-transform:uppercase;color:rgba(249,238,210,.7);opacity:0;transition:opacity .4s;padding-left:.24em}
-.segs button:hover span{opacity:1}
-.ctl{bottom:calc(var(--pad) - 8px);display:flex;align-items:center;gap:12px;font:400 10px/1 Inter;letter-spacing:.28em;text-transform:uppercase;min-height:44px}
+.segs button span{position:absolute;top:24px;left:50%;transform:translateX(-50%);white-space:nowrap;font:400 9px/1 var(--sans);letter-spacing:.24em;
+  text-transform:uppercase;color:rgba(249,238,210,.7);opacity:0;transition:opacity .15s;padding-left:.24em}
+.ctl{bottom:var(--ctlB,calc(var(--pad) - 8px));display:flex;align-items:center;gap:12px;font:400 10px/1 var(--sans);letter-spacing:.28em;text-transform:uppercase;min-height:44px}
 .snd{left:var(--pad)}
 .pp{right:var(--pad)}
 .bars2{display:flex;gap:3px;align-items:flex-end;height:14px}
@@ -107,9 +117,9 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 
 /* титульная карточка: буквы поднимаются из-под маски */
 #card{position:fixed;left:0;right:0;top:50%;z-index:8;text-align:center;pointer-events:none;transform:translateY(-50%)}
-#card .kick{font:500 12px/1 Inter;letter-spacing:.5em;text-transform:uppercase;color:#D9B98A;text-shadow:0 0 14px rgba(14,9,7,.9),0 0 3px rgba(14,9,7,.9);padding-left:.5em;margin-bottom:28px;
+#card .kick{font:500 12px/1 var(--sans);letter-spacing:.5em;text-transform:uppercase;color:#D9B98A;text-shadow:0 0 14px rgba(14,9,7,.9),0 0 3px rgba(14,9,7,.9);padding-left:.5em;margin-bottom:28px;
   opacity:0;transition:opacity 2s ease .6s}
-#card h2{font:400 clamp(56px,11vw,190px)/.92 "Tenor Sans",serif;text-transform:uppercase;letter-spacing:.02em}
+#card h2{font:400 clamp(56px,11vw,190px)/.92 var(--disp);text-transform:uppercase;letter-spacing:.02em}
 #card:before{content:"";position:absolute;left:-10%;right:-10%;top:52%;height:2px;margin-top:-1px;pointer-events:none;
   background:radial-gradient(closest-side,rgba(255,236,205,.95),rgba(181,139,90,.45) 45%,transparent);filter:blur(.6px);
   transform:scaleX(0);opacity:0;transition:transform 2.6s cubic-bezier(.22,1,.36,1) .25s,opacity 2.6s ease .25s}
@@ -117,7 +127,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   background:radial-gradient(closest-side,rgba(255,214,160,.16),transparent);opacity:0;transition:opacity 2.4s ease .2s}
 #card.on:before{transform:scaleX(1);opacity:.7}
 #card.on:after{opacity:1}
-#card.side{left:auto;right:calc(var(--pad) + 20px);width:min(470px,42vw);text-align:left}
+#card.side{left:auto;right:var(--finR);width:var(--finW);text-align:left}
 #card.side h2{font-size:clamp(46px,6vw,100px)}
 #card.side .rule{margin-left:0}
 #card.side:before,#card.side:after{display:none}
@@ -127,88 +137,109 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 #card{transition:opacity 1.6s ease}
 #card.off{opacity:0}
 #card.on .rule{transform:none}
+#card.reset,#card.reset *,#card.reset:before,#card.reset:after{transition:none!important} /* сброс перед новой карточкой — без обратных анимаций */
+#card.off.fast{transition:opacity .4s ease}
 .w{display:inline-block;white-space:nowrap;overflow:hidden;vertical-align:top;padding:.04em .02em .1em}
 .ch{display:inline-block;transform:translateY(105%);transition:transform 2.2s cubic-bezier(.22,1,.36,1);transition-delay:calc(var(--i)*70ms + .15s);will-change:transform}
 .on .ch{transform:none}
 
 /* субтитры */
 #subs{position:fixed;left:50%;transform:translateX(-50%);bottom:var(--subB,86px);z-index:9;width:min(860px,calc(100vw - 2*var(--pad)));
-  text-align:center;pointer-events:none;font:300 clamp(16px,1.45vw,20px)/1.5 Inter;letter-spacing:.04em;color:var(--cream);text-shadow:0 1px 18px rgba(0,0,0,.8)}
-#subs span{display:inline-block;opacity:0;transition:opacity 1.4s ease}
-#subs span.on{opacity:1}
+  text-align:center;pointer-events:none;font:300 clamp(16px,1.45vw,20px)/1.5 var(--sans);letter-spacing:.04em;color:var(--cream);text-shadow:0 1px 18px rgba(0,0,0,.8)}
+#subs{display:grid}
+#subs span{grid-area:1/1;justify-self:center;opacity:0;transition:opacity .5s ease;text-wrap:balance} /* строки накладываются: уходящая дотухает, а не исчезает */
+#subs span.on{opacity:1;transition:opacity 1.2s ease} /* гаснет быстро (до следующей строки 0,6 с), проявляется мягко */
 #subs a{pointer-events:auto;border-bottom:1px solid var(--brass)}
 
 /* финал: титры и бронь */
-#credits{position:fixed;z-index:9;right:calc(var(--pad) + 20px);top:110px;bottom:110px;width:min(460px,42vw);overflow:hidden;pointer-events:none;
+#credits{position:fixed;z-index:9;right:var(--finR);top:110px;bottom:110px;width:var(--finW);overflow:hidden;pointer-events:none;
   -webkit-mask-image:linear-gradient(transparent,#000 14%,#000 86%,transparent);mask-image:linear-gradient(transparent,#000 14%,#000 86%,transparent);opacity:0;transition:opacity 1.2s}
 #credits.on{opacity:1}
+#credits.fast{transition:opacity .3s}
 #credits .roll{position:absolute;left:0;right:0;top:100%;text-align:center}
-#credits.on .roll{animation:roll 8s linear forwards}
+#credits.run .roll{animation:roll 8s linear forwards} /* .run держится, пока титры гаснут — иначе текст пропадал бы мгновенно */
 .paused #credits .roll{animation-play-state:paused}
 @keyframes roll{to{top:0;transform:translateY(-100%)}} /* ровно от нижнего края окна до ухода за верхний: без лишнего пути титры идут медленнее и читаются */
-.roll .big{font:400 54px/1 "Tenor Sans",serif;letter-spacing:.08em}
-.roll .sub{font:400 10px/1 Inter;letter-spacing:.36em;text-transform:uppercase;color:var(--brass);margin:16px 0 70px}
-.roll h4{font:400 10px/1 Inter;letter-spacing:.42em;text-transform:uppercase;color:var(--brass);margin:0 0 30px}
+.roll .big{font:400 54px/1 var(--disp);letter-spacing:.08em}
+.roll .sub{font:400 10px/1.8 var(--sans);letter-spacing:.36em;text-transform:uppercase;color:var(--brass);margin:16px 0 70px}
+.roll h4{font:400 10px/1 var(--sans);letter-spacing:.42em;text-transform:uppercase;color:var(--brass);margin:0 0 30px}
 .roll dl{display:grid;grid-template-columns:1fr 1fr;gap:16px 22px;margin-bottom:70px}
-.roll dt{text-align:right;font:400 11px/1.5 Inter;letter-spacing:.2em;text-transform:uppercase;color:rgba(249,238,210,.6)}
-.roll dd{text-align:left;font:400 18px/1.25 "Tenor Sans",serif}
-.roll .star{font:400 30px/1.2 "Tenor Sans",serif;margin-bottom:70px}
-.roll .star small{display:block;font:400 10px/1 Inter;letter-spacing:.42em;text-transform:uppercase;color:var(--brass);margin-bottom:14px}
+.roll dt{text-align:right;font:400 11px/1.5 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:rgba(249,238,210,.6)}
+.roll dd{text-align:left;font:400 18px/1.25 var(--disp)}
+.roll .star{font:400 30px/1.2 var(--disp);margin-bottom:70px}
+.roll .star small{display:block;font:400 10px/1 var(--sans);letter-spacing:.42em;text-transform:uppercase;color:var(--brass);margin-bottom:14px}
 
-.fin{position:fixed;z-index:10;right:calc(var(--pad) + 20px);top:50%;transform:translateY(-46%);width:min(470px,42vw);opacity:0;pointer-events:none;
+.fin{position:fixed;z-index:10;right:var(--finR);top:50%;transform:translateY(-46%);width:var(--finW);opacity:0;pointer-events:none;
   transition:opacity 1.4s var(--out),transform 1.8s var(--out)}
 .fin.on{opacity:1;pointer-events:auto;transform:translateY(-50%)}
-.fin .num{font:400 10px/1 Inter;letter-spacing:.34em;text-transform:uppercase;color:var(--brass);margin-bottom:22px}
-.fin h2{font:400 clamp(42px,min(5.6vw,8.4vh),92px)/.98 "Tenor Sans",serif;text-transform:uppercase;margin-bottom:22px}
+.fin.on.hold{pointer-events:none} /* первые полсекунды: касание, пропустившее титры, не должно нажать кнопку под пальцем */
+.fin .num{font:400 10px/1 var(--sans);letter-spacing:.34em;text-transform:uppercase;color:var(--brass);margin-bottom:22px}
+.fin h2{font:400 clamp(42px,min(5.6vw,8.4vh),92px)/.98 var(--disp);text-transform:uppercase;margin-bottom:22px}
 .fin p{color:rgba(249,238,210,.8);max-width:420px}
 .acts{display:flex;flex-wrap:wrap;gap:10px;margin:26px 0 26px}
-.btn{display:inline-flex;align-items:center;gap:10px;min-height:50px;padding:0 22px;border-radius:50px;font:400 11px/1 Inter;letter-spacing:.24em;text-transform:uppercase;
+.btn{display:inline-flex;align-items:center;gap:10px;min-height:50px;padding:0 22px;border-radius:50px;font:400 11px/1 var(--sans);letter-spacing:.24em;text-transform:uppercase;
   border:1px solid rgba(181,139,90,.6);transition:background .5s,color .5s,border-color .5s}
 .btn.main{background:var(--cream);color:var(--ink);border-color:var(--cream)}
-.btn:hover{background:var(--brass);border-color:var(--brass);color:var(--ink)}
-.info{display:grid;grid-template-columns:auto 1fr;gap:10px 22px;font-size:14px;color:rgba(249,238,210,.75)}
-.info dt{font:400 10px/2 Inter;letter-spacing:.28em;text-transform:uppercase;color:var(--brass)}
+.info{display:grid;grid-template-columns:auto 1fr;gap:10px 22px;font-size:14px;color:rgba(249,238,210,.75);-webkit-user-select:text;user-select:text}
+.info dt{font:400 10px/2 var(--sans);letter-spacing:.28em;text-transform:uppercase;color:var(--brass)}
 .info a{border-bottom:1px solid rgba(181,139,90,.5)}
-.again{margin-top:26px;font:400 10px/1 Inter;letter-spacing:.3em;text-transform:uppercase;color:rgba(249,238,210,.6);min-height:44px}
-.again:hover{color:var(--cream)}
+.again{margin-top:26px;font:400 10px/1 var(--sans);letter-spacing:.3em;text-transform:uppercase;color:rgba(249,238,210,.6);min-height:44px}
 .fin .links{display:flex;flex-wrap:wrap;gap:4px 26px;margin-top:22px}
-.fin .links .again{margin-top:0;display:inline-flex;align-items:center}
+.fin .links .again{margin-top:0;display:inline-flex;align-items:center;gap:9px}
+.again svg{flex:none}
 
 /* курсор */
-.cur{position:fixed;left:0;top:0;z-index:40;pointer-events:none;width:36px;height:36px;margin:-18px 0 0 -18px;border-radius:50%;
+.cur{position:fixed;left:0;top:0;z-index:60;pointer-events:none;width:36px;height:36px;margin:-18px 0 0 -18px;border-radius:50%;
   border:1px solid rgba(249,238,210,.5);transition:width .5s var(--out),height .5s var(--out),margin .5s var(--out),background .5s,opacity .4s;opacity:0}
 .cur.on{opacity:1}
 .cur.big{width:70px;height:70px;margin:-35px 0 0 -35px;background:rgba(249,238,210,.08);border-color:rgba(249,238,210,.8)}
-.dot{position:fixed;left:0;top:0;z-index:40;width:4px;height:4px;margin:-2px 0 0 -2px;border-radius:50%;background:var(--cream);pointer-events:none;opacity:0}
+.dot{position:fixed;left:0;top:0;z-index:60;width:4px;height:4px;margin:-2px 0 0 -2px;border-radius:50%;background:var(--cream);pointer-events:none;opacity:0}
 .dot.on{opacity:1}
 @media (pointer:coarse){.cur,.dot{display:none}}
 
 /* телефон */
-@media (max-width:760px), (max-aspect-ratio:1/1){
+@media (max-aspect-ratio:1/1), (max-width:760px) and (min-height:521px){
   .logo{width:24px}
   .topr{gap:8px}
   .book,.mbtn{padding:0 14px 0 16px;letter-spacing:.14em;font-size:10px;min-height:44px}
   .segs{top:calc(var(--pad) + 46px);left:var(--pad);right:var(--pad);transform:none;gap:4px}
-  .segs button{flex:1;width:auto;height:40px}
-  .segs button:before,.segs button i{top:19px}
+  .segs button{flex:1;width:auto;height:44px}
+  .segs button:before,.segs button i{top:21px}
+  .segs button span{top:26px}
+  .gate-in{transform:translateY(calc(13.5px - 7vh))}
   #card{top:36%}
   #card.side{left:0;right:0;width:auto;text-align:center;top:68%}
   #card.side .rule{margin-left:auto}
-  #card h2{font-size:clamp(46px,14vw,70px)}
+  #card h2{font-size:clamp(46px,14vw,70px);padding:0 20px} /* поля: «Вечера с DJ» переносится, а не идёт от края до края */
   #card .kick{margin-bottom:18px}
   #subs{bottom:96px;font-size:16px}
-  #credits{right:0;left:0;width:auto;top:var(--credTop,30%);bottom:90px}
+  #credits{right:var(--pad);left:var(--pad);width:auto;top:var(--credTop,30%);bottom:90px}
   .roll .big{font-size:40px}.roll dd{font-size:16px}
+  .roll dl{grid-template-columns:.8fr 1.2fr;gap:14px 16px}
   .fin{left:var(--pad);right:var(--pad);width:auto;top:auto;bottom:calc(var(--pad) + 46px);transform:translateY(20px)}
   .fin.on{transform:none}
-  .fin h2{font-size:clamp(36px,10.5vw,50px);margin-bottom:14px}
+  .fin h2{font-size:clamp(30px,9.4vw,50px);white-space:nowrap;margin-bottom:14px}
   .acts{margin:18px 0 20px;gap:10px}
   .btn{min-height:46px;padding:0 20px}
   .info{font-size:13px;gap:5px 16px}
   .fin .links button.again{display:none}
+  .fin .links a.again{line-height:1.8;letter-spacing:.2em}
   .acts .route{display:none} /* на телефоне маршрут — по нажатию на адрес, кнопки встают в два ряда */
 }
 @media (max-width:430px){.topr .book,.topr .mbtn{padding:0 11px 0 13px}}
+/* планшет в портрете: крупнее заголовки и субтитры, блок брони по центру */
+@media (min-width:700px) and (max-aspect-ratio:1/1){
+  #card h2{font-size:clamp(70px,11.5vw,124px)}
+  #subs{font-size:20px;bottom:112px}
+  .fin{left:50%;right:auto;width:min(620px,82vw);transform:translate(-50%,20px);text-align:center}
+  .fin.on{transform:translateX(-50%)}
+  .fin h2{font-size:64px}
+  .fin p{margin:0 auto}
+  .acts,.fin .links{justify-content:center}
+  .info{grid-template-columns:auto auto;justify-content:center;text-align:left;font-size:15px;gap:8px 20px}
+  .roll dd{font-size:20px}.roll .big{font-size:54px}
+  #hint{bottom:112px}
+}
 @media (max-width:760px) and (max-height:720px){.fin p,.fin .num{display:none}.acts{margin-top:6px}}
 @media (max-width:760px) and (max-height:700px), (max-height:520px) and (min-aspect-ratio:1/1){.fin .ev-row{display:none}} /* низкий экран: афиша — на заставке и в главе с DJ, а в финале место знаку */
 @media (max-width:760px) and (max-height:600px){.fin h2{font-size:30px}.info{font-size:12px}.acts [data-menu]{display:none}} /* совсем маленький телефон: «Меню» остаётся в шапке */
@@ -222,65 +253,90 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   .fin .links{margin-top:8px}
 }
 @media (min-aspect-ratio:1/1) and (max-height:780px) and (min-height:521px){.fin p{display:none}}
+@media (min-aspect-ratio:1/1) and (max-height:660px) and (min-height:521px){
+  .fin .num,.fin .links button.again{display:none}
+  .fin h2{font-size:clamp(30px,min(5vw,6.6vh),60px);margin-bottom:10px}
+  .acts{margin:12px 0}.btn{min-height:44px}
+  .info{font-size:13px;gap:3px 18px}
+  .fin .links{margin-top:4px}
+}
+@media (min-width:1700px) and (min-aspect-ratio:1/1){:root{--finW:min(600px,42vw)}.acts{max-width:480px}} /* большой экран: заголовок в две строки, «Встречи» не вылезает */
+@media (min-width:761px) and (max-width:1120px) and (min-aspect-ratio:1/1) and (min-height:521px){:root{--finW:min(470px,46vw)}} /* две кнопки в ряд */
+/* полоски глав — в строке шапки, по центру свободного места между знаком и кнопками */
+@media (min-width:761px) and (max-width:1560px) and (min-aspect-ratio:1/1) and (min-height:521px){
+  .segs{left:calc(var(--pad) + 52px);right:calc(var(--pad) + 450px);transform:none;justify-content:center}
+  .segs button{width:clamp(20px,3.3vw,58px)}
+}
 /* телефон боком: низкий экран — компактный финал */
 @media (max-height:520px) and (min-aspect-ratio:1/1){
-  .fin{width:min(420px,46vw);right:var(--pad)}
+  :root{--finW:min(430px,50vw);--finR:var(--pad)}
+  .segs{top:calc(var(--pad) + 40px)}
   .fin .num{display:none}
   .fin h2{font-size:clamp(30px,4.4vw,44px);margin-bottom:10px}
   .fin p,.again,.fin .links button.again,.acts [data-menu],.acts .route{display:none} /* «Меню» — в шапке, маршрут — по адресу */
   .fin .links{margin-top:4px}
   .acts{margin:12px 0;gap:8px}
-  .btn{min-height:40px;padding:0 18px;font-size:10px}
+  .btn{min-height:44px;padding:0 14px;font-size:10px;letter-spacing:.2em}
   .info{font-size:12px;gap:2px 14px}
   .info dt{line-height:1.7}
   #card h2{font-size:clamp(44px,9vw,80px)}
   #card .kick{margin-bottom:16px}
-  #credits{top:60px;bottom:50px}
+  #credits{top:calc(var(--pad) + 88px);bottom:calc(var(--pad) + 40px)}
+  .roll dd{font-size:16px}.roll dl{gap:12px 16px;margin-bottom:50px}.roll .sub{margin-bottom:50px}.roll .star{margin-bottom:50px}
+  .cred-on .segs{opacity:0;pointer-events:none;transition:opacity .4s}
+  #card{top:calc(50% + 18px)}
+  #card.side{top:50%}
+  #subs{bottom:60px}
 }
+@media (min-width:800px) and (max-height:520px) and (min-aspect-ratio:1/1){#subs{bottom:calc(var(--pad) + 3px);width:calc(100vw - 2*var(--pad) - 300px)}} /* субтитр — на линии «Звук» и «Пауза», между ними */
+@media (max-height:420px) and (min-aspect-ratio:1/1){.fin .links{display:none}} /* Safari боком оставляет ~340 px высоты */
+@media (max-width:760px) and (max-height:520px) and (min-aspect-ratio:1/1){:root{--finW:54vw}.btn{padding:0 12px;letter-spacing:.12em}}
+@media (max-width:600px) and (max-height:520px) and (min-aspect-ratio:1/1){.fin .info{display:none}#card.side{top:calc(50% + 16px)}}
 
 /* без WebGL — простая страница */
 .nogl body{overflow:auto;touch-action:auto}
 .nogl #gl,.nogl #gate,.nogl .geo,.nogl .bars,.nogl #card,.nogl #subs,.nogl #credits,.nogl .segs,.nogl .ctl,.nogl .cur,.nogl .dot{display:none}
 .nogl .ui{opacity:1}
+.nogl .logo,.nogl .topr{position:absolute} /* шапка уезжает с первым экраном, а не лежит поверх текста */
+.nogl .shade{display:none}
 .nogl .fin{position:relative;inset:auto;transform:none;opacity:1;pointer-events:auto;width:auto;padding:80px var(--pad)}
 #plain{display:none}
 .nogl #plain{display:block}
 .nogl #plain section{min-height:90vh;display:flex;flex-direction:column;justify-content:flex-end;padding:100px var(--pad) 60px;
   background:linear-gradient(0deg,rgba(14,9,7,.94),rgba(14,9,7,.2) 70%),var(--bg) center/cover}
-.nogl #plain h2{font:400 clamp(40px,8vw,90px)/1 "Tenor Sans",serif;text-transform:uppercase;margin:10px 0 16px}
-.nogl #plain small{font:400 10px/1 Inter;letter-spacing:.34em;text-transform:uppercase;color:var(--brass)}
+.nogl #plain h2{font:400 clamp(40px,8vw,90px)/1 var(--disp);text-transform:uppercase;margin:10px 0 16px}
+.nogl #plain small{font:400 10px/1 var(--sans);letter-spacing:.34em;text-transform:uppercase;color:var(--brass)}
 /* вырез и полоска «домой» на iPhone */
 .logo,.topr,.segs{margin-top:env(safe-area-inset-top,0px)}
 .logo,.snd{margin-left:env(safe-area-inset-left,0px)}
 .topr,.pp{margin-right:env(safe-area-inset-right,0px)}
 .ctl,#subs,#hint{margin-bottom:env(safe-area-inset-bottom,0px)}
-@media (max-width:760px), (max-aspect-ratio:1/1){.fin{margin-bottom:env(safe-area-inset-bottom,0px)}#credits{margin-bottom:env(safe-area-inset-bottom,0px)}}
+@media (max-aspect-ratio:1/1), (max-width:760px) and (min-height:521px){.fin{margin-bottom:env(safe-area-inset-bottom,0px)}#credits{margin-bottom:env(safe-area-inset-bottom,0px)}}
 /* подсказка по управлению — один раз */
-#hint{position:fixed;left:50%;bottom:var(--subB,86px);transform:translate(-50%,8px);z-index:14;max-width:calc(100vw - 2*var(--pad));
+#hint{position:fixed;left:50%;bottom:var(--subB,86px);transform:translate(-50%,8px);z-index:14;width:max-content;max-width:calc(100vw - 2*var(--pad));
   padding:11px 18px;border-radius:30px;border:1px solid rgba(181,139,90,.35);background:rgba(14,9,7,.62);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
-  font:400 10px/1.6 Inter;letter-spacing:.2em;text-transform:uppercase;color:rgba(249,238,210,.85);text-align:center;pointer-events:none;opacity:0;
+  font:400 10px/1.6 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:rgba(249,238,210,.85);text-align:center;pointer-events:none;opacity:0;
   transition:opacity .8s ease,transform .8s var(--out)}
 #hint.show{opacity:1;transform:translate(-50%,0)}
-@media (max-width:760px), (max-aspect-ratio:1/1){#hint{bottom:96px;letter-spacing:.14em}}
+#hint span{display:inline-block;white-space:nowrap;margin:0 .8em}
+@media (max-aspect-ratio:1/1), (max-width:760px) and (min-height:521px){#hint{bottom:96px;letter-spacing:.14em}}
 /* меню заведения поверх фильма */
 #menu{position:fixed;inset:0;z-index:50;background:rgba(10,7,5,.86);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
   opacity:0;visibility:hidden;transition:opacity .5s ease,visibility 0s linear .5s;touch-action:pan-x pan-y}
 #menu.on{opacity:1;visibility:visible;transition:opacity .5s ease}
 .mopen,.mopen body{touch-action:auto}
 .m-top{position:absolute;left:0;right:0;top:0;z-index:2;display:flex;align-items:center;gap:8px;flex-wrap:wrap;
-  padding:calc(14px + env(safe-area-inset-top,0px)) var(--pad) 14px;background:linear-gradient(rgba(10,7,5,.95),rgba(10,7,5,.75) 70%,rgba(10,7,5,0))}
-.m-ttl{font:400 22px/1 "Tenor Sans",serif;letter-spacing:.06em;text-transform:uppercase;margin-right:auto}
+  padding:calc(14px + env(safe-area-inset-top,0px)) var(--pad) 22px;background:linear-gradient(rgba(10,7,5,.97) 80%,rgba(10,7,5,0))} /* плотная подложка: страницы меню не просвечивают за вкладками */
+.m-ttl{font:400 22px/1 var(--disp);letter-spacing:.06em;text-transform:uppercase;margin-right:auto}
 .m-tab,.m-pdf,.m-x{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 14px;border-radius:40px;
-  border:1px solid rgba(249,238,210,.2);font:400 10px/1 Inter;letter-spacing:.18em;text-transform:uppercase;color:rgba(249,238,210,.85);transition:background .3s,color .3s,border-color .3s}
-.m-tab:hover,.m-pdf:hover{border-color:var(--brass);color:var(--cream)}
+  border:1px solid rgba(249,238,210,.2);font:400 10px/1 var(--sans);letter-spacing:.18em;text-transform:uppercase;color:rgba(249,238,210,.85);transition:background .3s,color .3s,border-color .3s}
 .m-x{width:44px;padding:0;font-size:22px;letter-spacing:0;border-color:rgba(181,139,90,.6)}
-.m-x:hover{background:var(--cream);color:var(--ink)}
 .m-scroll{position:absolute;inset:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
   padding:calc(96px + env(safe-area-inset-top,0px)) var(--pad) calc(40px + env(safe-area-inset-bottom,0px))}
-.m-page{display:block;width:min(100%,640px);margin:0 auto 18px;aspect-ratio:595/842;background:#F4ECDD;border-radius:4px;
+.m-page{display:block;width:min(100%,640px);height:auto;margin:0 auto 18px;aspect-ratio:595/842;background:#F4ECDD;border-radius:4px;
   box-shadow:0 20px 60px rgba(0,0,0,.55)}
-.m-note{text-align:center;font:400 10px/1.8 Inter;letter-spacing:.2em;text-transform:uppercase;color:rgba(249,238,210,.5);margin:6px 0 0}
-@media (max-width:760px), (max-aspect-ratio:1/1){
+.m-note{text-align:center;font:400 10px/1.8 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:rgba(249,238,210,.5);margin:6px 0 0}
+@media (max-aspect-ratio:1/1), (max-width:760px) and (min-height:521px){
   .m-ttl{font-size:18px;flex-basis:auto}
   .m-tabs{order:3;flex-basis:100%;display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
   .m-tab{white-space:normal;text-align:center;line-height:1.25;letter-spacing:.08em;padding:4px 6px}
@@ -288,19 +344,29 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   .m-page{margin-bottom:12px}
 }
 .m-tabs{display:flex;gap:6px}
-.m-zhint{display:none;text-align:center;font:400 10px/1.6 Inter;letter-spacing:.18em;text-transform:uppercase;color:rgba(249,238,210,.55);margin:0 0 12px}
+.m-zhint{display:none;text-align:center;font:400 10px/1.6 var(--sans);letter-spacing:.18em;text-transform:uppercase;color:rgba(249,238,210,.55);margin:0 0 12px}
 @media (pointer:coarse){.m-zhint{display:block}}
 .m-scroll.zoom{overflow-x:auto}
 .m-scroll.zoom .m-page{width:220%;max-width:none;margin-left:0}
 .m-cta{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin:18px 0 8px}
 @media (max-width:384px){.topr .priv{display:none}}
 #subs span{text-shadow:0 0 2px rgba(0,0,0,.9),0 1px 18px rgba(0,0,0,.85)}
-@media (pointer:coarse){.segs button{height:40px}.segs button:before,.segs button i{top:19px}}
-@media (max-width:1280px) and (min-aspect-ratio:1/1){.segs{top:calc(var(--pad) + 40px)}}
-@media (max-height:520px) and (min-aspect-ratio:1/1){.fin{margin-right:env(safe-area-inset-right,0px)}.fin-on .segs{opacity:0;pointer-events:none}}
-.nogl body{display:flex;flex-direction:column}
-.nogl #plain{order:-1}
-.nogl button.again{display:none}
+@media (pointer:coarse){.segs button{height:44px}.segs button:before,.segs button i{top:21px}.segs button span{top:26px}.info a{position:relative}.info a:after{content:"";position:absolute;inset:-13px 0}#subs a{position:relative}#subs a:after{content:"";position:absolute;inset:-12px -6px}}
+@media (pointer:coarse) and (min-aspect-ratio:1/1){.segs button{min-width:44px}}
+/* наведение — только там, где есть мышь: на тач-экранах :hover «залипает» */
+@media (hover:hover){
+  .book:hover,.mbtn:hover{background:var(--cream);color:var(--ink);border-color:var(--cream)}
+  .segs button:hover span{opacity:1;transition:opacity .4s .1s}
+  .btn:hover{background:var(--brass);border-color:var(--brass);color:var(--ink)}
+  .btn.main:hover{background:#fff;border-color:#fff;color:var(--ink)}
+  .again:hover{color:var(--cream)}
+  .m-tab:hover,.m-pdf:hover{border-color:var(--brass);color:var(--cream)}
+  .m-x:hover{background:var(--cream);color:var(--ink)}
+  .fin .links .again{min-height:30px}
+}
+@media (hover:hover) and (min-aspect-ratio:1/1) and (min-height:521px){.segs button[aria-current] span{opacity:.55}.segs:hover button[aria-current]:not(:hover) span{opacity:0}} /* подпись текущей главы */
+@media (max-height:520px) and (min-aspect-ratio:1/1){.fin{margin-right:env(safe-area-inset-right,0px)}.fin-on .segs{opacity:0;pointer-events:none;transition:opacity .4s}}
+.nogl .fin .links button.again{display:none}
 </style>
 </head>
 <body>
@@ -308,15 +374,16 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 <!-- текст фильма для поиска и экранных дикторов: те же фразы, что идут субтитрами (массив CH ниже) — меняйте вместе -->
 <section class="sr" id="film-text" aria-label="Текст фильма о Liwan">
   <p>Liwan — лаунж-бар и чайная в Жулебино: второй этаж фудмолла «Привоз», ул.&nbsp;Авиаконструктора Миля,&nbsp;3А, рядом с метро «Жулебино». Вс–чт 14:00–01:00, пт–сб 14:00–02:00.</p>
-  <h2>Привал</h2><p>Город остаётся за дверью. Здесь свет мягче, а время течёт медленнее.</p>
-  <h2>Чай</h2><p>Чай здесь заваривает мастер. Улуны, пуэры и марокканский чай.</p>
-  <h2>Живой звук</h2><p>В дни концертов звучат ситар и табла. Музыка, ради которой остаются до закрытия.</p>
+  <h2>Привал</h2><p>Город остаётся за дверью. Здесь свет мягче, а время течёт медленнее.</p>
+  <h2>Чай</h2><p>Чай здесь заваривает мастер. Улуны, пуэры и марокканский чай.</p>
+  <h2>Живой звук</h2><p>В дни концертов звучат ситар и табла. Музыка, ради которой остаются до закрытия.</p>
   <h2>Вечера с DJ</h2><p>По выходным за пультом — DJ. Афиша недели — в нашем <a href="https://t.me/loungeliwan" tabindex="-1">Telegram</a>.</p>
-  <h2>Веранда</h2><p>Летняя веранда — зелень и плетёные лампы. Ковры, тёплый вечер и живой звук.</p>
+  <h2>Веранда</h2><p>Летняя веранда — зелень и плетёные лампы. Ковры, тёплый вечер и живой звук.</p>
   <p><a href="https://liwan-lounge.ru/about" tabindex="-1">Меню с ценами, афиша и контакты Liwan</a></p>
 </section>
 <canvas id="gl" aria-hidden="true"></canvas>
 <div class="bars" aria-hidden="true"><i class="bt"></i><i class="bb"></i></div>
+<div class="shade" aria-hidden="true"></div>
 
 <svg class="geo" viewBox="-100 -100 200 200" aria-hidden="true">
   <circle r="96" pathLength="1"/><circle r="88" pathLength="1"/><circle r="62" pathLength="1"/><circle r="34" pathLength="1"/>
@@ -381,11 +448,13 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
     <dt>Звук</dt><dd>ситар и табла</dd>
     <dt>Вечера</dt><dd>DJ по выходным</dd>
     <dt>Свет</dt><dd>резные фонари</dd>
-    <dt>Веранда</dt><dd>зелень и плетёные лампы</dd>
+    <dt>Веранда</dt><dd>зелень и плетёные лампы</dd>
   </dl>
   <div class="star"><small>Главная роль</small>Вы</div>
-  <div class="sub">Снято под звёздами · Liwan · Жулебино</div>
+  <div class="sub">Снято под звёздами<br>Liwan · Жулебино</div>
 </div></div>
+
+<main id="plain"></main>
 
 <section class="fin" aria-label="Бронирование и контакты">
   <div class="num">Бронирование</div>
@@ -403,10 +472,9 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
     <dt class="ev-row" hidden>Афиша</dt><dd class="ev-row" hidden><a class="ev" href="https://t.me/loungeliwan" target="_blank" rel="noopener"></a></dd>
     <dt>Связь</dt><dd><a href="tel:+79267219990">+7&nbsp;(926)&nbsp;721-99-90</a> · <a href="https://t.me/loungeliwan" target="_blank" rel="noopener">Telegram</a></dd>
   </dl>
-  <div class="links"><button class="again" type="button">↺ Смотреть ещё раз</button><a class="again" href="https://liwan-lounge.ru/about">Всё о Liwan — меню, афиша, контакты&nbsp;→</a></div>
+  <div class="links"><button class="again" type="button"><svg viewBox="0 0 12 12" width="11" height="11" aria-hidden="true"><path d="M2.3 6.2a3.8 3.8 0 1 0 1.1-2.9M3.5 .8v2.6H.9" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/></svg>Смотреть ещё раз</button><a class="again" href="https://liwan-lounge.ru/about">Всё о Liwan — меню, афиша, контакты&nbsp;→</a></div>
 </section>
 
-<main id="plain"></main>
 
 <div class="cur" aria-hidden="true"></div><div class="dot" aria-hidden="true"></div>
 
@@ -431,19 +499,19 @@ const CH = [
     subs: [[2.8, 5.8, "Лаунж-бар и чайная в Жулебино."]] },
   { label: "Привал", media: "atmosfera", fo: .5, k: 3, dark: .06, pm: 1, form: 0, tr: 0, dur: 10.5,
     card: ["Глава I", "Привал"],
-    subs: [[4.6, 7.1, "Город остаётся за дверью."], [7.7, 10.2, "Здесь свет мягче, а время течёт медленнее."]] },
+    subs: [[4.6, 7.1, "Город остаётся за дверью."], [7.7, 10.2, "Здесь свет мягче, а время течёт медленнее."]] },
   { label: "Чай", media: "chai", fo: .5, k: 1, dark: .06, pm: 2, form: 0, tr: 2, dur: 10.5,
     card: ["Глава II", "Чай"],
-    subs: [[4.6, 7.1, "Чай здесь заваривает мастер."], [7.7, 10.2, "Улуны, пуэры и марокканский чай."]] },
+    subs: [[4.6, 7.1, "Чай здесь заваривает мастер."], [7.7, 10.2, "Улуны, пуэры и марокканский чай."]] },
   { label: "Живой звук", media: "muzyka", top: .085, fo: .55, k: 1, dark: .1, pm: 3, form: 0, tr: 1, dur: 10.8,
     card: ["Глава III", "Живой звук"],
-    subs: [[4.6, 7.3, "В дни концертов звучат ситар и табла."], [7.9, 10.6, "Музыка, ради которой остаются до закрытия."]] },
+    subs: [[4.6, 7.3, "В дни концертов звучат ситар и табла."], [7.9, 10.6, "Музыка, ради которой остаются до закрытия."]] },
   { label: "Вечера с DJ", media: "dj", fo: .5, k: 4, dark: .14, pm: 0, form: 0, tr: 3, dur: 10.8,
     card: ["Глава IV", "Вечера с\u00a0DJ"],
     subs: [[4.6, 7.3, "По выходным за пультом — DJ."], [7.9, 10.6, 'Афиша недели — в нашем <a href="https://t.me/loungeliwan" target="_blank" rel="noopener">Telegram</a>.']] },
   { label: "Веранда", media: "veranda", fo: .4, k: 1, dark: .1, pm: 5, form: 0, tr: 4, dur: 10.5,
     card: ["Глава V", "Веранда"],
-    subs: [[4.6, 7.1, "Летняя веранда — зелень и плетёные лампы."], [7.7, 10.2, "Ковры, тёплый вечер и живой звук."]] },
+    subs: [[4.6, 7.1, "Летняя веранда — зелень и плетёные лампы."], [7.7, 10.2, "Ковры, тёплый вечер и живой звук."]] },
   { label: "Финал", media: "about", fo: .5, k: 3, dark: .82, pm: 0, form: 1, tr: 0, dur: 0,
     card: ["Финал", "До встречи"] }
 ];
@@ -458,7 +526,7 @@ const MEDIA = {
   about: { i: "img/about.jpg" }
 };
 
-fetch("img/mark.svg").then(r => r.text()).then(t => { $(".logo").innerHTML = t; }).catch(() => {});
+fetch("img/mark.svg").then(r => r.ok ? r.text() : "").then(t => { if (/^\s*<svg/i.test(t)) $(".logo").innerHTML = t; }).catch(() => {});
 const segs = $(".segs");
 CH.forEach((c, k) => {
   const b = document.createElement("button"); b.type = "button";
@@ -476,9 +544,18 @@ CH.forEach(c => {
 });
 
 /* ===== цели Яндекс.Метрики (счётчик Tilda: window.mainMetrikaId) ===== */
+const goalQ = []; let goalT = 0;
 const goal = (name, params, cb) => {
   try { const id = +window.mainMetrikaId; if (id && window.ym) { ym(id, "reachGoal", name, params, cb); return; } } catch (e) {}
   if (cb) cb();
+  else if (goalQ.length < 20) { /* Tilda подключает Метрику через пару секунд после загрузки — ранние цели дождутся */
+    goalQ.push([name, params]); let n = 0;
+    if (!goalT) goalT = setInterval(() => {
+      let ok = false; try { ok = !!(+window.mainMetrikaId && window.ym); } catch (e) {}
+      if (ok) goalQ.splice(0).forEach(g => { try { ym(+window.mainMetrikaId, "reachGoal", g[0], g[1]); } catch (e) {} });
+      if (ok || ++n > 12) { clearInterval(goalT); goalT = 0; goalQ.length = 0; }
+    }, 1000);
+  }
 };
 const goalsSent = new Set(), goalOnce = (name, params) => { if (!goalsSent.has(name)) { goalsSent.add(name); goal(name, params); } };
 document.addEventListener("click", e => {
@@ -487,7 +564,7 @@ document.addEventListener("click", e => {
     : /yandex\.ru\/maps|2gis\./.test(h) ? "route_click" : /^tel:/.test(h) ? "phone_click" : /t\.me\//.test(h) ? "telegram_click" : /\/about/.test(h) ? "about_click" : "";
   if (!k) return;
   const from = a.closest(".fin") ? "финал" : a.closest("#menu") ? "меню" : a.closest(".topr") ? "шапка" : a.closest("#subs") ? "субтитры" : "фильм";
-  if (!a.target && /^https?:/.test(h) && !e.defaultPrevented && !e.metaKey && !e.ctrlKey) { /* переход в той же вкладке: дождаться отправки цели */
+  if (!a.target && /^https?:/.test(h) && !e.defaultPrevented && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey && !e.button) { /* переход в той же вкладке: дождаться отправки цели */
     e.preventDefault(); let done = false; const goOn = () => { if (!done) { done = true; location.href = h; } };
     goal(k, { from }, goOn); setTimeout(goOn, 450);
   } else goal(k, { from });
@@ -495,31 +572,34 @@ document.addEventListener("click", e => {
 
 /* ===== ближайшее событие из афиши (робот Weekend собирает её из Telegram) ===== */
 const WEEKEND = "https://neonsky3214-commits.github.io/liwan-cdn/weekend/";
-(() => {
+(() => { try {
   if (!window.fetch) return;
   const mskToday = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Moscow" }).format(new Date());
+  const mskNow = new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/Moscow", hour: "2-digit", minute: "2-digit", hour12: false }).format(new Date());
+  const mins = t => { const m = /^(\d\d?)[:.](\d\d)/.exec(t || ""); return m ? +m[1] * 60 + +m[2] : -1; };
+  const gone = e => e.date === mskToday && mins(e.time) >= 0 && mins(e.time) + 240 < mins(mskNow); /* сегодняшнее событие, начавшееся больше 4 часов назад */
   const dayN = d => Date.UTC(+d.slice(0, 4), +d.slice(5, 7) - 1, +d.slice(8, 10)) / 864e5;
-  const WD = ["вс", "пн", "вт", "ср", "чт", "пт", "сб"], WDV = ["в воскресенье", "в понедельник", "во вторник", "в среду", "в четверг", "в пятницу", "в субботу"];
+  const WD = ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"], WDV = ["в воскресенье", "в понедельник", "во вторник", "в среду", "в четверг", "в пятницу", "в субботу"];
   const esc = t => String(t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   fetch(WEEKEND + "weekend.json?t=" + Math.floor(Date.now() / 3e5), { cache: "no-cache" }).then(r => r.ok ? r.json() : null).then(j => {
-    const evs = (j && Array.isArray(j.events) ? j.events : []).filter(e => e && /^\d{4}-\d\d-\d\d$/.test(e.date) && e.date >= mskToday && e.name)
+    const evs = (j && Array.isArray(j.events) ? j.events : []).filter(e => e && /^\d{4}-\d\d-\d\d$/.test(e.date) && e.date >= mskToday && e.name && !gone(e))
       .sort((a, b) => (a.date + (a.time || "")).localeCompare(b.date + (b.time || "")));
     if (!evs.length) return;
     const e = evs[0], dd = dayN(e.date) - dayN(mskToday), wd = new Date(dayN(e.date) * 864e5).getUTCDay();
     const dShort = dd === 0 ? "Сегодня" : dd === 1 ? "Завтра" : WD[wd] + " " + e.date.slice(8, 10) + "." + e.date.slice(5, 7);
-    const dLong = dd === 0 ? "сегодня" : dd === 1 ? "завтра" : WDV[wd];
+    const dLong = dd === 0 ? "сегодня" : dd === 1 ? "завтра" : WDV[wd] + (dd >= 7 ? ", " + e.date.slice(8, 10) + "." + e.date.slice(5, 7) : "");
     const url = /^https:\/\/t\.me\//.test(e.url || "") ? e.url : "https://t.me/loungeliwan";
     const g = document.querySelector(".gate-ev");
     if (g) { g.textContent = [dShort, e.time, e.name].filter(Boolean).join(" · "); g.hidden = false; }
     const a = document.querySelector(".fin a.ev");
     if (a) { a.textContent = dShort + (e.time ? ", " + e.time : "") + " — " + e.name + (e.kind ? ", " + e.kind : ""); a.href = url; document.querySelectorAll(".ev-row").forEach(x => { x.hidden = false; }); dispatchEvent(new Event("resize")); } /* блок брони стал выше — пересчитать место для знака и титров */
     const dj = CH.find(c => c.label === "Вечера с DJ");
-    if (dj && dj.subs[1]) dj.subs[1][2] = 'Ближайший вечер — <a class="ev" href="' + esc(url) + '" target="_blank" rel="noopener">' + esc(e.name) + ", " + dLong + (e.time ? " в " + esc(e.time) : "") + "</a>.";
+    if (dj && dj.subs[1]) dj.subs[1][2] = 'Ближайший вечер — <a class="ev" href="' + esc(url) + '" target="_blank" rel="noopener">' + esc(e.name) + ", " + dLong + (e.time ? " в\u00a0" + esc(e.time) : "") + "</a>.";
     /* разметка событий для поиска */
     const ld = { "@context": "https://schema.org", "@graph": evs.slice(0, 5).map(x => ({
       "@type": /dj/i.test(x.kind + " " + x.name) || /концерт|музык/i.test(x.kind || "") ? "MusicEvent" : "Event",
       name: x.name + (x.kind ? " — " + x.kind : "") + " в Liwan",
-      startDate: x.date + "T" + (/^\d\d:\d\d$/.test(x.time || "") ? x.time : "19:00") + ":00+03:00",
+      startDate: /^\d\d:\d\d$/.test(x.time || "") ? x.date + "T" + x.time + ":00+03:00" : x.date,
       eventStatus: "https://schema.org/EventScheduled", eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
       location: { "@type": "BarOrPub", "@id": "https://liwan-lounge.ru/#liwan", name: "Liwan", address: { "@type": "PostalAddress", streetAddress: "ул. Авиаконструктора Миля, 3А, фудмолл «Привоз», 2-й этаж", addressLocality: "Москва", addressCountry: "RU" } },
       performer: { "@type": "Person", name: x.name },
@@ -529,7 +609,7 @@ const WEEKEND = "https://neonsky3214-commits.github.io/liwan-cdn/weekend/";
     })) };
     const sc = document.createElement("script"); sc.type = "application/ld+json"; sc.textContent = JSON.stringify(ld); document.body.appendChild(sc);
   }).catch(() => {});
-})();
+} catch (e) {} })();
 
 /* ===== меню заведения (до WebGL — работает и в простой версии) ===== */
 const filmHooks = { open: null, close: null };
@@ -563,12 +643,17 @@ menuEl.querySelectorAll("[data-go]").forEach(b => b.addEventListener("click", ()
   menuSc.scrollTo({ top: pg.offsetTop - menuSc.querySelector(".m-page").offsetTop, behavior: "smooth" });
 }));
 menuSc.addEventListener("click", e => {
-  if (e.target === menuSc) closeMenu();
+  if (e.target === menuSc && !coarse) closeMenu(); /* на телефоне зазоры между страницами — не кнопка «закрыть» */
   else if (coarse && e.target.classList.contains("m-page")) menuSc.classList.toggle("zoom"); /* телефон: страница во всю ширину ×2 */
 });
 addEventListener("keydown", e => {
   if (!menuOpen) return;
   if (e.key === "Escape") { e.preventDefault(); closeMenu(); }
+  else if (["ArrowDown", "ArrowUp", "PageDown", "PageUp", "Home", "End"].includes(e.key) || (e.key === " " && !(e.target.closest && e.target.closest("a,button")))) {
+    e.preventDefault(); const hgt = menuSc.clientHeight; /* фокус на «×» вне прокручиваемой области — листаем сами */
+    if (e.key === "Home") menuSc.scrollTo({ top: 0 }); else if (e.key === "End") menuSc.scrollTo({ top: menuSc.scrollHeight });
+    else menuSc.scrollBy({ top: (e.key === "ArrowDown" ? 90 : e.key === "ArrowUp" ? -90 : e.key === "PageUp" ? -hgt * .85 : hgt * .85), behavior: "smooth" });
+  }
   else if (e.key === "Tab") {
     const f = [...menuEl.querySelectorAll("button,a")]; const i = f.indexOf(document.activeElement);
     if (i < 0) { e.preventDefault(); f[0].focus(); }
@@ -917,7 +1002,8 @@ logo.onload = () => {
 logo.onerror = () => loaded++;
 logo.src = "img/logo.png";
 
-let W = 0, H = 0, asp = 1, dpr = 1, rT = 0, qCap = 2, gAsp = -1, finQ = 9, segB = 0, finBand = null;
+let W = 0, H = 0, asp = 1, dpr = 1, rT = 0, qCap = 2, gAsp = -1, finQ = 9, segB = 0, finBand = null, hdrB = 0, wideL = true;
+const mqPhone = matchMedia("(max-aspect-ratio:1/1), (max-width:760px) and (min-height:521px)"); /* тот же запрос, что в стилях */
 function resize() {
   dpr = Math.min(devicePixelRatio || 1, small ? 1.5 : 2, qCap);
   W = innerWidth; H = innerHeight; asp = W / H;
@@ -926,11 +1012,14 @@ function resize() {
   const bar = !small && asp > 1.3 ? Math.max(0, Math.round((H - W / 2.35) / 2)) : 0;
   root.style.setProperty("--bar", bar + "px");
   root.style.setProperty("--subB", (bar >= 64 ? Math.round(bar / 2 - 16) : 86) + "px");
-  if (Math.abs(asp - gAsp) > .01) { clearTimeout(rT); rT = setTimeout(buildGrains, 120); }
+  root.style.setProperty("--ctlB", bar >= 64 ? Math.round(bar / 2 - 23) + "px" : ""); /* «Звук» и «Пауза» — на одной линии с субтитром */
+  wideL = !mqPhone.matches;
+  if (Math.abs(asp - gAsp) > .01) { clearTimeout(rT); const again = () => { if (tw) rT = setTimeout(again, 300); else buildGrains(); }; rT = setTimeout(again, 120); } /* не пересыпать зёрна посреди перехода */
   const fe = document.querySelector(".fin"); finQ = fe ? (fe.getBoundingClientRect().left / W - .5) * asp : 9; /* левый край блока брони в координатах неба */
   const se = document.querySelector(".segs"); segB = se ? se.getBoundingClientRect().bottom : 0;
-  finBand = fe && se && asp <= 1.05 ? [1 - 2 * (segB + 10) / H, 1 - 2 * (fe.offsetTop - 14) / H] : null; /* просвет для знака на телефоне, в долях экрана сверху вниз */
-  root.style.setProperty("--credTop", finBand ? Math.max(fe.offsetTop - 10, H * .3) + "px" : "30%"); /* титры на телефоне — под знаком */
+  const tr = document.querySelector(".topr"); hdrB = tr ? tr.getBoundingClientRect().bottom : 0;
+  finBand = fe && se && !wideL ? [1 - 2 * (segB + 10) / H, 1 - 2 * (fe.offsetTop - 14) / H] : null; /* просвет для знака на телефоне, в долях экрана сверху вниз */
+  root.style.setProperty("--credTop", finBand ? (finBand[0] - finBand[1] < .26 ? Math.round(H * .36) : Math.max(fe.offsetTop - 10, H * .3)) + "px" : "30%"); /* титры на телефоне — под знаком */
 }
 resize(); buildGrains(); addEventListener("resize", resize);
 if (document.fonts) document.fonts.ready.then(() => resize()); /* высота блока брони зависит от шрифтов */
@@ -1140,7 +1229,7 @@ function go(k, instant) {
   if (instant) { C = prevC = k; tw = null; } else { tw = { from, to: k, fromI: Math.round(from), far: Math.abs(k - from) > 1.01, t0: performance.now(), dur: TRANS_MS }; whoosh(TRANS_MS / 1000 * .95, k === 4 ? 2400 : 1600); }
   cur = k; chT0 = performance.now(); shownCard = -1; subsKey = "\u0000"; finFast = false; userNav = false; /* в финал — всегда с титрами, даже если перешли вручную */
   if (k === N - 1) goalOnce("film_finale");
-  if (card.classList.contains("on")) card.classList.add("off"); credits.classList.remove("on"); fin.classList.remove("on"); fin.inert = true; root.classList.remove("fin-on");
+  if (card.classList.contains("on")) card.classList.add("off"); creditsOff(); fin.classList.remove("on", "hold"); fin.inert = true; root.classList.remove("fin-on");
 }
 let userNav = false, finFast = false;
 function setPlaying(v) {
@@ -1168,25 +1257,43 @@ holdBtn.addEventListener("keyup", e => { if (e.key === "Enter" || e.key === " ")
 function startFilm(quiet) {
   phase = "film"; holding = false; root.classList.add("film"); gate.classList.add("out"); goalOnce("film_start");
   gate.inert = true; $$(".ui").forEach(el => { el.inert = false; }); if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
-  enterT = performance.now(); go(0, true); chT0 = enterT;
+  hp0 = hp; enterT = performance.now(); go(0, true); chT0 = enterT;
+  setTimeout(() => { if (phase === "film") gate.style.display = "none"; }, 1600);
   setVol(); if (!quiet) { whoosh(3.2, 1200); boom(2.3); showHint(); }
 }
 function showHint() {
   let seen = false; try { seen = localStorage.getItem("lw-x-hint") === "1"; localStorage.setItem("lw-x-hint", "1"); } catch (e) {}
   if (seen) return;
   const h = $("#hint");
-  h.textContent = coarse ? "Коснитесь справа — дальше · слева — назад · удерживайте — пауза" : "Колесо или стрелки — главы · пробел — пауза";
-  setTimeout(() => h.classList.add("show"), 900);
-  setTimeout(() => h.classList.remove("show"), 3500);
+  h.innerHTML = (coarse ? ["Коснитесь справа — дальше", "слева — назад", "удерживайте — пауза"] : ["Колесо или стрелки — главы", "пробел — пауза"]).map(t => "<span>" + t + "</span>").join(" ");
+  CH[0].subs[0][0] = 3.7; /* первый субтитр — после подсказки, а не поверх неё */
+  setTimeout(() => h.classList.add("show"), 700);
+  setTimeout(() => h.classList.remove("show"), 2800);
 }
 setTimeout(() => { if (!ready) loaded = total; }, 9000);
 
 /* навигация по главам */
 let wAcc = 0, wLast = 0, wUsed = false, queued = 0;
+let finHoldT = 0, credOffT = 0, rollDone = false;
+function showFin() {
+  fin.classList.add("on", "hold"); fin.inert = false; root.classList.add("fin-on"); creditsOff();
+  clearTimeout(finHoldT); finHoldT = setTimeout(() => fin.classList.remove("hold"), 600);
+}
+function creditsOn() { if (credits.classList.contains("on")) return; clearTimeout(credOffT); rollDone = false; credits.classList.remove("run", "fast"); void credits.offsetWidth; credits.classList.add("on", "run"); root.classList.add("cred-on"); }
+function creditsOff() {
+  if (!credits.classList.contains("on") && !credits.classList.contains("run")) return;
+  credits.classList.remove("on"); root.classList.remove("cred-on");
+  clearTimeout(credOffT); credOffT = setTimeout(() => { if (!credits.classList.contains("on")) credits.classList.remove("run"); }, 1300); /* текст титров гаснет на месте */
+}
+credits.querySelector(".roll").addEventListener("animationend", () => { rollDone = true; });
 function skipToBooking() { /* «дальше» во время титров — сразу бронь */
-  finFast = true; credits.classList.remove("on");
-  if (card.classList.contains("on")) card.classList.add("off");
-  fin.classList.add("on"); fin.inert = false; root.classList.add("fin-on");
+  finFast = true;
+  const cardUp = card.classList.contains("on") && !card.classList.contains("off"), credUp = credits.classList.contains("on");
+  if (cardUp) card.classList.add("off", "fast");
+  if (credUp) credits.classList.add("fast");
+  creditsOff();
+  if (cardUp || credUp) setTimeout(() => { if (cur === N - 1 && finFast && !tw) showFin(); }, cardUp ? 420 : 320); /* сначала уходят титул или титры, потом бронь — без наложения */
+  else showFin();
 }
 function step(d) {
   if (phase !== "film" || !d) return;
@@ -1197,7 +1304,7 @@ function step(d) {
 function navTo(k) { if (phase !== "film" || menuOpen) return; if (tw) { queued = 0; pendingTo = k; return; } userNav = true; go(k); }
 let pendingTo = -1;
 addEventListener("wheel", e => {
-  if (menuOpen) return; /* меню прокручивается само */
+  if (menuOpen || e.ctrlKey) return; /* меню прокручивается само; щипок на тачпаде — масштаб страницы */
   e.preventDefault();
   const now = performance.now();
   if (now - wLast > 320) { wAcc = 0; wUsed = false; } /* пауза в событиях — начался новый жест */
@@ -1229,9 +1336,11 @@ const endTouch = e => {
   if (tUi) return; /* жест начат на кнопке или блоке брони — не листаем */
   if (Math.abs(dy) > 45 && Math.abs(dy) > Math.abs(dx)) { step(Math.sign(dy)); return; }
   if (Math.abs(dx) > 60) { step(Math.sign(dx)); return; }
-  if (!tUi && !tMoved && dt < 350 && phase === "film") step(p.clientX < W * .3 ? -1 : 1); /* тап: справа — дальше, слева — назад */
+  if (!tUi && !tMoved && dt < 350 && phase === "film") { step(p.clientX < W * .3 ? -1 : 1); if (e.cancelable) e.preventDefault(); } /* тап: справа — дальше, слева — назад; без «призрачного» клика по тому, что появится под пальцем */
 };
-addEventListener("touchend", endTouch);
+addEventListener("touchend", endTouch, { passive: false });
+/* после клика мышью или пальцем фокус не остаётся на кнопке — иначе пробел повторяет её, а не ставит паузу */
+document.addEventListener("click", e => { const b = e.detail && e.target.closest && e.target.closest(".segs button,.ctl"); if (b) b.blur(); });
 addEventListener("touchcancel", () => { clearTimeout(tHold); if (heldPause) { heldPause = false; if (heldWas) setPlaying(true); } ty = null; });
 addEventListener("keydown", e => {
   if (menuOpen || phase !== "film") return;
@@ -1269,12 +1378,12 @@ function splitTitle(s) {
 function textFrame(lt) {
   const ch = CH[cur];
   if (ch.card && !(cur === N - 1 && finFast)) {
-    if (shownCard !== cur && lt > CARD_IN) {
+    if (shownCard !== cur && lt > CARD_IN && !tw && !queued && pendingTo < 0) { /* не мелькать карточкой главы, которую пролистывают */
       shownCard = cur;
       $(".kick", card).textContent = ch.card[0];
       $("h2", card).innerHTML = splitTitle(ch.card[1]); $("h2", card).setAttribute("aria-label", ch.card[1]);
       const side = cur === N - 1 ? " side" : "";
-      card.className = side.trim(); void card.offsetWidth; card.className = "on" + side;
+      card.className = "reset" + side; void card.offsetWidth; card.className = "on" + side;
       braam();
     }
     if (shownCard === cur && lt > CARD_OUT && !card.classList.contains("off")) card.classList.add("off");
@@ -1284,18 +1393,17 @@ function textFrame(lt) {
   if (key !== subsKey) {
     subsKey = key;
     const olds = $$("span", subsEl), had = olds.some(o => o.classList.contains("on"));
-    olds.forEach(o => { o.classList.remove("on"); setTimeout(() => o.remove(), 1500); });
+    olds.forEach(o => { o.classList.remove("on"); setTimeout(() => o.remove(), 700); });
     if (line) {
       const sp = document.createElement("span"); sp.innerHTML = line[2];
-      const show = () => { if (subsKey !== key) return; subsEl.querySelectorAll("span:not(.on)").forEach(o => { if (o !== sp) o.remove(); }); subsEl.appendChild(sp); requestAnimationFrame(() => requestAnimationFrame(() => sp.classList.add("on"))); };
-      if (had) setTimeout(show, 1500); else show();
+      const show = () => { if (subsKey !== key) return; subsEl.appendChild(sp); requestAnimationFrame(() => requestAnimationFrame(() => sp.classList.add("on"))); };
+      if (had) setTimeout(show, 550); else show();
     }
   }
   if (cur === N - 1) {
-    if (finFast) { if (lt > 2.0 && !fin.classList.contains("on")) { fin.classList.add("on"); fin.inert = false; root.classList.add("fin-on"); } }
-    else {
-      if (lt > 4.5 && lt <= 12.5) credits.classList.add("on");
-      if (lt > 12.5 && !fin.classList.contains("on")) { fin.classList.add("on"); fin.inert = false; root.classList.add("fin-on"); credits.classList.remove("on"); }
+    if (!finFast) {
+      if (lt > 4.5 && lt <= 12.5 && !rollDone) creditsOn();
+      if ((lt > 12.5 || (rollDone && lt > 6)) && !fin.classList.contains("on")) showFin(); /* бронь — сразу, как ушла последняя строка титров */
     }
   }
 }
@@ -1306,17 +1414,16 @@ const aQ = gl.getAttribLocation(BG.p, "p");
 const aUv = gl.getAttribLocation(GR.p, "aUv"), aR = gl.getAttribLocation(GR.p, "aR");
 const aHome = gl.getAttribLocation(PT.p, "aHome"), aRnd = gl.getAttribLocation(PT.p, "aRnd");
 
-let camA = [1, 0, 0], camB = [1, 0, 0], warpV = 0;
+let camA = [1, 0, 0], camB = [1, 0, 0], warpV = 0, cardDimS = 0, hp0 = 0, finS = 0;
+const pushV = new Float32Array(N).fill(.012); /* медленный наезд у каждой главы свой: не сбрасывается и не прыгает в переходе */
 function common(pr, A, B, ta, tb, f, time, dark, lt) {
   const u = pr.u;
   gl.uniform3f(u.uCamA, camA[0], camA[1], camA[2]); gl.uniform3f(u.uCamB, camB[0], camB[1], camB[2]);
   gl.uniform1f(u.uWarp, warpV);
   gl.uniform1f(u.uIA, ta.ia); gl.uniform1f(u.uIB, tb.ia);
   gl.uniform1f(u.uFA, A.fo); gl.uniform1f(u.uFB, B.fo);
-  gl.uniform1f(u.uTA, A.top || 0); gl.uniform1f(u.uTB, B.top || 0);
-  const ci = Math.round(C);
-  const push = k => .012 + (ci === k ? Math.min(lt, 14) * .004 : .03);
-  gl.uniform1f(u.uPA, push(CH.indexOf(A))); gl.uniform1f(u.uPB, push(CH.indexOf(B)));
+  gl.uniform1f(u.uTA, small ? 0 : A.top || 0); gl.uniform1f(u.uTB, small ? 0 : B.top || 0); /* на телефоне кадр вписан целиком — подрезка сверху давала жёсткий край */
+  gl.uniform1f(u.uPA, pushV[CH.indexOf(A)]); gl.uniform1f(u.uPB, pushV[CH.indexOf(B)]);
   gl.uniform1f(u.uMix, f); gl.uniform1f(u.uTr, B.tr);
   gl.uniform1f(u.uTime, time); gl.uniform1f(u.uFit, small ? 1 : 0); gl.uniform1f(u.uDark, dark);
   gl.uniform2f(u.uRes, cv.width, cv.height); gl.uniform2f(u.uMouse, mouse.sx, mouse.sy);
@@ -1348,10 +1455,10 @@ function frameBody(now) {
   loadShown = lerp(loadShown, loaded / total, 1 - Math.exp(-dt * 5));
   if (!ready) {
     const pv = Math.round(loadShown * 100) + "%"; if (pct.textContent !== pv) pct.textContent = pv;
-    if (loaded >= total && loadShown > .985) { ready = true; readyAt = Math.round(performance.now()); gate.classList.add("ready"); }
+    if (loaded >= total && loadShown > .985) { pct.textContent = "100%"; ready = true; readyAt = Math.round(performance.now()); gate.classList.add("ready"); }
   }
   if (phase === "gate") {
-    hp = clamp(hp + (holding ? dt / 1.2 : -dt / .5), 0, 1);
+    const hdt = Math.min(rawDt, .25); hp = clamp(hp + (holding ? hdt / 1.2 : -hdt / .5), 0, 1);
     ring.style.strokeDashoffset = 1 - hp;
     if (AU.ac && AU.windG) AU.windG.gain.setTargetAtTime(.24 + hp * 1.2, AU.ac.currentTime, .1);
     if (hp >= 1) startFilm();
@@ -1363,6 +1470,7 @@ function frameBody(now) {
     const k = clamp((now - tw.t0) / tw.dur, 0, 1);
     C = lerp(tw.from, tw.to, ios(k));
     if (k >= 1) {
+      for (let n = 0; n < N; n++) if (n !== tw.to) pushV[n] = .012; /* ушедшие главы вернутся с начала наезда */
       C = tw.to; tw = null;
       if (pendingTo >= 0) { const t = pendingTo; pendingTo = -1; queued = 0; userNav = true; go(t); }
       else if (queued) { const d = queued; queued = 0; userNav = true; go(cur + d); }
@@ -1371,7 +1479,8 @@ function frameBody(now) {
   const v = (C - prevC) / Math.max(dt, .001); prevC = C;
   vel = lerp(vel, clamp(v * .2, -1, 1), 1 - Math.exp(-dt * 8));
   if (freezeT >= 0) chT0 = now - freezeT * 1000;
-  else if (!playing && phase === "film" && !tw) chT0 += Math.min(rawDt, .25) * 1000; /* на паузе время главы стоит */
+  else if (!playing && phase === "film" && !tw) chT0 += rawDt * 1000; /* на паузе время главы стоит */
+  if (phase === "film" && !tw && (playing || freezeT >= 0)) pushV[cur] = Math.min(pushV[cur] + dt * .004, .068);
   if (phase === "film" && playing && !tw && CH[cur].dur && (now - chT0) / 1000 > CH[cur].dur && cur < N - 1) go(cur + 1);
   const lt = phase === "film" ? (now - chT0) / 1000 : 0; /* считаем после возможного перехода — иначе новая глава получает время старой */
 
@@ -1390,30 +1499,36 @@ function frameBody(now) {
   mouse.spx = lerp(mouse.spx, mouse.px, 1 - Math.exp(-dt * 8));
   mouse.spy = lerp(mouse.spy, mouse.py, 1 - Math.exp(-dt * 8));
   if (mouse.cx !== null) {
-    mouse.rx = lerp(mouse.rx, mouse.cx, .16); mouse.ry = lerp(mouse.ry, mouse.cy, .16);
+    const ck = 1 - Math.exp(-dt * 10.5); mouse.rx = lerp(mouse.rx, mouse.cx, ck); mouse.ry = lerp(mouse.ry, mouse.cy, ck);
     cur$.style.transform = `translate(${mouse.rx}px,${mouse.ry}px)`;
   }
 
-  const chNow = Math.round(C);
+  const chNow = tw && tw.far ? (ios(clamp((now - tw.t0) / tw.dur, 0, 1)) < .5 ? tw.fromI : tw.to) : Math.round(C); /* в дальнем прыжке — без ритма промежуточных глав */
   if (phase === "film") score(chNow); else if (AU.ac) score(0);
   const beat = beatNow(chNow, time) * (phase === "film" ? 1 : 0) * (chNow === 3 || chNow === 4 ? 1 : .3);
 
-  const wide = asp > 1.05;
+  const wide = wideL;
   const L0 = { s: wide ? .8 : Math.min(.8, asp * 1.5), x: 0, y: wide ? .02 : .14 };
-  const L6 = wide ? { s: .7, x: -asp * .42, y: 0 } : finBand ? { s: Math.max(.16, Math.min(.4, asp * .78, (finBand[0] - finBand[1]) * .95)), x: 0, y: (finBand[0] + finBand[1]) / 2 } : { s: Math.min(.4, asp * .78), x: 0, y: .55 };
-  const lt6 = clamp(C - (N - 2), 0, 1);
+  const tightFin = !!finBand && finBand[0] - finBand[1] < .26; /* над блоком брони нет места знаку: показываем его на титуле и титрах, а с появлением брони гасим */
+  finS = lerp(finS, fin.classList.contains("on") ? 1 : 0, 1 - Math.exp(-dt * 4));
+  const L6 = wide ? { s: .7, x: -asp * .42, y: 0 } : finBand && !tightFin ? { s: Math.min(.4, asp * .78, (finBand[0] - finBand[1]) * .95), x: 0, y: (finBand[0] + finBand[1]) / 2 } : { s: Math.min(.4, asp * .78), x: 0, y: .55 };
+  const farFin = tw && tw.far && (tw.to === N - 1 || tw.fromI === N - 1);
+  const lt6 = farFin ? ss(f) : clamp(C - (N - 2), 0, 1); /* дальний прыжок в финал и обратно: знак едет весь переход, а не рывком в конце */
   const ls = lerp(L0.s, L6.s, lt6), lx = lerp(L0.x, L6.x, lt6), ly = lerp(L0.y, L6.y, lt6);
 
-  const cardDim = (CH[cur].card && phase === "film" && !tw) ? Math.sin(clamp((lt - CARD_IN + .3) / (CARD_OUT - CARD_IN + 1.2), 0, 1) * Math.PI) * .42 : 0;
-  const form = phase === "gate" ? hp * .5 : P("form") * enterAmt;
-  const swirl = phase === "gate" ? hp : phase === "film" ? (1 - enterAmt) * 1.2 + (cur === 0 ? 0 : 0) : 0;
+  /* затемнение под титульную карточку: плавное, без скачка в конце перехода и при ручном листании */
+  const dimT = (CH[cur].card && phase === "film" && !tw && shownCard === cur) ? Math.sin(clamp((lt - CARD_IN) / (CARD_OUT - CARD_IN + 1.5), 0, 1) * Math.PI) * .42 : 0;
+  cardDimS = lerp(cardDimS, dimT, 1 - Math.exp(-dt * 4)); const cardDim = cardDimS;
+  const gK = phase === "film" ? 1 - ss(clamp((now - enterT) / 700, 0, 1)) : 0; /* первые 0,7 с фильма: значения заставки перетекают в значения фильма */
+  const form = phase === "gate" ? hp * .5 : Math.max(P("form") * enterAmt, hp0 * .5 * gK);
+  const swirl = phase === "gate" ? hp : phase === "film" ? lerp((1 - enterAmt) * 1.2, hp0, gK) : 0;
   const dark = phase !== "film" ? .94 : clamp(lerp(.94, P("dark"), enterAmt) + cardDim * (1 - P("dark")), 0, 1);
   const leak = phase === "film" ? .08 + Math.sin(f * Math.PI) * .25 + beat * .15 : .03;
 
   cosmosV = phase === "gate" ? 1 : clamp((dark - .3) / .55, 0, 1);
-  const M0 = wide ? [asp * .5 - .2, .3, .045] : [.13, .3, .034], M6 = wide ? [-asp * .21 + .36, .33, .034] : [0, .5, 0];
+  const M0 = wide ? [asp * .5 - .2, Math.min(.3, .5 - (hdrB + 16) / H - .045), .045] : [.13, .3, .034], /* на низком экране луна — ниже кнопок шапки */ M6 = wide ? [-asp * .21 + .36, .33, .034] : [0, .5, 0];
   const moonFit = clamp((finQ - M6[0] - .07) / .04, 0, 1) * clamp(((.5 - M6[1] - M6[2]) * H - segB - 6) / 10, 0, 1); /* в финале луне нужен просвет до блока брони и под полосками глав, иначе прячем */
-  const moon = [lerp(M0[0], M6[0], lt6), lerp(M0[1], M6[1], lt6), lerp(M0[2], M6[2] * moonFit, lt6) * (wide ? 1 : 1 - enterAmt)]; /* на телефоне луна только на входе: дальше её место занимает знак */
+  const moon = [lerp(M0[0], M6[0], lt6), lerp(M0[1], M6[1], lt6), lerp(M0[2], M6[2] * moonFit, lt6) * (wide ? 1 : 1 - ss(clamp(enterK * 3, 0, 1)))]; /* на телефоне луна только на входе: дальше её место занимает знак */
   playNear(C);
   const ta = TEX[A.media], tb = TEX[B.media];
   feed(ta); if (tb !== ta) feed(tb);
@@ -1423,7 +1538,7 @@ function frameBody(now) {
     camA = mixV > 0 ? [1 + ea * .2, ea * .06 * sg, -ea * .025] : [1, 0, 0];
     camB = mixV > 0 ? [1 + eb * .16, -eb * .07 * sg, eb * .03] : [1, 0, 0];
     const wk = phase === "film" ? (now - enterT) / 1000 : 0;
-    warpV = phase === "gate" ? hp * .25 : (phase === "film" && wk < 2.2 && cur === 0) ? Math.sin(clamp(wk / 2.2, 0, 1) * Math.PI) * 1.1 : 0;
+    warpV = phase === "gate" ? hp * .25 : phase === "film" ? hp0 * .25 * gK + (wk < 2.2 ? Math.sin(clamp(wk / 2.2, 0, 1) * Math.PI) * 1.1 * clamp(1 - C, 0, 1) : 0) : 0;
   }
 
   /* фон */
@@ -1465,9 +1580,9 @@ function frameBody(now) {
     const dens = clamp(ls / .75, .5, 1);
     gl.uniform1f(q.uPR, dpr * (small ? 1.25 : 1) * (.65 + .35 * dens)); gl.uniform1f(q.uVel, vel); gl.uniform1f(q.uBeat, beat);
     gl.uniform1f(q.uMA, A.pm); gl.uniform1f(q.uMB, B.pm); gl.uniform1f(q.uMM, fe);
-    const logoFit = finBand ? lerp(1, clamp((finBand[0] - finBand[1] - .2) / .08, 0, 1), lt6) : 1; /* нет места над блоком брони — знак гаснет */
-    gl.uniform1f(q.uAlpha, logoFit * Math.pow(dens, 1.3) * (phase === "film" ? 1 : .8) * (.6 + .4 * Math.min(1, loadShown * 1.2)) * (1 - cardDim * .7) * (1 - Math.sin(f * Math.PI) * .5 * (1 - P("form"))));
-    gl.uniform1f(q.uScale, ls); gl.uniform1f(q.uHold, phase === "gate" ? hp : 0); gl.uniform1f(q.uSwirl, swirl); gl.uniform1f(q.uWarp, warpV);
+    const logoFit = tightFin ? 1 - finS * lt6 : 1;
+    gl.uniform1f(q.uAlpha, logoFit * Math.pow(dens, 1.3) * (phase === "film" ? lerp(1, .8, gK) : .8) * (.6 + .4 * Math.min(1, loadShown * 1.2)) * (1 - cardDim * .7) * (1 - Math.sin(f * Math.PI) * .5 * (1 - P("form"))));
+    gl.uniform1f(q.uScale, ls); gl.uniform1f(q.uHold, phase === "gate" ? hp : hp0 * gK); gl.uniform1f(q.uSwirl, swirl); gl.uniform1f(q.uWarp, warpV);
     gl.uniform2f(q.uOff, lx, ly); gl.uniform2f(q.uMouse, mouse.spx, mouse.spy);
     gl.uniform2f(q.uCen, wide ? asp * .28 : 0, wide ? .02 : .28);
     gl.drawArrays(gl.POINTS, 0, NP);
@@ -1477,10 +1592,17 @@ function frameBody(now) {
   /* звезда */
   gDraw = lerp(gDraw, ready ? 1 : loadShown, 1 - Math.exp(-dt * 3));
   if (gDraw < .9995 || !geo._done) { geoEls.forEach((el, n) => { el.style.strokeDashoffset = (1 - clamp(gDraw * 1.6 - n / geoEls.length * .6, 0, 1)).toFixed(4); }); geo._done = gDraw >= .9995; }
-  const finA = clamp(C - (N - 2), 0, 1);
+  const finA = lt6;
   let gOp, gs;
   if (phase === "gate") { gOp = .5 + hp * .3; gs = 1 - hp * .1; }
-  else { gOp = lerp(.6 * (1 - enterK * 2.5 > 0 ? 1 - enterK * 2.5 : 0), lerp(.08 + cardDim * .9, .28, finA), enterAmt) + (cur === 0 ? .22 * enterAmt * (1 - lt6) : 0); gs = lerp(1.15, wide ? .8 : .62, finA) + cardDim * .12; }
+  else {
+    const geoW = Math.min(.92 * Math.min(W, H), 880);
+    const gsFin = wide ? clamp(((finQ / asp + .5) * W - 16 - .29 * W) * 2 / geoW, .3, .8) : .62; /* в финале чертёж не заходит на блок брони */
+    gOp = lerp(.6 * (1 - enterK * 2.5 > 0 ? 1 - enterK * 2.5 : 0), lerp(.08 + cardDim * .9, .28, finA), enterAmt) + .22 * enterAmt * clamp(1 - C, 0, 1);
+    gs = lerp(1.15, gsFin, finA) + cardDim * .12;
+    gOp = lerp(gOp, .5 + hp0 * .3, gK); gs = lerp(gs, 1 - hp0 * .1, gK);
+    if (tightFin) gOp *= 1 - finS * lt6 * .7; /* и чертёж не спорит с заголовком брони */
+  }
   geo.style.opacity = gOp;
   geo.style.transform = `translate(${lx / asp * W / 2}px,${-ly * H / 2}px) rotate(${C * 12 + hp * 30}deg) scale(${gs})`;
   geo.style.setProperty("--txt", (gDraw * .9).toFixed(3));
