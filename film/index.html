@@ -70,6 +70,9 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 @keyframes breathe{50%{transform:scale(1.08);opacity:.4}}
 .gate-sub{font:400 10px/1.9 Inter;letter-spacing:.32em;text-transform:uppercase;color:rgba(249,238,210,.62);text-shadow:0 0 12px #0E0907,0 0 4px #0E0907;opacity:0;transition:opacity 1.2s .3s}
 .ready .gate-sub{opacity:1}
+.gate-ev{font:400 10px/1.9 Inter;letter-spacing:.32em;text-transform:uppercase;color:#D9B98A;text-shadow:0 0 12px #0E0907,0 0 4px #0E0907;margin-top:-14px;opacity:0;transition:opacity 1.2s .6s}
+.ready .gate-ev{opacity:1}
+.gate-ev[hidden]{display:none}
 
 /* интерфейс */
 .ui{position:fixed;z-index:12;opacity:0;transition:opacity 1.6s var(--ease) 1.2s}
@@ -207,6 +210,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 }
 @media (max-width:430px){.topr .book,.topr .mbtn{padding:0 11px 0 13px}}
 @media (max-width:760px) and (max-height:720px){.fin p,.fin .num{display:none}.acts{margin-top:6px}}
+@media (max-width:760px) and (max-height:700px), (max-height:520px) and (min-aspect-ratio:1/1){.fin .ev-row{display:none}} /* низкий экран: афиша — на заставке и в главе с DJ, а в финале место знаку */
 @media (max-width:760px) and (max-height:600px){.fin h2{font-size:30px}.info{font-size:12px}.acts [data-menu]{display:none}} /* совсем маленький телефон: «Меню» остаётся в шапке */
 /* невысокий широкий экран (ноутбук): финал между шапкой и нижней строкой */
 @media (min-aspect-ratio:1/1) and (max-height:900px) and (min-height:521px){
@@ -332,6 +336,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
     </button>
     <button class="sr" type="button" id="start-now">Начать фильм без удержания</button>
     <div class="gate-sub">Фильм о Liwan · одна минута<br>Лучше со звуком</div>
+    <div class="gate-ev" hidden></div>
   </div>
 </div>
 
@@ -395,6 +400,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   <dl class="info">
     <dt>Адрес</dt><dd><a href="https://yandex.ru/maps/org/66056015280" target="_blank" rel="noopener">Москва, ул.&nbsp;Авиаконструктора Миля,&nbsp;3А, фудмолл «Привоз», 2‑й&nbsp;этаж</a></dd>
     <dt>Часы</dt><dd>Вс–чт 14:00–01:00, пт–сб 14:00–02:00</dd>
+    <dt class="ev-row" hidden>Афиша</dt><dd class="ev-row" hidden><a class="ev" href="https://t.me/loungeliwan" target="_blank" rel="noopener"></a></dd>
     <dt>Связь</dt><dd><a href="tel:+79267219990">+7&nbsp;(926)&nbsp;721-99-90</a> · <a href="https://t.me/loungeliwan" target="_blank" rel="noopener">Telegram</a></dd>
   </dl>
   <div class="links"><button class="again" type="button">↺ Смотреть ещё раз</button><a class="again" href="https://liwan-lounge.ru/about">Всё о Liwan — меню, афиша, контакты&nbsp;→</a></div>
@@ -469,13 +475,69 @@ CH.forEach(c => {
   plain.appendChild(s);
 });
 
+/* ===== цели Яндекс.Метрики (счётчик Tilda: window.mainMetrikaId) ===== */
+const goal = (name, params, cb) => {
+  try { const id = +window.mainMetrikaId; if (id && window.ym) { ym(id, "reachGoal", name, params, cb); return; } } catch (e) {}
+  if (cb) cb();
+};
+const goalsSent = new Set(), goalOnce = (name, params) => { if (!goalsSent.has(name)) { goalsSent.add(name); goal(name, params); } };
+document.addEventListener("click", e => {
+  const a = e.target.closest && e.target.closest("a[href]"); if (!a) return;
+  const h = a.href, k = a.classList.contains("ev") ? "event_click" : /reservation\.yandex/.test(h) ? "booking_click" : /loona\.ai/.test(h) ? "loyalty_click"
+    : /yandex\.ru\/maps|2gis\./.test(h) ? "route_click" : /^tel:/.test(h) ? "phone_click" : /t\.me\//.test(h) ? "telegram_click" : /\/about/.test(h) ? "about_click" : "";
+  if (!k) return;
+  const from = a.closest(".fin") ? "финал" : a.closest("#menu") ? "меню" : a.closest(".topr") ? "шапка" : a.closest("#subs") ? "субтитры" : "фильм";
+  if (!a.target && /^https?:/.test(h) && !e.defaultPrevented && !e.metaKey && !e.ctrlKey) { /* переход в той же вкладке: дождаться отправки цели */
+    e.preventDefault(); let done = false; const goOn = () => { if (!done) { done = true; location.href = h; } };
+    goal(k, { from }, goOn); setTimeout(goOn, 450);
+  } else goal(k, { from });
+}, true);
+
+/* ===== ближайшее событие из афиши (робот Weekend собирает её из Telegram) ===== */
+const WEEKEND = "https://neonsky3214-commits.github.io/liwan-cdn/weekend/";
+(() => {
+  if (!window.fetch) return;
+  const mskToday = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Moscow" }).format(new Date());
+  const dayN = d => Date.UTC(+d.slice(0, 4), +d.slice(5, 7) - 1, +d.slice(8, 10)) / 864e5;
+  const WD = ["вс", "пн", "вт", "ср", "чт", "пт", "сб"], WDV = ["в воскресенье", "в понедельник", "во вторник", "в среду", "в четверг", "в пятницу", "в субботу"];
+  const esc = t => String(t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  fetch(WEEKEND + "weekend.json?t=" + Math.floor(Date.now() / 3e5), { cache: "no-cache" }).then(r => r.ok ? r.json() : null).then(j => {
+    const evs = (j && Array.isArray(j.events) ? j.events : []).filter(e => e && /^\d{4}-\d\d-\d\d$/.test(e.date) && e.date >= mskToday && e.name)
+      .sort((a, b) => (a.date + (a.time || "")).localeCompare(b.date + (b.time || "")));
+    if (!evs.length) return;
+    const e = evs[0], dd = dayN(e.date) - dayN(mskToday), wd = new Date(dayN(e.date) * 864e5).getUTCDay();
+    const dShort = dd === 0 ? "Сегодня" : dd === 1 ? "Завтра" : WD[wd] + " " + e.date.slice(8, 10) + "." + e.date.slice(5, 7);
+    const dLong = dd === 0 ? "сегодня" : dd === 1 ? "завтра" : WDV[wd];
+    const url = /^https:\/\/t\.me\//.test(e.url || "") ? e.url : "https://t.me/loungeliwan";
+    const g = document.querySelector(".gate-ev");
+    if (g) { g.textContent = [dShort, e.time, e.name].filter(Boolean).join(" · "); g.hidden = false; }
+    const a = document.querySelector(".fin a.ev");
+    if (a) { a.textContent = dShort + (e.time ? ", " + e.time : "") + " — " + e.name + (e.kind ? ", " + e.kind : ""); a.href = url; document.querySelectorAll(".ev-row").forEach(x => { x.hidden = false; }); dispatchEvent(new Event("resize")); } /* блок брони стал выше — пересчитать место для знака и титров */
+    const dj = CH.find(c => c.label === "Вечера с DJ");
+    if (dj && dj.subs[1]) dj.subs[1][2] = 'Ближайший вечер — <a class="ev" href="' + esc(url) + '" target="_blank" rel="noopener">' + esc(e.name) + ", " + dLong + (e.time ? " в " + esc(e.time) : "") + "</a>.";
+    /* разметка событий для поиска */
+    const ld = { "@context": "https://schema.org", "@graph": evs.slice(0, 5).map(x => ({
+      "@type": /dj/i.test(x.kind + " " + x.name) || /концерт|музык/i.test(x.kind || "") ? "MusicEvent" : "Event",
+      name: x.name + (x.kind ? " — " + x.kind : "") + " в Liwan",
+      startDate: x.date + "T" + (/^\d\d:\d\d$/.test(x.time || "") ? x.time : "19:00") + ":00+03:00",
+      eventStatus: "https://schema.org/EventScheduled", eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+      location: { "@type": "BarOrPub", "@id": "https://liwan-lounge.ru/#liwan", name: "Liwan", address: { "@type": "PostalAddress", streetAddress: "ул. Авиаконструктора Миля, 3А, фудмолл «Привоз», 2-й этаж", addressLocality: "Москва", addressCountry: "RU" } },
+      performer: { "@type": "Person", name: x.name },
+      organizer: { "@type": "Organization", name: "Liwan", url: "https://liwan-lounge.ru/" },
+      image: x.img ? WEEKEND + x.img : undefined, url: /^https:\/\/t\.me\//.test(x.url || "") ? x.url : "https://t.me/loungeliwan",
+      description: (x.kind || "Вечер") + " в лаунж-баре и чайной Liwan, Жулебино."
+    })) };
+    const sc = document.createElement("script"); sc.type = "application/ld+json"; sc.textContent = JSON.stringify(ld); document.body.appendChild(sc);
+  }).catch(() => {});
+})();
+
 /* ===== меню заведения (до WebGL — работает и в простой версии) ===== */
 const filmHooks = { open: null, close: null };
 let menuOpen = false, menuFocus = null, menuInert = [];
 const menuEl = document.getElementById("menu"), menuSc = menuEl.querySelector(".m-scroll");
 function openMenu() {
   if (menuOpen) return;
-  menuOpen = true; menuFocus = document.activeElement;
+  menuOpen = true; menuFocus = document.activeElement; goal("menu_open");
   if (filmHooks.open) filmHooks.open();
   /* закрыть от фокуса всё вокруг меню: соседей меню и соседей каждого его родителя до body.
      Не сами родители — на Tilda меню вложено в #allrecords, и блокировка контейнера заблокировала бы и меню */
@@ -1077,6 +1139,7 @@ function go(k, instant) {
   const from = tw ? tw.to : C;
   if (instant) { C = prevC = k; tw = null; } else { tw = { from, to: k, fromI: Math.round(from), far: Math.abs(k - from) > 1.01, t0: performance.now(), dur: TRANS_MS }; whoosh(TRANS_MS / 1000 * .95, k === 4 ? 2400 : 1600); }
   cur = k; chT0 = performance.now(); shownCard = -1; subsKey = "\u0000"; finFast = false; userNav = false; /* в финал — всегда с титрами, даже если перешли вручную */
+  if (k === N - 1) goalOnce("film_finale");
   if (card.classList.contains("on")) card.classList.add("off"); credits.classList.remove("on"); fin.classList.remove("on"); fin.inert = true; root.classList.remove("fin-on");
 }
 let userNav = false, finFast = false;
@@ -1103,7 +1166,7 @@ holdBtn.addEventListener("contextmenu", e => e.preventDefault());
 holdBtn.addEventListener("keydown", e => { if ((e.key === "Enter" || e.key === " ") && !e.repeat) { e.preventDefault(); startHold(); } });
 holdBtn.addEventListener("keyup", e => { if (e.key === "Enter" || e.key === " ") endHold(); });
 function startFilm(quiet) {
-  phase = "film"; holding = false; root.classList.add("film"); gate.classList.add("out");
+  phase = "film"; holding = false; root.classList.add("film"); gate.classList.add("out"); goalOnce("film_start");
   gate.inert = true; $$(".ui").forEach(el => { el.inert = false; }); if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
   enterT = performance.now(); go(0, true); chT0 = enterT;
   setVol(); if (!quiet) { whoosh(3.2, 1200); boom(2.3); showHint(); }
