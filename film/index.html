@@ -139,7 +139,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   -webkit-mask-image:linear-gradient(transparent,#000 22%,#000 78%,transparent);mask-image:linear-gradient(transparent,#000 22%,#000 78%,transparent);opacity:0;transition:opacity 1.2s}
 #credits.on{opacity:1}
 #credits .roll{position:absolute;left:0;right:0;top:100%;text-align:center}
-#credits.on .roll{animation:roll 10.5s linear forwards}
+#credits.on .roll{animation:roll 8.5s linear forwards}
 .paused #credits .roll{animation-play-state:paused}
 @keyframes roll{to{transform:translateY(calc(-100% - 100vh))}}
 .roll .big{font:400 54px/1 "Tenor Sans",serif;letter-spacing:.08em}
@@ -302,7 +302,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
       <span>Зажмите,<br>чтобы начать</span>
     </button>
     <button class="sr" type="button" id="start-now">Начать фильм без удержания</button>
-    <div class="gate-sub">Фильм о Liwan · полторы минуты<br>Лучше со звуком</div>
+    <div class="gate-sub">Фильм о Liwan · одна минута<br>Лучше со звуком</div>
   </div>
 </div>
 
@@ -392,28 +392,28 @@ const small = coarse || innerWidth < 820;
    tr — песочный переход В главу: 0 ветер слева, 1 смерч, 2 восходящий поток, 3 взрыв из центра, 4 косой ветер
    pm — фоновые песчинки: 0 золотая пыль, 1 искры, 2 пар, 3 звуковые кольца, 5 светлячки */
 const CH = [
-  { label: "Пролог", media: "about", fo: .5, k: 0, dark: .9, pm: 6, form: 1, tr: 0, dur: 7.5,
-    subs: [[3.4, 7.1, "Лаунж-бар и чайная в Жулебино."]] },
-  { label: "Привал", media: "atmosfera", fo: .5, k: 3, dark: .06, pm: 1, form: 0, tr: 0, dur: 14,
+  { label: "Пролог", media: "about", fo: .5, k: 0, dark: .9, pm: 6, form: 1, tr: 0, dur: 6,
+    subs: [[2.8, 5.8, "Лаунж-бар и чайная в Жулебино."]] },
+  { label: "Привал", media: "atmosfera", fo: .5, k: 3, dark: .06, pm: 1, form: 0, tr: 0, dur: 10.5,
     card: ["Глава I", "Привал"],
-    subs: [[6.0, 9.4, "Город остаётся за дверью."], [10.2, 13.6, "Здесь свет мягче, а время течёт медленнее."]] },
-  { label: "Чай", media: "chai", fo: .5, k: 1, dark: .06, pm: 2, form: 0, tr: 2, dur: 14,
+    subs: [[4.6, 7.1, "Город остаётся за дверью."], [7.7, 10.2, "Здесь свет мягче, а время течёт медленнее."]] },
+  { label: "Чай", media: "chai", fo: .5, k: 1, dark: .06, pm: 2, form: 0, tr: 2, dur: 10.5,
     card: ["Глава II", "Чай"],
-    subs: [[6.0, 9.4, "Чай здесь заваривает мастер."], [10.2, 13.6, "Улуны, пуэры и марокканский чай."]] },
-  { label: "Живой звук", media: "muzyka", top: .085, fo: .55, k: 1, dark: .1, pm: 3, form: 0, tr: 1, dur: 14.5,
+    subs: [[4.6, 7.1, "Чай здесь заваривает мастер."], [7.7, 10.2, "Улуны, пуэры и марокканский чай."]] },
+  { label: "Живой звук", media: "muzyka", top: .085, fo: .55, k: 1, dark: .1, pm: 3, form: 0, tr: 1, dur: 10.8,
     card: ["Глава III", "Живой звук"],
-    subs: [[6.0, 9.6, "В дни концертов звучат ситар и табла."], [10.4, 14.0, "Музыка, ради которой остаются до закрытия."]] },
-  { label: "Вечера с DJ", media: "dj", fo: .5, k: 4, dark: .14, pm: 0, form: 0, tr: 3, dur: 14.5,
+    subs: [[4.6, 7.3, "В дни концертов звучат ситар и табла."], [7.9, 10.6, "Музыка, ради которой остаются до закрытия."]] },
+  { label: "Вечера с DJ", media: "dj", fo: .5, k: 4, dark: .14, pm: 0, form: 0, tr: 3, dur: 10.8,
     card: ["Глава IV", "Вечера с\u00a0DJ"],
-    subs: [[6.0, 9.6, "По выходным за пультом — DJ."], [10.4, 14.0, 'Афиша недели — в нашем <a href="https://t.me/loungeliwan" target="_blank" rel="noopener">Telegram</a>.']] },
-  { label: "Веранда", media: "veranda", fo: .4, k: 1, dark: .1, pm: 5, form: 0, tr: 4, dur: 14,
+    subs: [[4.6, 7.3, "По выходным за пультом — DJ."], [7.9, 10.6, 'Афиша недели — в нашем <a href="https://t.me/loungeliwan" target="_blank" rel="noopener">Telegram</a>.']] },
+  { label: "Веранда", media: "veranda", fo: .4, k: 1, dark: .1, pm: 5, form: 0, tr: 4, dur: 10.5,
     card: ["Глава V", "Веранда"],
-    subs: [[6.0, 9.4, "Летняя веранда — зелень и плетёные лампы."], [10.2, 13.6, "Ковры, тёплый вечер и живой звук."]] },
+    subs: [[4.6, 7.1, "Летняя веранда — зелень и плетёные лампы."], [7.7, 10.2, "Ковры, тёплый вечер и живой звук."]] },
   { label: "Финал", media: "about", fo: .5, k: 3, dark: .82, pm: 0, form: 1, tr: 0, dur: 0,
     card: ["Финал", "До встречи"] }
 ];
 const N = CH.length;
-const TRANS_MS = 2800;
+const TRANS_MS = 2300;
 const MEDIA = {
   atmosfera: { v: "../assets/video/atmosfera.mp4", p: "../assets/poster/atmosfera.jpg" },
   chai: { v: "../assets/video/chai.mp4", p: "../assets/poster/chai.jpg" },
@@ -1151,7 +1151,7 @@ addEventListener("pointermove", e => {
 document.addEventListener("pointerleave", () => { mouse.px = mouse.py = -9; });
 
 /* карточки и субтитры */
-const CARD_IN = 2.4, CARD_OUT = 5.6;
+const CARD_IN = 2.0, CARD_OUT = 4.4;
 function splitTitle(s) {
   let i = 0;
   return s.split(" ").map(w => '<span class="w">' + [...w].map(c => '<span class="ch" style="--i:' + (i++) + '">' + c + "</span>").join("") + "</span>").join(" ");
@@ -1182,10 +1182,10 @@ function textFrame(lt) {
     }
   }
   if (cur === N - 1) {
-    if (finFast) { if (lt > 2.4 && !fin.classList.contains("on")) { fin.classList.add("on"); fin.inert = false; root.classList.add("fin-on"); } }
+    if (finFast) { if (lt > 2.0 && !fin.classList.contains("on")) { fin.classList.add("on"); fin.inert = false; root.classList.add("fin-on"); } }
     else {
-      if (lt > 6 && lt <= 16) credits.classList.add("on");
-      if (lt > 16 && !fin.classList.contains("on")) { fin.classList.add("on"); fin.inert = false; root.classList.add("fin-on"); credits.classList.remove("on"); }
+      if (lt > 4.5 && lt <= 12.5) credits.classList.add("on");
+      if (lt > 12.5 && !fin.classList.contains("on")) { fin.classList.add("on"); fin.inert = false; root.classList.add("fin-on"); credits.classList.remove("on"); }
     }
   }
 }
