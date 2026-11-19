@@ -1,0 +1,706 @@
+<!-- Liwan — сайт для Tilda: блок T123 «HTML-код». Вставлять целиком. Настройки — в конце, ищите «НАСТРОЙКИ САЙТА». -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Tenor+Sans&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Tenor+Sans&display=swap"></noscript>
+<!-- соединение с хостингом файлов открывается заранее (второе — для fetch афиши, он ходит без куки) -->
+<link rel="preconnect" href="https://neonsky3214-commits.github.io/liwan-cdn/assets/">
+<link rel="preconnect" href="https://neonsky3214-commits.github.io/liwan-cdn/assets/" crossorigin>
+<!-- обложки заставки и первого кадра грузятся сразу, не дожидаясь скрипта -->
+<link rel="preload" as="image" href="https://neonsky3214-commits.github.io/liwan-cdn/assets/intro/sand-h.jpg?v=ae40be59" media="(min-aspect-ratio: 1/1)">
+<link rel="preload" as="image" href="https://neonsky3214-commits.github.io/liwan-cdn/assets/intro/sand-v.jpg?v=ae40be59" media="(max-aspect-ratio: 999/1000)">
+<link rel="preload" as="image" href="https://neonsky3214-commits.github.io/liwan-cdn/assets/poster/atmosfera.jpg?v=ae40be59">
+<style>
+#liwan {
+  --choc: #1B1310;
+  --wine: #30080E;
+  --cream: #F9EED2;
+  --brass: #B58B5A;
+  --line-dark: rgba(249, 238, 210, .16);
+  --line-light: rgba(48, 8, 14, .22);
+  --rail: clamp(56px, 7vw, 104px);
+  --col: calc(100vw - 2 * var(--rail));
+  --display: "Tenor Sans", Optima, Candara, "Segoe UI", sans-serif;
+  --text: Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --ease: cubic-bezier(.215, .61, .355, 1);
+  color-scheme: dark;
+}
+#liwan *, #liwan *::before, #liwan *::after { box-sizing: border-box; }
+
+html.lw-lock { overflow: hidden; scrollbar-gutter: stable; }
+#liwan {
+  position: relative; overflow-x: clip; text-align: left;
+  margin: 0; background: var(--choc); color: var(--cream);
+  font: 300 16px/1.5 var(--text); -webkit-font-smoothing: antialiased;
+}
+#liwan a { color: inherit; }
+#liwan img, #liwan video, #liwan svg { display: block; }
+#liwan button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+#liwan :focus-visible { outline: 1px solid currentColor; outline-offset: 4px; }
+#liwan [hidden] { display: none !important; }
+#liwan .nw { white-space: nowrap; }
+#liwan .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* стрелка «—›» как в ссылках референса */
+#liwan .arr { display: inline-block; position: relative; width: 22px; height: 1px; margin-left: 10px; vertical-align: middle; background: currentColor; transition: width .4s var(--ease); }
+#liwan .arr::after { content: ""; position: absolute; right: 0; top: -3px; width: 6px; height: 6px; border-top: 1px solid; border-right: 1px solid; transform: rotate(45deg); transform-origin: 70% 30%; }
+
+/* ---------- заставка ---------- */
+#liwan .intro {
+  position: fixed; inset: 0; z-index: 60; background: #D39B61; overflow: hidden; touch-action: none; overscroll-behavior: contain; cursor: pointer;
+  transition: opacity .8s var(--ease);
+  /* страховка: даже если скрипт не запустится, заставка уйдёт сама */
+  animation: lw-intro-out .6s var(--ease) 12s forwards;
+}
+#liwan .intro.out { opacity: 0; pointer-events: none; }
+#liwan .intro.gone { display: none; }
+#liwan .intro-v { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+/* запасной вариант без видео (энергосбережение на iPhone, медленная сеть): отпечаток проступает слева направо, как от порыва */
+#liwan .intro-f {
+  position: absolute; inset: 0; background: center / cover no-repeat; opacity: 0;
+  -webkit-mask-image: linear-gradient(90deg, #000 40%, transparent 60%); mask-image: linear-gradient(90deg, #000 40%, transparent 60%);
+  -webkit-mask-size: 250% 100%; mask-size: 250% 100%; -webkit-mask-position: 100% 0; mask-position: 100% 0;
+}
+#liwan .intro.still { background-position: center; background-size: cover; }
+#liwan .intro.still .intro-v { display: none; }
+#liwan .intro.still .intro-f { opacity: 1; animation: lw-wind 2s cubic-bezier(.45, .05, .3, 1) .15s both; }
+@keyframes lw-wind { from { -webkit-mask-position: 100% 0; mask-position: 100% 0; } to { -webkit-mask-position: 0 0; mask-position: 0 0; } }
+@keyframes lw-intro-out { to { opacity: 0; visibility: hidden; } }
+
+/* ---------- рамка ---------- */
+#liwan .rail {
+  position: fixed; top: 0; bottom: 0; z-index: 20; width: var(--rail);
+  display: flex; flex-direction: column; align-items: center;
+  padding: 24px 0 28px; color: var(--cream); text-shadow: 0 1px 12px rgba(0, 0, 0, .55);
+}
+#liwan .rail-l { left: 0; }
+/* «Бронирование»: светлая кнопка с мягким свечением — самое заметное действие в рамке */
+#liwan .book {
+  display: inline-flex; align-items: center; justify-content: center; border-radius: 999px;
+  background: var(--cream); color: var(--choc); font: 500 12px/1 var(--text); letter-spacing: .08em; text-decoration: none; text-shadow: none; white-space: nowrap;
+  animation: lw-glow 3.2s ease-in-out infinite; transition: background .3s var(--ease);
+}
+#liwan .book:hover { background: #fff; }
+#liwan .book:focus-visible { outline: 2px solid var(--cream); outline-offset: 3px; }
+#liwan .rail .book { writing-mode: vertical-rl; transform: rotate(180deg); width: 40px; padding: 20px 0; margin-top: clamp(18px, 3vh, 28px); }
+@keyframes lw-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(249, 238, 210, 0), 0 0 12px rgba(249, 238, 210, .18); }
+  50% { box-shadow: 0 0 0 5px rgba(249, 238, 210, .1), 0 0 26px rgba(249, 238, 210, .42); }
+}
+#liwan .brand { display: block; color: inherit; }
+#liwan .brand svg { width: clamp(28px, 2.5vw, 38px); height: auto; filter: drop-shadow(0 1px 8px rgba(0, 0, 0, .45)); }
+#liwan .vnav { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: clamp(24px, 4.6vh, 48px); }
+#liwan .vlink {
+  writing-mode: vertical-rl; transform: rotate(180deg);
+  font: 400 13px/1 var(--text); letter-spacing: .09em; text-decoration: none;
+  padding: 8px 4px; text-underline-offset: 5px;
+}
+#liwan .vlink:hover { text-decoration: underline; text-decoration-thickness: 1px; }
+#liwan .rail .pause { font-size: 11px; letter-spacing: .14em; opacity: .8; }
+/* невысокий экран ноутбука: всё в рамке слева помещается — плотнее, «Пауза» уходит в подвал */
+@media (min-width: 768px) and (max-height: 820px) {
+  #liwan .rail { padding: 18px 0; }
+  #liwan .rail .book { padding: 14px 0; margin-top: 14px; }
+  #liwan .vnav { gap: clamp(10px, 2vh, 20px); }
+  #liwan .vlink { font-size: 12px; letter-spacing: .06em; padding: 6px 4px; }
+  #liwan .rail .pause { display: none; }
+  #liwan .foot .f-base .pause { display: inline; }
+}
+#liwan .topline {
+  position: fixed; top: 26px; left: 50%; z-index: 20; transform: translateX(-50%);
+  font: 500 11px/1 var(--text); letter-spacing: .36em; text-transform: uppercase;
+  color: var(--cream); text-shadow: 0 0 18px rgba(0, 0, 0, .9), 0 1px 2px rgba(0, 0, 0, .8); white-space: nowrap; pointer-events: none;
+  transition: opacity .4s var(--ease);
+}
+#liwan .topline.is-off { opacity: 0; }
+#liwan .rail, #liwan .topline, #liwan .mbar { animation: lw-fade 1s var(--ease) .4s backwards; }
+#liwan .mbar { display: none; }
+
+/* ---------- видео-разделы ---------- */
+#liwan .work {
+  --inset: 0px; --py: 0px;
+  position: relative; height: clamp(420px, 78vh, 56vw); overflow: hidden;
+  clip-path: inset(0 var(--inset)); background: var(--choc);
+}
+#liwan .media { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+/* кадр вне фокуса приглушён: свет «переходит» на кадр в центре экрана */
+#liwan .work::before {
+  content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: var(--choc); opacity: var(--dim, 0); transition: opacity .25s linear;
+}
+#liwan .work::after {
+  content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background:
+    linear-gradient(to top, rgba(27, 19, 16, .62), rgba(27, 19, 16, 0) 38%),
+    radial-gradient(120% 90% at 50% 45%, rgba(27, 19, 16, 0) 55%, rgba(27, 19, 16, .38));
+}
+/* на среднетоновых кадрах заголовок-инверсия теряет контраст: мягкая тень только под строкой заголовка */
+#liwan .work.shade::after {
+  background:
+    radial-gradient(62% 30% at 50% 50%, rgba(27, 19, 16, .5), rgba(27, 19, 16, 0)),
+    linear-gradient(to top, rgba(27, 19, 16, .62), rgba(27, 19, 16, 0) 38%),
+    radial-gradient(120% 90% at 50% 45%, rgba(27, 19, 16, 0) 55%, rgba(27, 19, 16, .38));
+}
+#liwan .t, #liwan .ts {
+  position: absolute; left: 0; right: 0; top: 50%; z-index: 2;
+  display: flex; justify-content: center;
+  transform: translate3d(0, calc(-50% + var(--py)), 0);
+  pointer-events: none;
+  /* появление при входе кадра в экран (класс .in ставит скрипт) */
+  opacity: 0; translate: 0 36px; transition: opacity 1.1s var(--ease), translate 1.1s var(--ease);
+}
+#liwan .work.in .t, #liwan .work.in .ts { opacity: 1; translate: 0 0; }
+#liwan .work-hero .t, #liwan .work-hero .ts { transition-delay: .15s; }
+#liwan .t { mix-blend-mode: difference; }
+/* слой под заголовком обесцвечивает видео по форме букв:
+   инверсия поверх него даёт «серебро», а не случайный цвет от яркого кадра */
+#liwan .ts { mix-blend-mode: saturation; color: #808080; }
+#liwan .t h2, #liwan .ts-h {
+  position: relative; margin: 0; white-space: nowrap;
+  font: 400 var(--fs, 12vw)/.92 var(--display); letter-spacing: -.015em;
+}
+/* нейтральный светлый, а не крем: инверсия крема над почти белым светом даёт синие пятна */
+#liwan .t h2 { color: #E9E9E9; opacity: .72; transition: opacity .6s var(--ease), color .6s var(--ease); }
+/* на телефоне длинный заголовок встаёт в две строки, чтобы не мельчить */
+#liwan .work.two .t h2, #liwan .work.two .ts-h { white-space: normal; width: min-content; text-align: center; line-height: .96; }
+#liwan .t h2::after {
+  content: ""; position: absolute; left: 0; right: 0; top: 55%; height: max(1px, .012em);
+  background: currentColor; transform: scaleX(0); transform-origin: left center;
+  transition: transform .8s var(--ease);
+}
+#liwan .t-mark { margin: 0; color: #E9E9E9; opacity: .8; }
+#liwan .ts .t-mark { color: #808080; opacity: 1; }
+#liwan .t-mark svg { width: min(calc(var(--col) * .72), 1180px); height: auto; }
+#liwan .cap {
+  position: absolute; z-index: 3; left: calc(var(--rail) + 28px); bottom: 26px; right: calc(var(--rail) + 28px);
+  margin: 0; max-width: 58ch; font: 400 13px/1.55 var(--text); letter-spacing: .02em;
+  text-shadow: 0 1px 14px rgba(0, 0, 0, .45);
+  opacity: 0; translate: 0 10px; transition: opacity .9s var(--ease) .35s, translate .9s var(--ease) .35s;
+}
+#liwan .work.in .cap { opacity: 1; translate: 0 0; }
+#liwan .work-hero .cap { transition-delay: .9s; }
+#liwan .cap .go { display: block; width: fit-content; margin: 8px 0 0; white-space: nowrap; opacity: .8; } /* ссылка всегда под подписью, ровно по её краю */
+#liwan .work-link { position: absolute; inset: 0; z-index: 4; }
+#liwan a, #liwan button, #liwan summary { -webkit-tap-highlight-color: transparent; }
+#liwan .work-link:focus-visible { outline-offset: -8px; }
+@media (hover: hover) {
+  #liwan .work.has-link:hover .t { mix-blend-mode: normal; }
+  #liwan .work.has-link:hover .t h2 { opacity: 1; color: var(--cream); }
+  #liwan .work.has-link:hover .t h2::after { transform: scaleX(1); }
+  #liwan .work.has-link:hover .go .arr { width: 34px; }
+  #liwan .work.has-link video.media { transition: transform 1.4s var(--ease); }
+  #liwan .work.has-link:hover video.media { transform: scale(1.04); }
+}
+/* ярлык у курсора над кадрами со ссылкой (только мышь) */
+#liwan .cur { position: fixed; left: 0; top: 0; z-index: 25; pointer-events: none; will-change: transform; }
+#liwan .cur span {
+  display: block; margin: 18px 0 0 18px; padding: 11px 16px; border-radius: 999px;
+  background: var(--cream); color: var(--choc); font: 500 11px/1 var(--text); letter-spacing: .18em; text-transform: uppercase; white-space: nowrap;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, .35); opacity: 0; transform: scale(.7); transition: opacity .35s var(--ease), transform .35s var(--ease);
+}
+#liwan .cur span::after { content: " \2192"; }
+#liwan .cur.on span { opacity: 1; transform: none; }
+html.lw-lock #liwan .cur span { opacity: 0; }
+#liwan .work-link:focus-visible ~ .t h2::after { transform: scaleX(1); }
+#liwan .kb { animation: lw-kb 18s var(--ease) infinite alternate; transform-origin: 50% 55%; }
+@keyframes lw-kb { from { transform: scale(1.02); } to { transform: scale(1.1) translate(-1%, -1.2%); } }
+@keyframes lw-fade { from { opacity: 0; } }
+
+/* ---------- о месте ---------- */
+#liwan .about { display: grid; grid-template-columns: 1fr 1fr; padding-left: var(--rail); background: var(--choc); } /* фото не заходит под рельсу: на светлом пункты меню не читались */
+#liwan .about-photo { position: relative; }
+#liwan .about-photo img { position: sticky; top: 0; width: 100%; height: 100vh; object-fit: cover; object-position: 38% 50%; opacity: 0; transition: opacity 1.2s var(--ease); }
+#liwan .about.in .about-photo img { opacity: 1; }
+#liwan .about-text > * { opacity: 0; translate: 0 18px; transition: opacity .9s var(--ease), translate .9s var(--ease); transition-delay: calc(var(--i, 0) * 120ms); }
+#liwan .about.in .about-text > * { opacity: 1; translate: 0 0; }
+#liwan .about-text { padding: 20vh calc(var(--rail) + 3vw) 18vh 5.5vw; }
+#liwan .eyebrow {
+  margin: 0 0 56px; font: 500 11px/1 var(--text); letter-spacing: .34em; text-transform: uppercase; color: var(--brass);
+}
+#liwan .about-text p { max-width: 31ch; margin: 0 0 1.4em; font: 300 clamp(18px, 1.45vw, 22px)/1.5 var(--text); }
+#liwan .about-text p:nth-of-type(odd) { margin-left: 14%; }
+#liwan .about-text p:first-of-type::first-line { letter-spacing: .01em; }
+
+/* ---------- weekend: главная афиша кадром на весь экран + остальные вечера строками (данные — weekend.json от робота на GitHub) ---------- */
+#liwan .wk { position: relative; overflow: hidden; min-height: 100vh; min-height: 100svh; margin: 0 var(--rail); display: grid; align-items: center; background: #120c0a; isolation: isolate; }
+#liwan .wk[hidden] { display: none; }
+#liwan .wk-bg { position: absolute; inset: -60px; z-index: -1; background: center / cover no-repeat; filter: blur(44px) saturate(1.15) brightness(.42); transform: scale(1.08); transition: background-image .6s var(--ease); }
+#liwan .wk::after { content: ""; position: absolute; inset: 0; z-index: -1; background: radial-gradient(120% 90% at 30% 50%, rgba(18, 12, 10, .2), rgba(18, 12, 10, .85)); pointer-events: none; }
+#liwan .wk-in { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); align-items: center; gap: clamp(32px, 5vw, 96px); padding: clamp(72px, 12vh, 130px) clamp(28px, 5vw, 88px); }
+#liwan .wk .eyebrow { margin-bottom: clamp(22px, 4vh, 40px); }
+#liwan .wk-day { display: block; font: 400 clamp(16px, 1.4vw, 20px)/1 var(--text); letter-spacing: .3em; text-transform: uppercase; color: var(--brass); }
+#liwan .wk-date { display: block; margin: 14px 0 0; font: 400 clamp(96px, 13vw, 210px)/.82 var(--display); letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+#liwan .wk-who { margin: clamp(22px, 3.5vh, 34px) 0 0; font: 400 clamp(30px, 3.4vw, 54px)/1.05 var(--display); text-wrap: balance; }
+#liwan .wk-meta { margin: 12px 0 0; font: 300 clamp(15px, 1.2vw, 17px)/1.5 var(--text); opacity: .82; }
+#liwan .wk-acts { display: flex; flex-wrap: wrap; gap: 12px; margin-top: clamp(26px, 4vh, 40px); }
+#liwan .wk-btn { display: inline-flex; align-items: center; justify-content: center; min-height: 50px; padding: 0 26px; border-radius: 999px; font: 500 14px/1 var(--text); letter-spacing: .03em; text-decoration: none; border: 1px solid rgba(249, 238, 210, .45); transition: background .3s var(--ease), color .3s var(--ease), border-color .3s var(--ease); }
+#liwan .wk-btn:hover { background: rgba(249, 238, 210, .12); }
+#liwan .wk-btn.main { background: var(--cream); color: var(--choc); border-color: var(--cream); }
+#liwan .wk-btn.main:hover { background: #fff; }
+#liwan .wk-more { margin: clamp(34px, 6vh, 56px) 0 0; padding: 0; list-style: none; border-top: 1px solid var(--line-dark); max-width: 560px; }
+#liwan .wk-row { display: grid; grid-template-columns: 96px 1fr auto; align-items: baseline; gap: 16px; width: 100%; padding: 15px 0; border-bottom: 1px solid var(--line-dark); text-align: left; cursor: pointer; transition: color .3s var(--ease), padding .3s var(--ease); }
+#liwan .wk-rd { font: 500 12px/1 var(--text); letter-spacing: .16em; text-transform: uppercase; color: var(--brass); }
+#liwan .wk-rn { font: 400 17px/1.3 var(--text); }
+#liwan .wk-rt { font: 300 13px/1 var(--text); opacity: .7; white-space: nowrap; }
+#liwan .wk-row:hover { padding-left: 8px; }
+#liwan .wk-row[aria-current="true"] .wk-rn { text-decoration: underline; text-underline-offset: 5px; text-decoration-thickness: 1px; }
+#liwan .wk-poster { position: relative; display: block; justify-self: end; width: min(100%, 460px, calc((100svh - 220px) * .8)); aspect-ratio: 4 / 5; box-shadow: 0 40px 90px rgba(0, 0, 0, .55), 0 0 0 1px rgba(249, 238, 210, .08); }
+#liwan .wk-poster img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: opacity .5s var(--ease); }
+#liwan .wk-poster .lbl2 { position: absolute; left: 0; bottom: -34px; font: 400 12px/1 var(--text); letter-spacing: .08em; opacity: .7; }
+#liwan .wk-poster:hover .lbl2 { opacity: 1; }
+#liwan .wk-all { display: inline-flex; align-items: center; min-height: 44px; margin-top: 18px; font: 400 13px/1 var(--text); letter-spacing: .04em; text-decoration: none; opacity: .85; }
+#liwan .wk-all:hover .arr { width: 34px; }
+#liwan .wk-in > * { opacity: 0; translate: 0 22px; transition: opacity 1s var(--ease), translate 1s var(--ease); }
+#liwan .wk-in > :last-child { transition-delay: .15s; }
+#liwan .wk.in .wk-in > * { opacity: 1; translate: 0 0; }
+#liwan .wk-poster:focus-visible, #liwan .wk-row:focus-visible { outline: 2px solid var(--cream); outline-offset: 6px; }
+
+
+/* ---------- подвал ---------- */
+#liwan .foot { padding: 72px calc(var(--rail) + 28px) 40px; border-top: 1px solid var(--line-dark); }
+#liwan .f-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; }
+#liwan .lbl { display: block; margin-bottom: 14px; font: 500 10.5px/1 var(--text); letter-spacing: .3em; text-transform: uppercase; color: var(--brass); }
+#liwan .foot p { margin: 0 0 12px; font-size: 15px; line-height: 1.55; }
+#liwan .foot p a { text-decoration: underline; text-underline-offset: 4px; }
+#liwan .tlink { display: inline-flex; align-items: center; font-size: 14px; text-decoration: none; }
+#liwan .tlink:hover .arr { width: 34px; }
+#liwan .foot br + .tlink { margin-top: 10px; }
+#liwan .f-cta {
+  display: flex; align-items: center; justify-content: center; width: fit-content; min-height: 48px; margin-top: 28px; padding: 0 26px;
+  border: 1px solid rgba(249, 238, 210, .38); font: 500 14px/1 var(--text); letter-spacing: .03em; text-decoration: none;
+  transition: background .3s var(--ease), color .3s var(--ease), border-color .3s var(--ease);
+}
+#liwan .f-cta:hover { background: var(--cream); color: var(--choc); border-color: var(--cream); }
+#liwan .f-base {
+  display: flex; flex-wrap: wrap; gap: 12px 28px; align-items: center; margin-top: 64px;
+  font-size: 12px; letter-spacing: .06em; color: rgba(249, 238, 210, .6); /* прозрачность цвета, а не блока: кнопка внутри может быть ярче */
+}
+#liwan .f-base .pause { display: none; text-decoration: underline; text-underline-offset: 4px; }
+
+/* ---------- панели ---------- */
+#liwan .scrim { position: fixed; inset: 0; z-index: 40; background: rgba(12, 8, 6, .6); opacity: 0; transition: opacity .6s var(--ease); }
+#liwan .scrim.open { opacity: 1; }
+#liwan .panel {
+  position: fixed; top: 0; right: 0; bottom: 0; z-index: 41; width: min(780px, 100%);
+  overflow-y: auto; overscroll-behavior: contain;
+  --pr: clamp(24px, 4.5vw, 72px);
+  padding: 0 var(--pr) 56px calc(var(--pr) + 14px);
+  color: var(--wine); color-scheme: light;
+  /* орнамент с края — тот же, что на полях печатного меню */
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='20'%3E%3Cpath d='M0 0 13 10 0 20z' fill='%2330080E'/%3E%3C/svg%3E") left top / 14px 20px repeat-y, var(--cream);
+  transform: translateX(100%); transition: transform .75s var(--ease), visibility 0s .75s; visibility: hidden;
+}
+#liwan .panel.open { transform: none; visibility: visible; transition: transform .75s var(--ease); }
+#liwan .panel > :not(.p-bar):not(.m-pages), #liwan .m-pages > .m-page {
+  opacity: 0; translate: 0 16px; transition: opacity .3s var(--ease), translate .3s var(--ease);
+}
+#liwan .panel.open > :not(.p-bar):not(.m-pages), #liwan .panel.open .m-pages > .m-page {
+  opacity: 1; translate: 0 0; transition-duration: .7s; transition-delay: calc(.25s + var(--i, 0) * 70ms);
+}
+#liwan .p-bar {
+  position: sticky; top: 0; z-index: 2; display: flex; justify-content: flex-end;
+  margin: 0 calc(-1 * var(--pr)) 0 0; padding: calc(16px + env(safe-area-inset-top)) var(--pr) 20px 0;
+  background: linear-gradient(var(--cream) 72%, rgba(249, 238, 210, 0));
+}
+#liwan .close { display: flex; align-items: center; gap: 10px; padding: 8px 0; font: 400 14px/1 var(--text); letter-spacing: .04em; }
+#liwan .close:hover { text-decoration: underline; text-underline-offset: 4px; }
+#liwan .close span { font-size: 18px; line-height: 1; }
+#liwan .p-head { display: flex; align-items: flex-end; gap: clamp(16px, 2.5vw, 28px); margin-top: 0; }
+#liwan .p-head .m svg { width: clamp(44px, 5vw, 64px); height: auto; }
+#liwan .p-head .w svg { width: min(100%, 440px); height: auto; }
+#liwan .p-head .w { flex: 1; padding-bottom: 4px; }
+#liwan .lead { max-width: 34ch; margin: 30px 0 40px; font: 400 clamp(17px, 1.5vw, 20px)/1.45 var(--text); }
+#liwan .facts { display: grid; grid-template-columns: 1fr 1fr; gap: 30px 40px; margin: 0; }
+#liwan .facts dt { font: 500 10.5px/1 var(--text); letter-spacing: .26em; text-transform: uppercase; opacity: .7; }
+#liwan .facts dd { margin: 10px 0 0; font: 400 16px/1.5 var(--text); }
+#liwan .facts a { text-decoration: underline; text-underline-offset: 4px; }
+#liwan .btn:focus-visible { outline: 2px solid var(--wine); outline-offset: 3px; }
+#liwan .btn {
+  display: flex; align-items: center; justify-content: center; min-height: 58px; margin-top: 40px; padding: 0 20px;
+  background: var(--wine); color: var(--cream); font: 500 15px/1.2 var(--text); letter-spacing: .03em; text-decoration: none; text-align: center;
+  transition: background .3s;
+}
+#liwan .btn:hover { background: #4A0E18; }
+#liwan .btn-ghost { margin-top: 10px; background: transparent; color: var(--wine); border: 1px solid var(--line-light); }
+#liwan .btn-ghost:hover { background: rgba(48, 8, 14, .06); }
+#liwan .bonus {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 32px; padding: 18px 0;
+  border-top: 1px solid var(--line-light); border-bottom: 1px solid var(--line-light);
+  font: 400 14px/1.4 var(--text); text-decoration: none;
+}
+#liwan .bonus:hover .arr { width: 34px; }
+#liwan .p-links { display: flex; flex-wrap: wrap; gap: 14px 32px; margin-top: 28px; }
+#liwan .p-links a { display: inline-flex; align-items: center; font: 400 14px/1 var(--text); letter-spacing: .04em; text-decoration: none; }
+#liwan .p-links a:hover .arr { width: 34px; }
+/* ---------- меню: страницы печатного меню один в один ---------- */
+#liwan .panel-menu { width: min(1000px, 100%); }
+#liwan .m-pdf { display: inline-flex; align-items: center; margin-right: auto; padding: 8px 0; font: 400 14px/1 var(--text); letter-spacing: .04em; text-decoration: none; }
+#liwan .m-pdf:hover .arr { width: 34px; }
+#liwan .m-pages { display: grid; gap: 18px; }
+#liwan .m-page {
+  display: block; background: #F6EFE7; aspect-ratio: 595 / 842;
+  box-shadow: 0 1px 2px rgba(48, 8, 14, .08), 0 12px 32px rgba(48, 8, 14, .1);
+}
+#liwan .m-page img { display: block; width: 100%; height: 100%; }
+#liwan .m-cta { margin-top: 40px; }
+
+/* ---------- телефон и планшет ---------- */
+/* сенсорные экраны, в том числе планшет в компьютерной раскладке: область нажатия не меньше 44px, вид не меняется */
+@media (pointer: coarse) {
+  #liwan .foot p a, #liwan .facts a { display: inline-block; padding: 12px 0; margin: -12px 0; }
+  #liwan .tlink, #liwan .p-links a { padding: 13px 0; margin: -7px 0; }
+  #liwan .rail .vlink { padding: 0 13px; }
+  #liwan .rail .brand { padding: 6px; margin: -6px; }
+  #liwan .foot p + .tlink { margin-top: 2px; } /* зона телефона не наезжает на ссылку ниже */
+}
+@media (max-width: 767px) {
+  #liwan { --rail: 0px; --col: calc(100vw - 32px); }
+  #liwan .rail, #liwan .topline { display: none; }
+  #liwan .mbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 20; display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; padding: calc(10px + env(safe-area-inset-top)) 16px 6px;
+    background: linear-gradient(rgba(27, 19, 16, .95), rgba(27, 19, 16, .82) 55%, rgba(27, 19, 16, 0)); /* под вторым рядом плотно: проезжающий текст не мешает читать разделы */
+  }
+  /* ниже первого экрана подложка плотная: проезжающий текст не просвечивает сквозь разделы */
+  #liwan .mbar::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(var(--choc) 80%, rgba(27, 19, 16, 0)); opacity: 0; transition: opacity .35s var(--ease); pointer-events: none; }
+  #liwan .mbar.solid::before { opacity: 1; }
+  #liwan .mbar .brand svg { width: 28px; }
+  /* второй ряд: разделы по всей ширине */
+  #liwan .mbar nav { display: flex; justify-content: space-between; width: 100%; margin-top: 6px; }
+  #liwan .mbar .book { min-height: 38px; padding: 0 18px; font-size: 13px; letter-spacing: .04em; }
+  /* зона нажатия 44px при прежнем виде панели */
+  #liwan .mbar .book { position: relative; }
+  #liwan .mbar .book::after { content: ""; position: absolute; inset: -4px -2px; }
+  #liwan .mbar .brand { padding: 6px; margin: -6px; }
+  #liwan .mbar nav a { font: 400 14px/1 var(--text); letter-spacing: .04em; text-decoration: none; padding: 15px 0; margin: -5px 0; text-shadow: 0 1px 3px rgba(0, 0, 0, .8), 0 1px 12px rgba(0, 0, 0, .55); }
+  #liwan .mbar .brand { filter: drop-shadow(0 1px 8px rgba(0, 0, 0, .45)); }
+  #liwan .work { height: min(124vw, 74svh); }
+  #liwan .cap { left: 28px; right: 28px; bottom: 22px; font-size: 12.5px; }
+  #liwan .cap .go { margin-top: 6px; }
+  #liwan .about { grid-template-columns: 1fr; }
+  #liwan .wk { margin: 0; min-height: 0; scroll-margin-top: 40px; } /* переход из «Афиши»: заголовок не уходит под верхнюю панель */
+  #liwan .wk-in { grid-template-columns: 1fr; gap: 0; padding: 72px 20px 64px; }
+  #liwan .wk-in > div { display: contents; } /* на телефоне: подзаголовок, постер, затем дата и кнопки */
+  #liwan .wk .eyebrow { order: -2; margin-bottom: 18px; }
+  #liwan .wk-poster { order: -1; justify-self: stretch; width: 100%; margin-bottom: 30px; }
+  #liwan .wk-all { justify-self: start; }
+  #liwan .wk-poster .lbl2 { display: none; }
+  #liwan .wk-date { font-size: clamp(88px, 28vw, 120px); }
+  #liwan .wk-row { grid-template-columns: 78px 1fr auto; gap: 12px; }
+  #liwan .wk-btn { flex: 1 1 auto; }
+  #liwan .about-photo img { position: static; height: auto; aspect-ratio: 4 / 5; }
+  #liwan .about-text { padding: 56px 20px 64px; }
+  #liwan .eyebrow { margin-bottom: 32px; }
+  #liwan .about-text p:nth-of-type(odd) { margin-left: 10%; }
+  #liwan .foot { padding: 56px 20px calc(40px + env(safe-area-inset-bottom)); }
+  #liwan .f-grid { grid-template-columns: 1fr; gap: 36px; }
+  #liwan .f-base .pause { display: inline; padding: 10px 0; font-size: 13px; color: rgba(249, 238, 210, .85); }
+  #liwan .f-cta { display: none; }
+  /* на телефоне область нажатия у ссылок не меньше 44px, вид не меняется */
+  #liwan .foot p a, #liwan .facts a { display: inline-block; padding: 12px 0; margin: -12px 0; }
+  #liwan .tlink, #liwan .p-links a { padding: 13px 0; margin: -7px 0; }
+  #liwan .panel { --pr: 20px; padding: 0 var(--pr) calc(40px + env(safe-area-inset-bottom)) 34px; }
+  #liwan .p-bar { padding-top: calc(10px + env(safe-area-inset-top)); padding-bottom: 14px; }
+  #liwan .facts { grid-template-columns: 1fr; gap: 24px; }
+  #liwan .p-head .w svg { width: 100%; }
+  #liwan .panel-menu { --pr: 12px; padding-left: 26px; }
+  #liwan .m-pages { gap: 12px; }
+}
+@media (min-width: 768px) and (max-width: 1023px) {
+  #liwan .about { grid-template-columns: 1fr; }
+  #liwan .about-photo img { position: static; height: auto; aspect-ratio: 3 / 2; object-position: 40% 42%; }
+  #liwan .about-text { padding: 12vh calc(var(--rail) + 6vw) 14vh; }
+  #liwan .about-text p { max-width: 36ch; }
+  #liwan .f-grid { grid-template-columns: 1fr 1fr; gap: 36px 28px; }
+  #liwan .f-cta { white-space: nowrap; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html:not(.lw-motion) #liwan .kb, html:not(.lw-motion) #liwan .rail, html:not(.lw-motion) #liwan .topline, html:not(.lw-motion) #liwan .mbar, html:not(.lw-motion) #liwan .book { animation: none; }
+  html:not(.lw-motion) #liwan .work .t, html:not(.lw-motion) #liwan .work .ts, html:not(.lw-motion) #liwan .cap, html:not(.lw-motion) #liwan .panel > *, html:not(.lw-motion) #liwan .m-page, html:not(.lw-motion) #liwan .about-text > *, html:not(.lw-motion) #liwan .about-photo img {
+    translate: none !important; transition: opacity .45s ease !important; transition-delay: 0s !important;
+  }
+  html:not(.lw-motion) #liwan .work.has-link:hover video.media { transform: none; }
+  html:not(.lw-motion) #liwan .cur span { transition: opacity .2s ease; transform: none; }
+  html:not(.lw-motion) #liwan .panel, html:not(.lw-motion) #liwan .scrim, html:not(.lw-motion) #liwan .t h2, html:not(.lw-motion) #liwan .t h2::after, html:not(.lw-motion) #liwan .arr { transition-duration: .01s !important; }
+}
+</style>
+<noscript><style>
+  /* без JavaScript меню и контакты показываются обычными блоками внизу страницы */
+  #liwan .panel[hidden] { display: block !important; position: static; transform: none; visibility: visible; width: auto; }
+  #liwan .p-bar { display: none !important; }
+  #liwan .work .t, #liwan .work .ts, #liwan .cap, #liwan .panel > *, #liwan .m-page, #liwan .about-text > *, #liwan .about-photo img { opacity: 1 !important; translate: none !important; }
+  #liwan .work::before { display: none; }
+  #liwan .intro { display: none !important; }
+</style></noscript>
+<div id="liwan">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><symbol id="lw-mark" viewBox="0 0 108.05 125.22"><path fill-rule="nonzero" d="M68.02 118.19L68.02 118.18L68.02 118.19ZM108.05 0.09C107.83 0.58 106.12 1.04 105.54 1.35C104.03 2.17 102.41 3.11 100.95 4.02L98.93 5.49C97.30 6.72 95.81 7.96 94.43 9.29C93.88 9.82 93.34 10.36 92.82 10.92C91.01 12.89 89.39 15.09 87.90 17.70C87.34 18.68 86.82 19.68 86.36 20.70C86.23 20.98 85.83 21.93 85.72 22.12C85.56 22.72 85.34 23.30 85.14 23.88C84.22 26.50 83.70 29.30 83.40 32.06C83.36 32.41 83.32 32.75 83.29 33.08C83.25 33.41 83.23 33.75 83.20 34.10L83.22 38.17C83.22 38.82 83.18 39.56 83.36 40.17L83.42 40.82C83.48 41.59 83.58 42.86 83.74 43.58C83.82 44.08 83.92 44.58 83.98 45.08C84.14 45.99 84.32 46.80 84.53 47.70C87.65 60.24 90.95 72.73 92.69 85.56C92.75 85.97 92.86 86.54 92.86 86.94C92.89 87.19 92.96 87.80 92.95 88.02C93.00 88.38 93.04 88.94 93.11 89.28C93.47 91.28 93.79 101.61 93.21 103.06C93.08 104.59 92.80 106.02 92.49 107.52C92.21 108.70 91.89 110.45 91.00 111.36C90.94 111.42 90.88 111.48 90.82 111.53L89.85 112.70C89.53 113.06 89.20 113.41 88.80 113.80C88.34 114.25 87.88 114.68 87.40 115.11L85.96 116.36C85.26 117.03 82.88 118.87 82.04 119.39C81.12 120.11 76.94 123.10 76.04 123.34C75.69 123.56 75.34 123.79 74.99 124.02L74.87 124.06C74.58 124.13 74.11 124.02 73.54 123.80C73.22 123.67 72.86 123.51 72.49 123.32C70.64 122.38 68.40 120.85 67.67 120.34C67.03 119.96 66.48 119.58 65.87 119.16L65.21 118.59C62.05 116.29 59.97 114.17 57.37 111.31L56.38 110.32C52.91 116.51 46.23 122.43 39.72 125.22C39.38 124.99 38.97 124.74 38.69 124.45C36.53 123.06 33.43 119.98 31.84 117.98C31.42 117.57 30.24 115.91 29.92 115.44C29.48 114.87 29.30 114.58 28.95 113.97C28.73 113.76 28.00 112.36 27.84 112.04C27.50 111.48 27.35 111.18 27.09 110.59C26.38 111.13 26.83 110.76 25.98 110.95C25.85 111.15 25.19 112.16 25.06 112.27C23.79 114.24 21.84 116.75 19.90 118.06C19.19 118.95 17.07 120.28 16.03 120.95C14.52 122.08 9.96 124.51 7.59 124.86C7.43 124.88 7.28 124.90 7.15 124.90C7.09 124.90 7.02 124.88 6.93 124.84C6.33 124.54 5.12 123.29 4.64 122.91C3.84 122.22 2.81 121.06 2.21 120.20C1.53 119.63 0.50 118.00 0.00 117.22L0.00 116.72C0.19 116.59 0.44 116.46 0.66 116.60C2.63 117.93 7.01 120.42 9.43 118.98C12.86 116.94 13.62 109.68 13.38 106.16C12.99 100.62 11.96 95.32 10.42 90.02C10.17 89.19 9.87 88.03 9.47 87.31C11.05 86.24 12.61 84.92 14.24 83.84C17.40 81.41 21.59 78.20 24.87 75.90C26.96 79.35 29.12 86.76 29.47 90.83C30.02 93.98 29.90 98.01 29.43 101.18C29.36 101.63 28.99 102.95 28.82 103.73L28.72 104.28L29.67 105.03C30.28 105.54 30.85 106.05 31.43 106.52C31.71 106.76 32.00 106.98 32.31 107.18C32.61 107.39 32.92 107.57 33.25 107.74C34.25 108.22 35.40 108.49 36.93 108.36C37.37 108.27 38.05 107.90 38.34 107.58C41.35 104.24 41.18 99.62 41.28 95.68C41.18 92.64 40.86 90.72 40.37 87.74C40.24 87.34 40.22 87.01 40.13 86.63C38.73 80.77 37.40 74.31 34.77 68.86C38.42 66.05 42.09 63.26 45.79 60.51C47.29 59.38 50.22 56.99 51.68 56.14C58.39 70.46 63.27 87.11 59.06 102.85C58.89 103.36 58.55 104.20 58.63 104.69C59.16 105.06 59.73 105.44 60.24 105.84C60.60 106.08 60.91 106.29 61.23 106.48L62.25 107.08C62.47 107.17 62.63 107.25 62.79 107.32C62.95 107.40 63.10 107.49 63.30 107.62C64.35 107.89 64.80 107.99 65.91 107.99C68.50 107.71 69.81 106.67 71.03 104.73C71.21 104.45 71.38 104.16 71.56 103.85L71.88 102.93C73.40 98.33 73.76 93.75 73.27 88.90C73.01 86.35 72.50 83.81 72.16 81.26C72.03 80.85 71.71 77.73 71.59 76.99C70.97 73.68 70.13 70.17 69.60 66.92C69.47 65.06 68.75 62.16 68.33 60.32C67.98 58.73 67.75 57.08 67.49 55.47C67.38 54.02 67.47 52.51 67.43 51.05C67.35 47.13 67.30 44.56 68.14 40.69C68.99 36.50 70.39 32.44 72.30 28.61C72.88 27.47 73.60 26.38 74.21 25.18C74.88 23.86 78.78 18.53 79.90 17.68C80.09 17.44 80.30 17.14 80.51 16.92C85.54 11.43 91.67 7.08 98.30 3.71C99.26 3.22 100.03 2.78 101.12 2.57C101.73 2.06 107.43 0.00 108.05 0.09Z"/></symbol><symbol id="lw-word" viewBox="0 0 150.30 36.04"><path fill-rule="nonzero" d="M62.37 0.66C63.51 2.93 64.07 4.51 65.04 6.81L65.22 7.03C65.40 7.71 67.60 13.10 67.99 13.94C69.03 16.24 71.06 22.83 72.18 24.64C72.61 23.80 73.95 17.29 74.28 15.90C75.29 13.00 77.48 3.75 77.64 0.86C78.78 0.83 81.75 0.50 82.53 0.98C82.64 1.44 82.53 1.41 82.24 1.93C81.04 5.64 73.38 35.58 72.93 36.02L72.62 36.04C72.03 35.47 71.48 33.68 71.18 32.83C70.46 31.11 69.75 29.39 69.06 27.67C68.70 26.34 67.76 24.34 67.26 22.89C65.97 20.32 64.74 16.36 63.61 13.64C63.21 12.68 62.81 11.19 62.35 10.34L62.00 10.31C61.65 11.76 60.77 13.79 60.23 15.22C58.79 19.03 57.02 22.90 55.58 26.72L55.30 27.49L54.86 28.58L54.57 29.29C53.82 31.20 52.58 34.53 51.71 35.90C51.62 36.04 51.48 35.97 51.28 35.94C50.45 34.67 48.64 26.95 48.13 25.03C47.94 23.90 47.11 21.10 46.79 19.89L43.45 7.34C43.04 5.82 42.39 3.89 42.08 2.44C41.88 1.97 41.60 1.42 41.37 0.95C42.82 0.97 44.32 0.93 45.78 0.92L46.43 0.88L46.74 0.99C46.88 1.57 46.76 1.90 46.73 2.36L46.72 2.57L46.94 3.42C47.01 3.70 47.09 3.99 47.16 4.27C47.59 5.98 47.98 7.67 48.43 9.37L48.77 10.82C49.15 12.23 49.87 14.72 50.32 16.62C50.40 16.93 50.46 17.23 50.52 17.51C50.58 17.79 50.62 18.04 50.65 18.26C50.95 19.23 51.17 20.01 51.40 21.01C51.61 21.85 52.27 24.28 52.69 24.94C53.05 23.28 54.25 20.28 54.88 18.59C57.02 13.07 59.25 7.58 61.59 2.14L62.37 0.66Z"/><path fill-rule="nonzero" d="M124.12 0.68C125.76 2.23 127.56 4.46 129.04 6.23C129.37 6.66 129.65 7.12 130.10 7.42C135.28 13.69 140.64 19.70 145.83 25.92C145.93 25.40 145.96 23.59 145.98 22.95C145.86 18.84 145.97 14.68 145.93 10.56C145.90 7.56 146.04 3.78 145.38 0.87C146.11 0.93 150.10 0.89 150.30 0.99C150.27 1.39 150.25 1.39 150.18 1.74C149.95 2.86 150.08 4.32 150.03 5.51C149.84 10.45 150.01 15.46 149.97 20.40C149.96 21.15 150.03 25.51 149.92 26.01C149.95 27.55 149.94 29.10 149.90 30.64C150.01 31.92 149.91 34.47 149.90 35.84C147.99 34.63 141.38 26.51 139.61 24.43C135.38 19.56 131.19 14.67 127.03 9.75C127.44 12.08 127.21 13.96 127.30 16.18C127.53 21.68 126.79 30.08 127.68 35.31C126.19 35.12 124.31 35.16 122.82 35.27C123.54 30.70 122.99 24.04 123.24 19.29C122.81 13.45 123.42 6.82 123.15 0.91C123.13 0.35 123.23 0.33 123.60 0.00L124.12 0.68Z"/><path fill-rule="nonzero" d="M31.49 0.81C30.26 4.51 30.84 17.18 30.79 21.80C30.76 25.18 30.68 30.74 31.05 34.12C31.25 34.30 31.29 34.49 31.38 34.75L31.21 35.00C29.49 35.19 28.26 34.99 26.33 35.28C27.02 28.49 26.61 20.90 26.80 14.02C26.86 11.78 26.64 9.36 26.76 7.10C26.68 4.89 26.55 3.08 26.34 0.89C26.82 0.84 27.63 0.83 28.13 0.81C29.31 0.85 30.31 0.84 31.49 0.81Z"/><path fill-rule="nonzero" d="M3.24 0.67C4.01 0.69 4.68 0.78 4.85 0.86L4.79 1.19C4.78 4.20 4.42 7.50 4.46 10.38L4.46 11.27C4.88 15.47 4.52 21.38 4.57 25.70C4.58 26.68 4.53 30.32 4.44 31.56L4.42 31.77L4.44 32.05C5.54 31.19 11.45 32.02 13.28 31.64C15.02 31.29 14.73 31.47 16.52 30.62C16.62 32.15 16.60 33.68 16.48 35.20C10.77 35.00 5.70 35.13 0.13 35.03L0.00 34.83C0.42 33.54 0.16 23.51 0.15 21.33L0.18 6.04C0.18 5.66 0.17 5.27 0.15 4.87C0.13 4.47 0.11 4.07 0.10 3.67C0.07 2.87 0.08 2.08 0.24 1.37C0.34 0.89 1.38 0.70 2.45 0.67C2.71 0.66 2.98 0.66 3.24 0.67Z"/><path fill-rule="nonzero" d="M103.69 24.07C101.14 24.78 96.82 24.20 94.11 23.95C94.57 22.61 95.15 21.20 95.53 19.84L95.65 19.88C96.09 18.78 96.50 17.67 96.88 16.55C97.44 15.26 99.15 9.91 99.98 9.51C100.14 10.20 100.23 10.67 100.52 11.31C101.11 13.03 101.76 15.02 102.42 16.69L102.86 17.84C103.58 19.72 104.39 21.73 105.03 23.63C104.67 23.99 104.24 24.04 103.69 24.07ZM108.58 21.02L108.41 20.66L108.35 20.43C108.04 19.35 107.07 17.13 106.51 15.93L106.29 15.45C104.94 11.40 102.31 5.23 100.66 1.17C100.40 0.51 100.51 0.48 100.01 0.14C99.02 0.56 98.08 3.46 97.73 4.49C96.72 6.44 95.56 9.59 94.67 11.71C94.12 12.99 92.91 15.86 92.48 17.16C90.06 22.50 87.42 30.29 84.58 35.23L89.99 35.10C90.39 33.30 91.92 29.49 92.61 27.48C97.01 28.67 102.22 28.74 106.66 27.81C107.39 30.03 108.41 32.99 108.89 35.25C110.37 35.17 113.32 35.06 114.76 35.25C112.78 32.33 110.37 24.86 108.58 21.02Z"/></symbol></svg>
+<!-- заставка: ветер сдувает песок и проявляет отпечаток знака (ролик intro/sand-*.mp4, рендер video/sand/render.py). Клик или клавиша пропускает; INTRO: 0 в настройках — выключить -->
+<div class="intro" aria-hidden="true"><video class="intro-v" muted playsinline preload="auto"></video><div class="intro-f"></div></div>
+
+<header class="rail rail-l">
+  <a class="brand" href="/" aria-label="Liwan — на главную, фильм о заведении"><svg class="i-mark" viewBox="0 0 108.05 125.22" fill="currentColor" aria-hidden="true" focusable="false"><use href="#lw-mark"></use></svg></a>
+  <a class="book" href="https://reservation.yandex.ru/partner-reserve/forms/03fcde06-37b9-4221-a463-c06049b48a12" target="_blank" rel="noopener">Бронирование</a>
+  <nav class="vnav" aria-label="Разделы">
+    <a class="vlink" href="#menu" data-open="menu">Меню</a>
+    <a class="vlink" href="https://t.me/loungeliwan" target="_blank" rel="noopener">Афиша</a>
+    <a class="vlink" href="https://app.loona.ai/4761/create" target="_blank" rel="noopener">Система привилегий</a>
+    <a class="vlink" href="#bron" data-open="bron">Контакты</a>
+  </nav>
+  <button class="vlink pause" type="button" data-pause>Пауза</button>
+</header>
+<div class="topline" aria-hidden="true">Liwan · Oriental lounge</div>
+
+<div class="mbar">
+  <a class="brand" href="/" aria-label="Liwan — на главную, фильм о заведении"><svg class="i-mark" viewBox="0 0 108.05 125.22" fill="currentColor" aria-hidden="true" focusable="false"><use href="#lw-mark"></use></svg></a>
+  <a class="book" href="https://reservation.yandex.ru/partner-reserve/forms/03fcde06-37b9-4221-a463-c06049b48a12" target="_blank" rel="noopener">Бронирование</a>
+  <nav aria-label="Разделы">
+    <a href="#menu" data-open="menu">Меню</a>
+    <a href="https://t.me/loungeliwan" target="_blank" rel="noopener">Афиша</a>
+    <a href="https://app.loona.ai/4761/create" target="_blank" rel="noopener">Привилегии</a>
+    <a href="#bron" data-open="bron">Контакты</a>
+  </nav>
+</div>
+
+<main id="top">
+  <section class="work work-hero" aria-label="Liwan">
+    <video class="media" muted loop playsinline preload="none" poster="https://neonsky3214-commits.github.io/liwan-cdn/assets/poster/atmosfera.jpg?v=ae40be59" data-poster="poster/atmosfera.jpg" data-src="video/atmosfera.mp4" aria-hidden="true"></video>
+    <div class="ts" aria-hidden="true"><span class="t-mark"><svg class="i-word" viewBox="0 0 150.30 36.04" fill="currentColor" aria-hidden="true" focusable="false"><use href="#lw-word"></use></svg></span></div>
+    <div class="t"><h1 class="t-mark"><span class="sr">Liwan — лаунж-бар и чайная в Жулебино, фудмолл «Привоз»</span><svg class="i-word" viewBox="0 0 150.30 36.04" fill="currentColor" aria-hidden="true" focusable="false"><use href="#lw-word"></use></svg></h1></div>
+    <p class="cap">Лаунж-бар и чайная в Жулебино — второй этаж фудмолла «Привоз». Ежедневно с&nbsp;<span data-from>14:00</span></p>
+  </section>
+
+  <section class="work has-link" aria-labelledby="h-chai">
+    <video class="media" muted loop playsinline preload="none" data-poster="poster/chai.jpg" data-src="video/chai.mp4" aria-hidden="true"></video>
+    <a class="work-link" href="#menu" data-open="menu" data-to="m-kitay" aria-label="Китайский чай в меню"></a>
+    <div class="ts" aria-hidden="true"><span class="ts-h">Чайная церемония</span></div>
+    <div class="t"><h2 id="h-chai">Чайная церемония</h2></div>
+    <p class="cap">Чай заваривает мастер прямо при&nbsp;вас. Литровый чайник — от&nbsp;1&nbsp;100&nbsp;₽ <span class="go">В меню<span class="arr"></span></span></p>
+  </section>
+
+  <section class="work" aria-labelledby="h-veranda">
+    <video class="media" muted loop playsinline preload="none" data-poster="poster/veranda.jpg" data-src="video/veranda.mp4" aria-hidden="true"></video>
+    <div class="ts" aria-hidden="true"><span class="ts-h">Веранда</span></div>
+    <div class="t"><h2 id="h-veranda">Веранда</h2></div>
+    <p class="cap">Летняя веранда: зелень, плетёные лампы, ковры и живой звук</p>
+  </section>
+
+  <section class="work has-link shade" aria-labelledby="h-muzyka">
+    <video class="media" muted loop playsinline preload="none" data-poster="poster/muzyka.jpg" data-src="video/muzyka.mp4" aria-hidden="true"></video>
+    <a class="work-link" href="https://t.me/loungeliwan" target="_blank" rel="noopener" aria-label="Афиша живой музыки в Telegram"></a>
+    <div class="ts" aria-hidden="true"><span class="ts-h">Живая музыка</span></div>
+    <div class="t"><h2 id="h-muzyka">Живая музыка</h2></div>
+    <p class="cap">Ситар, табла и восточные ритмы. Даты — в афише <span class="go">Афиша<span class="arr"></span></span></p>
+  </section>
+
+  <section class="work has-link" aria-labelledby="h-dj">
+    <video class="media" muted loop playsinline preload="none" data-poster="poster/dj.jpg" data-poster-m="poster/dj-m.jpg" data-src="video/dj.mp4" data-src-m="video/dj-m.mp4" aria-hidden="true"></video>
+    <a class="work-link" href="https://t.me/loungeliwan" target="_blank" rel="noopener" aria-label="Афиша DJ-вечеров в Telegram"></a>
+    <div class="ts" aria-hidden="true"><span class="ts-h">Вечера с DJ</span></div>
+    <div class="t"><h2 id="h-dj">Вечера с DJ</h2></div>
+    <p class="cap">Spice / Rhythm / East. Сеты по вечерам, даты — в афише <span class="go">Афиша<span class="arr"></span></span></p>
+  </section>
+
+  <section class="wk" id="weekend" aria-labelledby="h-weekend" hidden>
+    <div class="wk-bg" aria-hidden="true"></div>
+    <div class="wk-in">
+      <div>
+        <h2 class="eyebrow" id="h-weekend">Weekend в Liwan</h2>
+        <span class="wk-day"></span>
+        <span class="wk-date"></span>
+        <p class="wk-who"></p>
+        <p class="wk-meta"></p>
+        <div class="wk-acts">
+          <a class="wk-btn main" href="https://reservation.yandex.ru/partner-reserve/forms/03fcde06-37b9-4221-a463-c06049b48a12" target="_blank" rel="noopener">Забронировать стол</a>
+          <a class="wk-btn wk-go" href="https://t.me/loungeliwan" target="_blank" rel="noopener">Подробнее</a>
+        </div>
+        <ul class="wk-more" hidden></ul>
+        <a class="wk-all" href="https://t.me/loungeliwan" target="_blank" rel="noopener">Вся афиша в Telegram<span class="arr"></span></a>
+      </div>
+      <a class="wk-poster wk-go" href="https://t.me/loungeliwan" target="_blank" rel="noopener" aria-label="Афиша в Telegram"><img alt="" decoding="async" width="640" height="800"><span class="lbl2">Открыть пост в Telegram →</span></a>
+    </div>
+  </section>
+
+  <section class="about" id="o-meste" aria-labelledby="h-about">
+    <div class="about-photo"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" data-src="photo/about-1100.jpg" data-srcset="photo/about-700.jpg 700w, photo/about-1100.jpg 1100w, photo/about-1500.jpg 1500w" sizes="(max-width: 1023px) 100vw, 50vw" width="1100" height="1467" alt="Марокканский фонарь с зелёным стеклом в зале Liwan" loading="lazy" decoding="async"></div>
+    <div class="about-text">
+      <h2 class="eyebrow" id="h-about">О месте</h2>
+      <p>Это&nbsp;не обычный лаунж. Сюда приходят побыть в атмосфере: восточная культура и современные детали, где каждая вещь говорит за себя.</p>
+      <p>Китайский чай мастер заваривает при вас, долго и с толком. Летом открыта веранда под зеленью, по вечерам играют живые музыканты и DJ.</p>
+      <p>Здесь никто не торопит. Можно выдохнуть после работы, поговорить с друзьями или просто посидеть с чайником улуна.</p>
+      <p><a class="tlink" href="/">Смотреть фильм о Liwan — одна минута<span class="arr"></span></a></p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <div class="f-grid">
+    <div>
+      <span class="lbl">Адрес</span>
+      <p>Москва, ул.&nbsp;Авиаконструктора Миля,&nbsp;3А<br>Фудмолл «Привоз», <span class="nw">2-й&nbsp;этаж</span>, напротив «Сыроварни»<br>м.&nbsp;Жулебино</p>
+      <a class="tlink" href="https://yandex.ru/maps/?rtext=~55.686787%2C37.851943" target="_blank" rel="noopener">Построить маршрут<span class="arr"></span></a>
+    </div>
+    <div>
+      <span class="lbl">Часы</span>
+      <p data-hours>Вс–Чт 14:00–01:00<br>Пт–Сб 14:00–02:00</p>
+    </div>
+    <div>
+      <span class="lbl">Связь</span>
+      <p><a href="tel:+79267219990">+7 (926) 721-99-90</a></p>
+      <a class="tlink" href="https://t.me/loungeliwan" target="_blank" rel="noopener">Telegram-канал<span class="arr"></span></a><br>
+      <a class="tlink" href="https://app.loona.ai/4761/create" target="_blank" rel="noopener">Система привилегий<span class="arr"></span></a>
+      <a class="f-cta" href="https://reservation.yandex.ru/partner-reserve/forms/03fcde06-37b9-4221-a463-c06049b48a12" target="_blank" rel="noopener">Забронировать стол</a>
+    </div>
+  </div>
+  <div class="f-base">
+    <span>© Liwan, 2026</span>
+    <span>18+</span>
+    <button class="pause" type="button" data-pause>Пауза видео</button>
+  </div>
+</footer>
+
+
+<div class="scrim" data-close hidden></div>
+
+<section class="panel" id="bron" role="dialog" aria-modal="true" aria-labelledby="bron-h" hidden>
+  <div class="p-bar"><button class="close" type="button" data-close>Закрыть <span aria-hidden="true">✕</span></button></div>
+  <h2 class="sr" id="bron-h">Бронь и контакты</h2>
+  <div class="p-head"><span class="m"><svg class="i-mark" viewBox="0 0 108.05 125.22" fill="currentColor" aria-hidden="true" focusable="false"><use href="#lw-mark"></use></svg></span><span class="w"><svg class="i-word" viewBox="0 0 150.30 36.04" fill="currentColor" aria-hidden="true" focusable="false"><use href="#lw-word"></use></svg></span></div>
+  <p class="lead">Восточный лаунж на втором этаже фудмолла «Привоз». Место ритма, уважения и комфорта.</p>
+  <dl class="facts">
+    <div><dt>Адрес</dt><dd>Москва, ул.&nbsp;Авиаконструктора Миля,&nbsp;3А<br>Фудмолл «Привоз», <span class="nw">2-й&nbsp;этаж</span>, напротив «Сыроварни»<br>м.&nbsp;Жулебино</dd></div>
+    <div><dt>Часы</dt><dd><span data-hours>Вс–Чт 14:00–01:00<br>Пт–Сб 14:00–02:00</span></dd></div>
+    <div><dt>Телефон</dt><dd><a href="tel:+79267219990">+7 (926) 721-99-90</a></dd></div>
+    <div><dt>Отзывы</dt><dd><a href="https://yandex.ru/maps/org/66056015280/reviews/" target="_blank" rel="noopener">4,9 на Яндекс Картах</a></dd></div>
+  </dl>
+  <a class="btn" href="https://reservation.yandex.ru/partner-reserve/forms/03fcde06-37b9-4221-a463-c06049b48a12" target="_blank" rel="noopener">Забронировать стол онлайн</a>
+  <a class="btn btn-ghost" href="tel:+79267219990">Позвонить и забронировать</a>
+  <a class="btn btn-ghost" href="https://yandex.ru/maps/?rtext=~55.686787%2C37.851943" target="_blank" rel="noopener">Построить маршрут</a>
+  <a class="bonus" href="https://app.loona.ai/4761/create" target="_blank" rel="noopener">2&nbsp;000 приветственных бонусов в программе лояльности<span class="arr"></span></a>
+  <nav class="p-links" aria-label="Мы в сети">
+    <a href="https://t.me/loungeliwan" target="_blank" rel="noopener">Telegram<span class="arr"></span></a>
+    <a href="https://yandex.ru/maps/org/66056015280" target="_blank" rel="noopener">Яндекс Карты<span class="arr"></span></a>
+  </nav>
+</section>
+
+<section class="panel panel-menu" id="menu" role="dialog" aria-modal="true" aria-labelledby="menu-h" hidden>
+  <div class="p-bar">
+    <a class="m-pdf" href="https://neonsky3214-commits.github.io/liwan-cdn/assets/menu-pages/liwan-menu.pdf?v=ae40be59" data-href="menu-pages/liwan-menu.pdf" target="_blank" rel="noopener">Открыть PDF<span class="arr"></span></a>
+    <button class="close" type="button" data-close>Закрыть <span aria-hidden="true">✕</span></button>
+  </div>
+  <h2 class="sr" id="menu-h">Меню</h2>
+  <!-- страницы печатного меню «Меню Ливан — верстка v3_2.pdf» один в один -->
+  <div class="m-pages">
+    <a class="m-page" id="m-cover" href="https://neonsky3214-commits.github.io/liwan-cdn/assets/menu-pages/liwan-menu.pdf?v=ae40be59#page=1" data-href="menu-pages/liwan-menu.pdf" data-page="1" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" data-src="menu-pages/menu-1.svg" width="595" height="842" alt="Меню лаунж-бара Liwan — обложка" loading="lazy" decoding="async"></a>
+    <a class="m-page" id="m-napitki" href="https://neonsky3214-commits.github.io/liwan-cdn/assets/menu-pages/liwan-menu.pdf?v=ae40be59#page=2" data-href="menu-pages/liwan-menu.pdf" data-page="2" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" data-src="menu-pages/menu-2.svg" width="595" height="842" alt="Меню лаунж-бара Liwan — напитки и снеки" loading="lazy" decoding="async"></a>
+    <a class="m-page" id="m-chai" href="https://neonsky3214-commits.github.io/liwan-cdn/assets/menu-pages/liwan-menu.pdf?v=ae40be59#page=3" data-href="menu-pages/liwan-menu.pdf" data-page="3" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" data-src="menu-pages/menu-3.svg" width="595" height="842" alt="Меню лаунж-бара Liwan — чай и лимонады" loading="lazy" decoding="async"></a>
+    <a class="m-page" id="m-kitay" href="https://neonsky3214-commits.github.io/liwan-cdn/assets/menu-pages/liwan-menu.pdf?v=ae40be59#page=4" data-href="menu-pages/liwan-menu.pdf" data-page="4" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" data-src="menu-pages/menu-4.svg" width="595" height="842" alt="Меню лаунж-бара Liwan — китайский чай" loading="lazy" decoding="async"></a>
+  </div>
+  <!-- то же меню текстом — для поисковиков и экранного диктора -->
+  <div class="sr">
+    <section class="msec">
+      <div class="msec-head"><h3 class="mh">Холодные напитки</h3></div>
+      <ul class="mlist">
+        <li><span><span class="mn">Kinza</span><small>330 мл</small></span></li>
+        <li class="msub"><span><span class="mn">Гранат</span></span><span class="mp">390&nbsp;₽</span></li>
+        <li class="msub"><span><span class="mn">Лимон-лайм zero</span></span><span class="mp">390&nbsp;₽</span></li>
+        <li class="msub"><span><span class="mn">Лимон-лайм</span></span><span class="mp">390&nbsp;₽</span></li>
+        <li class="msub"><span><span class="mn">Виноград</span></span><span class="mp">390&nbsp;₽</span></li>
+        <li><span><span class="mn">Milaf Финиковая кола</span><small>240 мл</small></span><span class="mp">420&nbsp;₽</span></li>
+        <li><span><span class="mn">Боржоми</span><small>500 мл</small></span><span class="mp">420&nbsp;₽</span></li>
+        <li><span><span class="mn">Вода Baikal</span></span><span class="mp">420&nbsp;₽</span></li>
+      </ul>
+    </section>
+    <section class="msec">
+      <div class="msec-head"><h3 class="mh">Кофе</h3></div>
+      <ul class="mlist">
+        <li><span><span class="mn">Кофе в турке</span></span><span class="mp">490&nbsp;₽</span></li>
+      </ul>
+    </section>
+    <section class="msec">
+      <div class="msec-head"><h3 class="mh">Снеки</h3></div>
+      <ul class="mlist">
+        <li><span><span class="mn">Сет Орехов</span></span><span class="mp">790&nbsp;₽</span></li>
+        <li><span><span class="mn">Сублимированные фрукты</span></span><span class="mp">1&nbsp;300&nbsp;₽</span></li>
+      </ul>
+    </section>
+    <section class="msec">
+      <div class="msec-head"><div><h3 class="mh">Лимонады</h3><span class="mvol">400 мл</span></div></div>
+      <ul class="mlist">
+        <li><span><span class="mn">Мираж</span></span><span class="mp">490&nbsp;₽</span></li>
+        <li><span><span class="mn">Дюны</span></span><span class="mp">490&nbsp;₽</span></li>
+        <li><span><span class="mn">Бахар</span></span><span class="mp">490&nbsp;₽</span></li>
+        <li><span><span class="mn">Тишина</span></span><span class="mp">490&nbsp;₽</span></li>
+        <li><span><span class="mn">Мораккабат</span></span><span class="mp">490&nbsp;₽</span></li>
+      </ul>
+    </section>
+    <section class="msec">
+      <div class="msec-head"><div><h3 class="mh">Чай</h3><span class="mvol">Чайник 650 мл</span></div></div>
+      <ul class="mlist">
+        <li><span><span class="mn">Марокканский</span></span><span class="mp">1&nbsp;300&nbsp;₽</span></li>
+        <li><span><span class="mn">Розовый с яблоком</span></span><span class="mp">1&nbsp;600&nbsp;₽</span></li>
+        <li><span><span class="mn">Чай с чабрецом</span></span><span class="mp">800&nbsp;₽</span></li>
+      </ul>
+    </section>
+    <section class="msec msec-wide">
+      <div class="msec-head"><div><span class="mpre">Китайский</span><h3 class="mh">Чай</h3><span class="mvol">Чайник 1 000 мл</span></div></div>
+      <ul class="mlist mlist-2">
+        <li><span><span class="mn">Цзинь Цзунь Мей</span></span><span class="mp">1&nbsp;100&nbsp;₽</span></li>
+        <li><span><span class="mn">Дянь Хун</span></span><span class="mp">1&nbsp;100&nbsp;₽</span></li>
+        <li><span><span class="mn">Те Гуань Инь</span></span><span class="mp">1&nbsp;100&nbsp;₽</span></li>
+        <li><span><span class="mn">Те Гуань Инь Вулкан</span></span><span class="mp">1&nbsp;100&nbsp;₽</span></li>
+        <li><span><span class="mn">Шу Гун Тин</span></span><span class="mp">1&nbsp;100&nbsp;₽</span></li>
+        <li><span><span class="mn">Бай Мудань</span></span><span class="mp">1&nbsp;100&nbsp;₽</span></li>
+        <li><span><span class="mn">Да Хун Пао</span></span><span class="mp">1&nbsp;100&nbsp;₽</span></li>
+        <li><span><span class="mn">Габа Бриллиант</span></span><span class="mp">1&nbsp;300&nbsp;₽</span></li>
+        <li><span><span class="mn">Тибетская Ромашка</span></span><span class="mp">1&nbsp;100&nbsp;₽</span></li>
+        <li><span><span class="mn">Гречишный</span></span><span class="mp">1&nbsp;100&nbsp;₽</span></li>
+        <li><span><span class="mn">Ян Ча</span></span><span class="mp">1&nbsp;100&nbsp;₽</span></li>
+        <li><span><span class="mn">Лао Гун Мей</span></span><span class="mp">1&nbsp;200&nbsp;₽</span></li>
+        <li><span><span class="mn">Шен Пуэр</span></span><span class="mp">1&nbsp;300&nbsp;₽</span></li>
+        <li><span><span class="mn">Молочный Улун</span></span><span class="mp">1&nbsp;100&nbsp;₽</span></li>
+        <li><span><span class="mn">Дун Фан Мей Жень</span></span><span class="mp">1&nbsp;500&nbsp;₽</span></li>
+        <li><span><span class="mn">Жасмин</span></span><span class="mp">1&nbsp;200&nbsp;₽</span></li>
+        <li><span><span class="mn">Фен Хуан Дан Цун</span></span><span class="mp">1&nbsp;600&nbsp;₽</span></li>
+        <li><span><span class="mn">Шуй Сян</span></span><span class="mp">1&nbsp;500&nbsp;₽</span></li>
+        <li><span><span class="mn">Джан Пин Шуй Сян</span></span><span class="mp">1&nbsp;500&nbsp;₽</span></li>
+        <li><span><span class="mn">Мен Хай Гу Шу</span></span><span class="mp">1&nbsp;500&nbsp;₽</span></li>
+        <li><span><span class="mn">Красный Чжун Го Хун</span></span><span class="mp">1&nbsp;400&nbsp;₽</span></li>
+        <li><span><span class="mn">Шен Иу</span></span><span class="mp">1&nbsp;900&nbsp;₽</span></li>
+        <li><span><span class="mn">Лао Ча Ван Тайвань</span></span><span class="mp">1&nbsp;900&nbsp;₽</span></li>
+        <li><span><span class="mn">Тайваньский Сы Цзи Чунь</span></span><span class="mp">1&nbsp;200&nbsp;₽</span></li>
+        <li><span><span class="mn">Да Хун Пао Традиционный</span></span><span class="mp">2&nbsp;900&nbsp;₽</span></li>
+      </ul>
+    </section>
+  </div>
+  <a class="btn m-cta" href="https://reservation.yandex.ru/partner-reserve/forms/03fcde06-37b9-4221-a463-c06049b48a12" target="_blank" rel="noopener">Забронировать стол</a>
+</section>
+
+</div>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebPage","@id":"https://liwan-lounge.ru/about","name":"Меню, афиша и контакты Liwan — лаунж-бар и чайная в Жулебино","inLanguage":"ru","dateModified":"2026-11-19","about":{"@id":"https://liwan-lounge.ru/#liwan"},"mainEntity":{"@id":"https://liwan-lounge.ru/#liwan"},"isPartOf":{"@type":"WebSite","@id":"https://liwan-lounge.ru/#site","name":"Liwan","url":"https://liwan-lounge.ru/","inLanguage":"ru"},"url":"https://liwan-lounge.ru/about"},{"@type":"BarOrPub","@id":"https://liwan-lounge.ru/#liwan","name":"Liwan","alternateName":["Ливан","Liwan Lounge","Лаунж-бар Liwan"],"description":"Лаунж-бар и чайная в Жулебино на втором этаже фудмолла «Привоз»: китайский чай с мастером, лимонады, летняя веранда, живая музыка и DJ-вечера.","slogan":"Место ритма, уважения и комфорта","image":"https://neonsky3214-commits.github.io/liwan-cdn/assets/poster/atmosfera.jpg","telephone":"+7 926 721-99-90","priceRange":"₽₽","currenciesAccepted":"RUB","paymentAccepted":"Наличные, банковские карты","address":{"@type":"PostalAddress","streetAddress":"ул. Авиаконструктора Миля, 3А, фудмолл «Привоз», 2-й этаж","addressLocality":"Москва","addressRegion":"Москва","postalCode":"109156","addressCountry":"RU"},"geo":{"@type":"GeoCoordinates","latitude":55.686787,"longitude":37.851943},"hasMap":"https://yandex.ru/maps/org/66056015280","areaServed":["Жулебино","Выхино-Жулебино","Косино-Ухтомский","Люберцы","Некрасовка","Юго-Восточный округ Москвы"],"openingHoursSpecification":[{"@type":"OpeningHoursSpecification","dayOfWeek":["Sunday","Monday","Tuesday","Wednesday","Thursday"],"opens":"14:00","closes":"01:00"},{"@type":"OpeningHoursSpecification","dayOfWeek":["Friday","Saturday"],"opens":"14:00","closes":"02:00"}],"hasMenu":{"@type":"Menu","name":"Меню Liwan","url":"https://neonsky3214-commits.github.io/liwan-cdn/assets/menu-pages/liwan-menu.pdf","inLanguage":"ru","hasMenuSection":[{"@type":"MenuSection","name":"Холодные напитки","hasMenuItem":[{"@type":"MenuItem","name":"Kinza Гранат, 330 мл","offers":{"@type":"Offer","price":"390","priceCurrency":"RUB"}},{"@type":"MenuItem","name":"Kinza Лимон-лайм zero, 330 мл","offers":{"@type":"Offer","price":"390","priceCurrency":"RUB"}},{"@type":"MenuItem","name":"Kinza Лимон-лайм, 330 мл","offers":{"@type":"Offer","price":"390","priceCurrency":"RUB"}},{"@type":"MenuItem","name":"Kinza Виноград, 330 мл","offers":{"@type":"Offer","price":"390","priceCurrency":"RUB"}},{"@type":"MenuItem","name":"Milaf Финиковая кола, 240 мл","offers":{"@type":"Offer","price":"420","priceCurrency":"RUB"}},{"@type":"MenuItem","name":"Боржоми, 500 мл","offers":{"@type":"Offer","price":"420","priceCurrency":"RUB"}},{"@type":"MenuItem","name":"Вода Baikal","offers":{"@type":"Offer","price":"420","priceCurrency":"RUB"}}]},{"@type":"MenuSection","name":"Кофе","hasMenuItem":[{"@type":"MenuItem","name":"Кофе в турке","offers":{"@type":"Offer","price":"490","priceCurrency":"RUB"}}]},{"@type":"MenuSection","name":"Снеки","hasMenuItem":[{"@type":"MenuItem","name":"Сет орехов","offers":{"@type":"Offer","price":"790","priceCurrency":"RUB"}},{"@type":"MenuItem","name":"Сублимированные фрукты","offers":{"@type":"Offer","price":"1300","priceCurrency":"RUB"}}]},{"@type":"MenuSection","name":"Лимонады, 400 мл","hasMenuItem":[{"@type":"MenuItem","name":"Мираж","offers":{"@type":"Offer","price":"490","priceCurrency":"RUB"}},{"@type":"MenuItem","name":"Дюны","offers":{"@type":"Offer","price":"490","priceCurrency":"RUB"}},{"@type":"MenuItem","name":"Бахар","offers":{"@type":"Offer","price":"490","priceCurrency":"RUB"}},{"@type":"MenuItem","name":"Тишина","offers":{"@type":"Offer","price":"490","priceCurrency":"RUB"}},{"@type":"MenuItem","name":"Мораккабат","offers":{"@type":"Offer","price":"490","priceCurrency":"RUB"}}]},{"@type":"MenuSection","name":"Чай, чайник 650 мл","hasMenuItem":[{"@type":"MenuItem","name":"Марокканский","offers":{"@type":"Offer","price":"1300","priceCurrency":"RUB"}},{"@type":"MenuItem","name":"Розовый с яблоком","offers":{"@type":"Offer","price":"1600","priceCurrency":"RUB"}},{"@type":"MenuItem","name":"Чай с чабрецом","offers":{"@type":"Offer","price":"800","priceCurrency":"RUB"}}]},{"@type":"MenuSection","name":"Китайский чай, чайник 1 000 мл","hasMenuItem":[{"@type":"MenuItem","name":"Цзинь Цзунь Мей","offers":{"@type":"Offer","price":"1100","priceCurrency":"RUB"}},{"@type":"MenuItem","name":"Дянь Хун","offers":{"@type":"Offer","price":"1100","priceCurrency":"RUB"}},{"@type":"MenuItem","name":"Те Гуань Инь","offers":{"@type":"Offer","price":"1100","priceCurrency":"RUB"}},{"@type":"MenuItem","name":"Те Гуань Инь Вулкан","offers":{"@type":"Offer","price":"1100","priceCurrency":"RUB"}},{"@type":"MenuItem","name":"Шу Гун Тин","offers":{"@type":"Offer","price":"1100","priceCurrency":"RUB"}},{"@type":"MenuItem","name":"Бай Мудань","offers":{"@type":"Offer","price":"1100","priceCurrency":"RUB"}},{"@type":"MenuItem","name":"Да Хун Пао","offers":{"@type":"Offer","price":"1100","priceCurrency":"RUB"}},{"@type":"MenuItem","name":"Габа Бриллиант","offers":{"@type":"Offer","price":"1300","priceCurrency":"RUB"}},{"@type":"MenuItem","name":"Тибетская Ромашка","offers":{"@type":"Offer","price":"1100","priceCurrency":"RUB"}},{"@type":"MenuItem","name":"Гречишный","offers":{"@type":"Offer","price":"1100","priceCurrency":"RUB"}},{"@type":"MenuItem","name":"Ян Ча","offers":{"@type":"Offer","price":"1100","priceCurrency":"RUB"}},{"@type":"MenuItem","name":"Лао Гун Мей","offers":{"@type":"Offer","price":"1200","priceCurrency":"RUB"}},{"@type":"MenuItem","name":"Шен Пуэр","offers":{"@type":"Offer","price":"1300","priceCurrency":"RUB"}},{"@type":"MenuItem","name":"Молочный Улун","offers":{"@type":"Offer","price":"1100","priceCurrency":"RUB"}},{"@type":"MenuItem","name":"Дун Фан Мей Жень","offers":{"@type":"Offer","price":"1500","priceCurrency":"RUB"}},{"@type":"MenuItem","name":"Жасмин","offers":{"@type":"Offer","price":"1200","priceCurrency":"RUB"}},{"@type":"MenuItem","name":"Фен Хуан Дан Цун","offers":{"@type":"Offer","price":"1600","priceCurrency":"RUB"}},{"@type":"MenuItem","name":"Шуй Сян","offers":{"@type":"Offer","price":"1500","priceCurrency":"RUB"}},{"@type":"MenuItem","name":"Джан Пин Шуй Сян","offers":{"@type":"Offer","price":"1500","priceCurrency":"RUB"}},{"@type":"MenuItem","name":"Мен Хай Гу Шу","offers":{"@type":"Offer","price":"1500","priceCurrency":"RUB"}},{"@type":"MenuItem","name":"Красный Чжун Го Хун","offers":{"@type":"Offer","price":"1400","priceCurrency":"RUB"}},{"@type":"MenuItem","name":"Шен Иу","offers":{"@type":"Offer","price":"1900","priceCurrency":"RUB"}},{"@type":"MenuItem","name":"Лао Ча Ван Тайвань","offers":{"@type":"Offer","price":"1900","priceCurrency":"RUB"}},{"@type":"MenuItem","name":"Тайваньский Сы Цзи Чунь","offers":{"@type":"Offer","price":"1200","priceCurrency":"RUB"}},{"@type":"MenuItem","name":"Да Хун Пао Традиционный","offers":{"@type":"Offer","price":"2900","priceCurrency":"RUB"}}]}]},"servesCuisine":["Восточная","Чай"],"acceptsReservations":"https://reservation.yandex.ru/partner-reserve/forms/03fcde06-37b9-4221-a463-c06049b48a12","publicAccess":true,"amenityFeature":[{"@type":"LocationFeatureSpecification","name":"Летняя веранда","value":true},{"@type":"LocationFeatureSpecification","name":"Wi-Fi","value":true},{"@type":"LocationFeatureSpecification","name":"Парковка","value":true},{"@type":"LocationFeatureSpecification","name":"Живая музыка","value":true},{"@type":"LocationFeatureSpecification","name":"DJ","value":true},{"@type":"LocationFeatureSpecification","name":"Можно с ноутбуком","value":true},{"@type":"LocationFeatureSpecification","name":"Оплата картой","value":true}],"keywords":"лаунж-бар Жулебино, чайная Жулебино, лаунж фудмолл Привоз, китайский чай Москва, чайная церемония Москва, лаунж с верандой, живая музыка Жулебино","sameAs":["https://t.me/loungeliwan","https://yandex.ru/maps/org/66056015280","https://2gis.ru/moscow/firm/70000001111154173"],"url":"https://liwan-lounge.ru/"}]}</script>
+<script>
+/* ===================== НАСТРОЙКИ САЙТА =====================
+   BASE  — адрес папки assets на хостинге, со слешем на конце.
+   FILES — вместо BASE можно дать ссылку на каждый файл отдельно,
+           например после загрузки в Tilda: "video/chai.mp4": "https://…".
+   HOURS — часы работы; меняют текст в подвале, панели брони и «ежедневно с …».
+           Не забудьте поправить openingHours в application/ld+json выше.
+   INTRO — заставка с песком: сколько секунд максимум (ролик идёт 5 с; 0 — без заставки).
+   PAGE_BG — цвет фона страницы Tilda под блоком; пустая строка — не менять.
+   MOTION — "always": анимации и заставка у всех; "auto": уважать системную настройку
+           «Уменьшить движение» (тогда остаются только мягкие проявления). */
+window.LIWAN = {
+  BASE: "https://neonsky3214-commits.github.io/liwan-cdn/assets/",
+  WEEKEND: "https://neonsky3214-commits.github.io/liwan-cdn/weekend/", /* блок Weekend: weekend.json, который робот собирает из t.me/loungeliwan; "" — без блока */
+  FILES: {},
+  V: "ae40be59", /* версия файлов: меняется сама при сборке, сбрасывает кэш браузеров */
+  HOURS: { open: "14:00", close: "01:00", closeFriSat: "02:00" },
+  INTRO: 5,
+  PAGE_BG: "#1B1310", /* фон всей страницы под блоком; "" — не трогать (если на странице есть другие блоки) */
+  MOTION: "always",
+  EXTRAS: true /* карта путника и «Напомнить» в афише; false — выключить */
+};
+</script>
+<script>
+(()=>{const t=document.getElementById("liwan");if(!t)return;const e=(e,n=t)=>n.querySelector(e),n=(e,n=t)=>[...n.querySelectorAll(e)],s=document.documentElement,o=window.LIWAN||{},a=t=>o.FILES&&o.FILES[t]||(o.BASE||"")+t+(o.V?"?v="+o.V:"");""!==o.PAGE_BG&&(s.style.background=document.body.style.background=o.PAGE_BG||"#1B1310"),s.lang||(s.lang="ru");const r=matchMedia("(max-width: 767px)"),i=matchMedia("(prefers-reduced-motion: reduce)"),c=()=>"always"!==o.MOTION&&i.matches;"always"===o.MOTION&&s.classList.add("lw-motion");const d=n(".work"),l=e(".topline"),h=e(".mbar"),u=e(".about"),m=n("video.media");let p=!1,f=!1;const g=new Set,v=t=>{p||f||!g.has(t)||t.play().catch(()=>{})};function y(){const t=r.matches;m.forEach(e=>{const n=a(t&&e.dataset.srcM||e.dataset.src),s=a(t&&e.dataset.posterM||e.dataset.poster);e.getAttribute("poster")!==s&&e.setAttribute("poster",s),e.getAttribute("src")!==n&&(e.src=n)})}function E(){const t=r.matches,o=t?16:e(".rail-l").offsetWidth,a=s.clientWidth-2*o;n(".work .t h2").forEach(e=>{const n=e.closest(".work"),s=n.offsetHeight;n.classList.remove("two"),n.style.setProperty("--fs","100px");let o=Math.min(100*a*(t?.94:.9)/e.getBoundingClientRect().width,.36*s);t&&o<.22*s&&/ /.test(e.textContent.trim())&&(n.classList.add("two"),o=Math.min(100*a*.94/e.getBoundingClientRect().width,.25*s)),n.style.setProperty("--fs",o.toFixed(1)+"px")})}m.forEach(t=>t.addEventListener("canplay",()=>v(t))),n("a[data-href]").forEach(t=>{t.href=a(t.dataset.href)+(t.dataset.page?"#page="+t.dataset.page:"")}),n("img[data-src]").forEach(t=>{const e=(t.dataset.srcset||"").split(",").map(t=>t.trim().split(/\s+/)).filter(t=>t[0]),n=!(o.FILES&&Object.keys(o.FILES).length)||e.every(([t])=>o.FILES[t]);e.length&&n&&(t.srcset=e.map(([t,e])=>a(t)+" "+e).join(", ")),t.src=a(t.dataset.src)}),y(),r.addEventListener("change",()=>{y(),E(),k()});const w=(t,e,n)=>{const s=Math.min(1,Math.max(0,(n-t)/(e-t)));return s*s*(3-2*s)};let L=!1;function b(){L=!1;const t=innerHeight,n=c();l.classList.toggle("is-off",scrollY>.6*t),h.classList.toggle("solid",scrollY>.6*t);const s=r.matches?12:e(".rail-l").offsetWidth;for(const e of d){const o=e.getBoundingClientRect();if(o.bottom<.25*-t||o.top>1.25*t)continue;const a=e.classList.contains("work-hero")?Math.min(0,o.top)/t:(o.top+o.height/2-t/2)/t,r=1-w(.14,.62,Math.abs(a));e.style.setProperty("--inset",(s*(1-r)).toFixed(1)+"px"),e.style.setProperty("--dim",(.55*(1-r)).toFixed(2)),e.style.setProperty("--py",n?"0px":(-.2*a*o.height).toFixed(1)+"px")}}const k=()=>{L||(L=!0,requestAnimationFrame(b))};addEventListener("scroll",k,{passive:!0}),addEventListener("resize",()=>{E(),k()}),i.addEventListener("change",function(){d.forEach(t=>{t.style.removeProperty("--inset"),t.style.removeProperty("--py"),t.style.removeProperty("--dim")}),k()});const x=e(".intro");let S=!1,I=!1;const M=[],T=t=>f?M.push(t):t(),C=()=>{f&&(f=!1,g.forEach(v),M.splice(0).forEach(t=>t()))},A=()=>{S&&(S=!1,C(),s.classList.remove("lw-lock"),scrollTo(0,0),x.classList.add("out"),setTimeout(()=>{x.classList.add("gone");const t=x.querySelector("video");t&&(t.pause(),t.removeAttribute("src"),t.load(),t.remove())},900),I&&d[0].classList.add("in"))},P=()=>{S=!1,C(),s.classList.remove("lw-lock"),x&&x.classList.add("gone")};try{!function(){const t=Math.max(0,+o.INTRO||0),n=x&&x.querySelector("video");if(!n||!t||c())return void P();if(innerWidth<100||innerHeight<100||document.hidden)return void P();S=f=!0,s.classList.add("lw-lock"),x.addEventListener("click",A),document.addEventListener("visibilitychange",()=>{document.hidden&&A()}),document.addEventListener("keydown",A,{once:!0});const r=innerWidth>=innerHeight?"h":"v";n.poster=a("intro/sand-"+r+".jpg"),n.src=a("intro/sand-"+r+".mp4");let i=!1,d=!1;const l=()=>{if(!S||i||d)return;d=!0;const t=a("intro/sand-"+r+".jpg"),s=a("intro/sand-"+r+"-end.jpg");n.pause(),n.removeAttribute("src"),n.load();const o=new Image,c=setTimeout(A,2500);o.onload=()=>{clearTimeout(c),S&&(x.style.backgroundImage='url("'+t+'")',e(".intro-f",x).style.backgroundImage='url("'+s+'")',x.classList.add("still"),setTimeout(A,3200))},o.onerror=A,o.src=s};n.addEventListener("playing",()=>{i=!0},{once:!0}),n.addEventListener("canplaythrough",()=>{m[0]&&f&&(m[0].preload="auto")},{once:!0}),setTimeout(()=>{S&&!i&&((new Image).src=a("intro/sand-"+r+"-end.jpg"))},1500),n.addEventListener("timeupdate",()=>{n.currentTime>=Math.min(n.duration||5,t)-.75&&A()}),n.addEventListener("ended",A),n.addEventListener("error",l);const h=n.play();h&&h.catch&&h.catch(l),setTimeout(l,3e3),setTimeout(A,1e3*(t+3))}()}catch(t){P()}const F=d.concat([u]);if("IntersectionObserver"in window){const t=new IntersectionObserver(e=>{e.forEach(e=>{e.isIntersecting&&(t.unobserve(e.target),S&&e.target===d[0]?I=!0:e.target.classList.add("in"))})},{threshold:.2});F.forEach(e=>t.observe(e))}else F.forEach(t=>t.classList.add("in"));if(n(".panel").forEach(t=>[...t.children].filter(t=>!t.matches(".p-bar, .m-pages")).forEach((t,e)=>t.style.setProperty("--i",e))),n(".m-pages > .m-page").forEach((t,e)=>t.style.setProperty("--i",e+1)),n(".about-text > *").forEach((t,e)=>t.style.setProperty("--i",e)),matchMedia("(hover: hover) and (pointer: fine)").matches){const e=document.createElement("div");e.className="cur",e.setAttribute("aria-hidden","true");const s=document.createElement("span");e.appendChild(s),t.appendChild(e);let o=0,a=0,r=0,i=0,d=!1,l=0;const h=()=>{const t=c()?1:.18;r+=(o-r)*t,i+=(a-i)*t,e.style.transform="translate("+r.toFixed(1)+"px, "+i.toFixed(1)+"px)",l=d||Math.abs(o-r)>.5||Math.abs(a-i)>.5?requestAnimationFrame(h):0};n(".work.has-link").forEach(t=>{const n=((t.querySelector(".go")||{}).textContent||"").trim();t.addEventListener("mouseenter",t=>{s.textContent=n,o=r=t.clientX,a=i=t.clientY,d=!0,e.classList.add("on"),l||(l=requestAnimationFrame(h))}),t.addEventListener("mousemove",t=>{o=t.clientX,a=t.clientY,l||(l=requestAnimationFrame(h))}),t.addEventListener("mouseleave",()=>{d=!1,e.classList.remove("on")})})}const D=new IntersectionObserver(t=>{t.forEach(t=>{const e=t.target;t.isIntersecting?(g.add(e),v(e)):(g.delete(e),e.pause())})},{rootMargin:"15% 0px"});m.forEach(t=>D.observe(t)),document.addEventListener("visibilitychange",()=>{document.hidden||g.forEach(v)}),n("[data-pause]").forEach(e=>e.addEventListener("click",()=>{p=!p,n("[data-pause]").forEach(t=>{t.textContent=p?t.closest(".rail")?"Играть":"Включить видео":t.closest(".rail")?"Пауза":"Пауза видео"}),g.forEach(t=>p?t.pause():t.play().catch(()=>{})),t.dispatchEvent(new CustomEvent("lw:pause",{detail:p})),n(".kb").forEach(t=>t.style.animationPlayState=p?"paused":"")}));const B=t=>String(Math.floor(t/60)%24).padStart(2,"0")+":"+String(t%60).padStart(2,"0"),O=t=>{const[e,n]=String(t).split(":").map(Number);return 60*e+(n||0)},j=o.HOURS||{open:"14:00",close:"01:00",closeFriSat:"02:00"},N=O(j.open),q=t=>{const e=O(t);return e<=N?e+1440:e},H=q(j.close),W=q(j.closeFriSat||j.close),R=t=>B(N)+"–"+B(t);!function(){const s=e("#weekend"),a=o.WEEKEND;if(!s||!a||!window.fetch)return;const r=["Воскресенье","Понедельник","Вторник","Среда","Четверг","Пятница","Суббота"],i=["Вс","Пн","Вт","Ср","Чт","Пт","Сб"],c=t=>{const[e,n,s]=t.split("-").map(Number);return new Date(e,n-1,s)},d=t=>String(t.getDate()).padStart(2,"0")+"."+String(t.getMonth()+1).padStart(2,"0"),l=new Date;l.setHours(0,0,0,0);let h=[];const u=o=>{const i=h[o],u=c(i.date),m=Math.round((u-l)/864e5);e(".wk-day",s).textContent=0===m?"Сегодня · "+r[u.getDay()]:1===m?"Завтра · "+r[u.getDay()]:r[u.getDay()],e(".wk-date",s).textContent=d(u),e(".wk-who",s).textContent=i.name,e(".wk-meta",s).textContent=[i.kind,i.time].filter(Boolean).join(" · "),n(".wk-go",s).forEach(t=>t.href=i.url);const p=e(".wk-poster img",s);p.style.opacity=0;const f=new Image;f.onload=()=>{p.src=f.src,p.alt=i.kind+" — "+i.name,p.style.opacity=1,e(".wk-bg",s).style.backgroundImage='url("'+f.src+'")'},f.src=a+i.img,n(".wk-row",s).forEach((t,e)=>t.setAttribute("aria-current",e===o?"true":"false")),t.lwEvent=i,t.dispatchEvent(new CustomEvent("lw:event",{detail:i}))},m=t=>fetch(a+"weekend.json?t="+Math.floor(Date.now()/3e5),{cache:"no-cache"}).then(t=>t.ok?t.json():null).then(t=>{if(h=(t&&Array.isArray(t.events)?t.events:[]).filter(t=>c(t.date)>=l).slice(0,5),!h.length)return;const o=e(".wk-more",s);if(h.length>1&&(h.forEach((t,e)=>{const n=document.createElement("li"),s=document.createElement("button");s.type="button",s.className="wk-row";const a=c(t.date);s.innerHTML='<span class="wk-rd"></span><span class="wk-rn"></span><span class="wk-rt"></span>',s.children[0].textContent=i[a.getDay()]+" "+d(a),s.children[1].textContent=t.name,s.children[2].textContent=t.time||"",s.addEventListener("click",()=>u(e)),n.appendChild(s),o.appendChild(n)}),o.hidden=!1),u(0),s.hidden=!1,"IntersectionObserver"in window){const t=new IntersectionObserver(e=>{e[0].isIntersecting&&(s.classList.add("in"),t.disconnect())},{threshold:.15});t.observe(s)}else s.classList.add("in");n('.vnav a[href*="t.me/loungeliwan"], .mbar nav a[href*="t.me/loungeliwan"]').forEach(t=>{t.href="#weekend",t.removeAttribute("target"),t.removeAttribute("rel")})}).catch(()=>{t&&setTimeout(()=>m(!1),1500)});T(()=>m(!0))}(),n("[data-hours]").forEach(t=>{t.innerHTML=H===W?"Ежедневно "+R(H):"Вс–Чт "+R(H)+"<br>Пт–Сб "+R(W)}),n("[data-from]").forEach(t=>t.textContent=B(N));const G=e(".scrim");let Y=null,K=null;const X=t=>{try{t()}catch(t){}};function _(t,o){const a=document.getElementById(t);if(!a||!a.classList.contains("panel"))return;const r=!!Y&&Y!==a;if(Y===a)return;r&&V(!1,!0),r||(K=document.activeElement),Y=a,a.hidden=!1,G.hidden=!1,a.scrollTop=0,a.offsetWidth,a.classList.add("open"),G.classList.add("open"),s.classList.add("lw-lock"),r?X(()=>history.replaceState({panel:t},"","#"+t)):location.hash!=="#"+t&&X(()=>history.pushState({panel:t},"","#"+t)),n(".is-target",a).forEach(t=>t.classList.remove("is-target"));const i=o&&document.getElementById(o);setTimeout(()=>{if(e(".close",a).focus({preventScroll:!0}),!i)return;i.classList.add("is-target");const t=i.getBoundingClientRect().top;t>.55*innerHeight&&a.scrollTo({top:a.scrollTop+t-80,behavior:c()?"auto":"smooth"})},80)}function V(t=!0,e=!1){if(!Y)return;const n=Y;Y=null,n.classList.remove("open"),e||(G.classList.remove("open"),s.classList.remove("lw-lock")),setTimeout(()=>{Y!==n&&(n.hidden=!0,Y||(G.hidden=!0))},c()?20:760),e||(history.state&&history.state.panel===n.id?X(()=>history.back()):location.hash==="#"+n.id&&X(()=>history.replaceState(null,"",location.pathname+location.search)),t&&K&&K.focus({preventScroll:!0}))}document.addEventListener("click",e=>{if(!t.contains(e.target))return;const n=e.target.closest("[data-open]");if(n)return e.preventDefault(),e.stopPropagation(),void _(n.dataset.open,n.dataset.to);if(e.target.closest("[data-close]"))return e.preventDefault(),e.stopPropagation(),void V();e.target.closest('a[href="#top"]')&&(e.preventDefault(),e.stopPropagation(),scrollTo({top:0,behavior:c()?"auto":"smooth"}))},!0),document.addEventListener("keydown",t=>{if(Y){if("Escape"===t.key)return t.preventDefault(),void V();if("Tab"===t.key){const e=n("a[href], button:not([disabled]), [tabindex]:not([tabindex='-1'])",Y),s=e[0],o=e[e.length-1];t.shiftKey&&document.activeElement===s?(t.preventDefault(),o.focus()):t.shiftKey||document.activeElement!==o||(t.preventDefault(),s.focus())}}}),addEventListener("popstate",()=>{const t=location.hash.slice(1);"menu"===t||"bron"===t?_(t):V()}),"#menu"!==location.hash&&"#bron"!==location.hash||_(location.hash.slice(1)),(document.fonts?document.fonts.ready:Promise.resolve()).then(()=>{E(),k()}),E(),k(),window.LIWAN_RT={url:a,whenIntroDone:T,paused:()=>p,reduce:c},!1!==o.EXTRAS&&T(()=>{const t=document.createElement("script");t.src=a("js/extras.js"),t.async=!0,document.body.appendChild(t)})})();
+</script>
