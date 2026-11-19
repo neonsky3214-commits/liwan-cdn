@@ -3,13 +3,20 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Liwan — фильм</title>
-<meta name="description" content="Liwan — лаунж-бар и чайная в Жулебино. Короткий фильм: чай, живой звук, ночь с DJ, веранда.">
-<meta property="og:title" content="Liwan — фильм">
-<meta property="og:description" content="Короткий фильм о лаунж-баре и чайной в Жулебино. Зажмите, чтобы начать.">
+<title>Liwan — фильм о лаунж-баре и чайной в Жулебино</title>
+<meta name="description" content="Liwan — лаунж-бар и чайная в Жулебино, 2-й этаж фудмолла «Привоз». Короткий фильм: чай, живой звук, вечера с DJ и летняя веранда. Меню и онлайн-бронирование.">
+<meta property="og:title" content="Liwan — фильм о лаунж-баре и чайной">
+<meta property="og:description" content="Короткий фильм о Liwan — лаунж-баре и чайной в Жулебино: чай, живой звук, вечера с DJ и веранда.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://neonsky3214-commits.github.io/liwan-cdn/film/">
+<meta property="og:locale" content="ru_RU">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://neonsky3214-commits.github.io/liwan-cdn/film/">
 <meta property="og:image" content="https://neonsky3214-commits.github.io/liwan-cdn/film/img/og.jpg">
 <meta name="theme-color" content="#0E0907">
 <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="img/icon-512.png" type="image/png" sizes="512x512">
+<link rel="apple-touch-icon" href="img/icon-512.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Tenor+Sans&display=swap" rel="stylesheet">
@@ -68,9 +75,11 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .film .ui{opacity:1}
 .logo{top:calc(var(--pad) - 4px);left:var(--pad);width:28px;color:var(--cream)}
 .logo svg{width:100%;height:auto;display:block}
-.book{top:calc(var(--pad) - 10px);right:var(--pad);font:400 11px/1 Inter;letter-spacing:.24em;text-transform:uppercase;
-  padding:13px 20px 13px 22px;border:1px solid rgba(181,139,90,.6);border-radius:40px;transition:background .5s,color .5s,border-color .5s}
-.book:hover{background:var(--cream);color:var(--ink);border-color:var(--cream)}
+.topr{top:calc(var(--pad) - 10px);right:var(--pad);display:flex;gap:10px}
+.book,.mbtn{display:inline-flex;align-items:center;font:400 11px/1 Inter;letter-spacing:.24em;text-transform:uppercase;min-height:44px;
+  padding:0 20px 0 22px;border:1px solid rgba(181,139,90,.6);border-radius:40px;transition:background .5s,color .5s,border-color .5s}
+.mbtn{border-color:rgba(249,238,210,.22)}
+.book:hover,.mbtn:hover{background:var(--cream);color:var(--ink);border-color:var(--cream)}
 .segs{top:calc(var(--pad) + 4px);left:50%;transform:translateX(-50%);display:flex;gap:6px}
 .segs button{position:relative;width:clamp(26px,4.2vw,58px);height:24px}
 .segs button:before{content:"";position:absolute;left:0;right:0;top:11px;height:1px;background:rgba(249,238,210,.22)}
@@ -131,6 +140,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 #credits.on{opacity:1}
 #credits .roll{position:absolute;left:0;right:0;top:100%;text-align:center}
 #credits.on .roll{animation:roll 13s linear forwards}
+.paused #credits .roll{animation-play-state:paused}
 @keyframes roll{to{transform:translateY(calc(-100% - 100vh))}}
 .roll .big{font:400 54px/1 "Tenor Sans",serif;letter-spacing:.08em}
 .roll .sub{font:400 10px/1 Inter;letter-spacing:.36em;text-transform:uppercase;color:var(--brass);margin:16px 0 70px}
@@ -170,7 +180,8 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 /* телефон */
 @media (max-width:760px), (max-aspect-ratio:1/1){
   .logo{width:24px}
-  .book{padding:12px 15px 12px 17px;letter-spacing:.16em;font-size:10px}
+  .topr{gap:8px}
+  .book,.mbtn{padding:0 14px 0 16px;letter-spacing:.14em;font-size:10px;min-height:44px}
   .segs{top:calc(var(--pad) + 46px);left:var(--pad);right:var(--pad);transform:none;gap:4px}
   .segs button{flex:1;width:auto;height:40px}
   .segs button:before,.segs button i{top:19px}
@@ -218,9 +229,9 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .nogl #plain h2{font:400 clamp(40px,8vw,90px)/1 "Tenor Sans",serif;text-transform:uppercase;margin:10px 0 16px}
 .nogl #plain small{font:400 10px/1 Inter;letter-spacing:.34em;text-transform:uppercase;color:var(--brass)}
 /* вырез и полоска «домой» на iPhone */
-.logo,.book,.segs{margin-top:env(safe-area-inset-top,0px)}
+.logo,.topr,.segs{margin-top:env(safe-area-inset-top,0px)}
 .logo,.snd{margin-left:env(safe-area-inset-left,0px)}
-.book,.pp{margin-right:env(safe-area-inset-right,0px)}
+.topr,.pp{margin-right:env(safe-area-inset-right,0px)}
 .ctl,#subs,#hint{margin-bottom:env(safe-area-inset-bottom,0px)}
 @media (max-width:760px), (max-aspect-ratio:1/1){.fin{margin-bottom:env(safe-area-inset-bottom,0px)}#credits{margin-bottom:env(safe-area-inset-bottom,0px)}}
 /* подсказка по управлению — один раз */
@@ -230,6 +241,44 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   transition:opacity .8s ease,transform .8s var(--out)}
 #hint.show{opacity:1;transform:translate(-50%,0)}
 @media (max-width:760px), (max-aspect-ratio:1/1){#hint{bottom:96px;letter-spacing:.14em}}
+/* меню заведения поверх фильма */
+#menu{position:fixed;inset:0;z-index:50;background:rgba(10,7,5,.86);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  opacity:0;visibility:hidden;transition:opacity .5s ease,visibility 0s linear .5s;touch-action:pan-x pan-y}
+#menu.on{opacity:1;visibility:visible;transition:opacity .5s ease}
+.mopen,.mopen body{touch-action:auto}
+.m-top{position:absolute;left:0;right:0;top:0;z-index:2;display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+  padding:calc(14px + env(safe-area-inset-top,0px)) var(--pad) 14px;background:linear-gradient(rgba(10,7,5,.95),rgba(10,7,5,.75) 70%,rgba(10,7,5,0))}
+.m-ttl{font:400 22px/1 "Tenor Sans",serif;letter-spacing:.06em;text-transform:uppercase;margin-right:auto}
+.m-tab,.m-pdf,.m-x{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 14px;border-radius:40px;
+  border:1px solid rgba(249,238,210,.2);font:400 10px/1 Inter;letter-spacing:.18em;text-transform:uppercase;color:rgba(249,238,210,.85);transition:background .3s,color .3s,border-color .3s}
+.m-tab:hover,.m-pdf:hover{border-color:var(--brass);color:var(--cream)}
+.m-x{width:44px;padding:0;font-size:22px;letter-spacing:0;border-color:rgba(181,139,90,.6)}
+.m-x:hover{background:var(--cream);color:var(--ink)}
+.m-scroll{position:absolute;inset:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
+  padding:calc(96px + env(safe-area-inset-top,0px)) var(--pad) calc(40px + env(safe-area-inset-bottom,0px))}
+.m-page{display:block;width:min(100%,640px);margin:0 auto 18px;aspect-ratio:595/842;background:#F4ECDD;border-radius:4px;
+  box-shadow:0 20px 60px rgba(0,0,0,.55)}
+.m-note{text-align:center;font:400 10px/1.8 Inter;letter-spacing:.2em;text-transform:uppercase;color:rgba(249,238,210,.5);margin:6px 0 0}
+@media (max-width:760px), (max-aspect-ratio:1/1){
+  .m-ttl{font-size:18px;flex-basis:auto}
+  .m-tabs{order:3;flex-basis:100%;display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+  .m-tab{white-space:normal;text-align:center;line-height:1.25;letter-spacing:.08em;padding:4px 6px}
+  .m-scroll{padding-top:calc(128px + env(safe-area-inset-top,0px));padding-left:12px;padding-right:12px}
+  .m-page{margin-bottom:12px}
+}
+.m-tabs{display:flex;gap:6px}
+.m-zhint{display:none;text-align:center;font:400 10px/1.6 Inter;letter-spacing:.18em;text-transform:uppercase;color:rgba(249,238,210,.55);margin:0 0 12px}
+@media (pointer:coarse){.m-zhint{display:block}}
+.m-scroll.zoom{overflow-x:auto}
+.m-scroll.zoom .m-page{width:220%;max-width:none;margin-left:0}
+.m-cta{text-align:center;margin:18px 0 8px}
+#subs span{text-shadow:0 0 2px rgba(0,0,0,.9),0 1px 18px rgba(0,0,0,.85)}
+@media (pointer:coarse){.segs button{height:40px}.segs button:before,.segs button i{top:19px}}
+@media (max-width:1100px) and (min-aspect-ratio:1/1){.segs{top:calc(var(--pad) + 40px)}}
+@media (max-height:520px) and (min-aspect-ratio:1/1){.fin{margin-right:env(safe-area-inset-right,0px)}.fin-on .segs{opacity:0;pointer-events:none}}
+.nogl body{display:flex;flex-direction:column}
+.nogl #plain{order:-1}
+.nogl .again{display:none}
 </style>
 </head>
 <body>
@@ -247,18 +296,19 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 
 <div id="gate">
   <div class="gate-in">
-    <div class="pct" aria-live="polite">0%</div>
+    <div class="pct" aria-hidden="true">0%</div>
     <button class="hold" type="button" aria-label="Зажмите, чтобы начать фильм">
       <svg viewBox="0 0 140 140"><circle class="bg" cx="70" cy="70" r="68"/><circle class="fg" cx="70" cy="70" r="68" pathLength="1"/></svg>
       <span>Зажмите,<br>чтобы начать</span>
     </button>
-    <div class="gate-sub">Фильм о Liwan · полторы минуты<br>Лучше со звуком</div>
+    <button class="sr" type="button" id="start-now">Начать фильм без удержания</button>
+    <div class="gate-sub">Фильм о Liwan · около двух минут<br>Лучше со звуком</div>
   </div>
 </div>
 
 <a class="ui logo" href="https://liwan-lounge.ru" aria-label="Liwan — основной сайт"></a>
 <nav class="ui segs" aria-label="Главы фильма"></nav>
-<a class="ui book" href="https://yandex.ru/partner-reserve/forms/03fcde06-37b9-4221-a463-c06049b48a12" target="_blank" rel="noopener">Бронирование</a>
+<div class="ui topr"><button class="mbtn" type="button" data-menu aria-haspopup="dialog">Меню</button><a class="book" href="https://reservation.yandex.ru/partner-reserve/forms/03fcde06-37b9-4221-a463-c06049b48a12" target="_blank" rel="noopener">Бронирование</a></div>
 <button class="ui ctl snd" type="button" aria-pressed="true"><span class="bars2"><i></i><i></i><i></i><i></i></span><span class="lbl">Звук</span></button>
 <button class="ui ctl pp" type="button" aria-label="Пауза"><span class="lbl">Пауза</span><span class="ic"></span></button>
 
@@ -266,13 +316,36 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 <div id="subs" aria-live="polite"></div>
 <div id="hint" aria-hidden="true"></div>
 
+<div id="menu" role="dialog" aria-modal="true" aria-label="Меню Liwan" aria-hidden="true">
+  <div class="m-scroll">
+    <p class="m-zhint">Коснитесь страницы, чтобы увеличить</p>
+    <img class="m-page" id="mp-1" src="../assets/menu-pages/menu-1.svg" width="595" height="842" alt="Меню Liwan — обложка" loading="lazy" decoding="async">
+    <img class="m-page" id="mp-2" src="../assets/menu-pages/menu-2.svg" width="595" height="842" alt="Меню Liwan — напитки и снеки" loading="lazy" decoding="async">
+    <img class="m-page" id="mp-3" src="../assets/menu-pages/menu-3.svg" width="595" height="842" alt="Меню Liwan — чай и лимонады" loading="lazy" decoding="async">
+    <img class="m-page" id="mp-4" src="../assets/menu-pages/menu-4.svg" width="595" height="842" alt="Меню Liwan — китайский чай" loading="lazy" decoding="async">
+    <p class="m-note">Цены указаны в рублях и могут меняться.</p>
+    <p class="m-cta"><a class="btn main" href="https://reservation.yandex.ru/partner-reserve/forms/03fcde06-37b9-4221-a463-c06049b48a12" target="_blank" rel="noopener">Забронировать стол</a></p>
+    <div class="sr" id="menu-text"><h2>Меню Liwan текстом</h2><h3>Холодные напитки</h3><ul><li>Kinza Гранат  330 мл — 390 ₽</li><li>Kinza Лимон-лайм zero  330 мл — 390 ₽</li><li>Kinza Лимон-лайм  330 мл — 390 ₽</li><li>Kinza Виноград  330 мл — 390 ₽</li><li>Milaf Финиковая кола  240 мл — 420 ₽</li><li>Боржоми  500 мл — 420 ₽</li><li>Вода Baikal — 420 ₽</li></ul><h3>Кофе</h3><ul><li>Кофе в турке — 490 ₽</li></ul><h3>Снеки</h3><ul><li>Сет орехов — 790 ₽</li><li>Сублимированные фрукты — 1 300 ₽</li></ul><h3>Лимонады, 400 мл</h3><ul><li>Мираж — 490 ₽</li><li>Дюны — 490 ₽</li><li>Бахар — 490 ₽</li><li>Тишина — 490 ₽</li><li>Мораккабат — 490 ₽</li></ul><h3>Чай, чайник 650 мл</h3><ul><li>Марокканский — 1 300 ₽</li><li>Розовый с яблоком — 1 600 ₽</li><li>Чай с чабрецом — 800 ₽</li></ul><h3>Китайский чай, чайник 1 000 мл</h3><ul><li>Цзинь Цзунь Мей — 1 100 ₽</li><li>Дянь Хун — 1 100 ₽</li><li>Те Гуань Инь — 1 100 ₽</li><li>Те Гуань Инь Вулкан — 1 100 ₽</li><li>Шу Гун Тин — 1 100 ₽</li><li>Бай Мудань — 1 100 ₽</li><li>Да Хун Пао — 1 100 ₽</li><li>Габа Бриллиант — 1 300 ₽</li><li>Тибетская Ромашка — 1 100 ₽</li><li>Гречишный — 1 100 ₽</li><li>Ян Ча — 1 100 ₽</li><li>Лао Гун Мей — 1 200 ₽</li><li>Шен Пуэр — 1 300 ₽</li><li>Молочный Улун — 1 100 ₽</li><li>Дун Фан Мей Жень — 1 500 ₽</li><li>Жасмин — 1 200 ₽</li><li>Фен Хуан Дан Цун — 1 600 ₽</li><li>Шуй Сян — 1 500 ₽</li><li>Джан Пин Шуй Сян — 1 500 ₽</li><li>Мен Хай Гу Шу — 1 500 ₽</li><li>Красный Чжун Го Хун — 1 400 ₽</li><li>Шен Иу — 1 900 ₽</li><li>Лао Ча Ван Тайвань — 1 900 ₽</li><li>Тайваньский Сы Цзи Чунь — 1 200 ₽</li><li>Да Хун Пао Традиционный — 2 900 ₽</li></ul></div>
+  </div>
+  <div class="m-top">
+    <span class="m-ttl">Меню</span>
+    <nav class="m-tabs" aria-label="Разделы меню">
+      <button class="m-tab" type="button" data-go="mp-2">Напитки и снеки</button>
+      <button class="m-tab" type="button" data-go="mp-3">Чай и лимонады</button>
+      <button class="m-tab" type="button" data-go="mp-4">Китайский чай</button>
+    </nav>
+    <a class="m-pdf" href="../assets/menu-pages/liwan-menu.pdf" target="_blank" rel="noopener">PDF</a>
+    <button class="m-x" type="button" aria-label="Закрыть меню">×</button>
+  </div>
+</div>
+
 <div id="credits" aria-hidden="true"><div class="roll">
   <div class="sub">Liwan · лаунж-бар и чайная</div>
   <h4>В ролях</h4>
   <dl>
     <dt>Чай</dt><dd>мастер чайной церемонии</dd>
     <dt>Звук</dt><dd>ситар и табла</dd>
-    <dt>Ночь</dt><dd>DJ выходного дня</dd>
+    <dt>Вечера</dt><dd>DJ по выходным</dd>
     <dt>Свет</dt><dd>резные фонари</dd>
     <dt>Веранда</dt><dd>зелень и плетёные лампы</dd>
   </dl>
@@ -283,20 +356,22 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 <section class="fin" aria-label="Бронирование и контакты">
   <div class="num">Бронирование</div>
   <h2>Ваш стол ждёт</h2>
-  <p>Лаунж-бар и чайная на втором этаже фудмолла «Привоз».</p>
+  <p>Чай, живой звук и вечера с DJ — ждём вас.</p>
   <div class="acts">
-    <a class="btn main" href="https://yandex.ru/partner-reserve/forms/03fcde06-37b9-4221-a463-c06049b48a12" target="_blank" rel="noopener">Бронирование</a>
+    <a class="btn main" href="https://reservation.yandex.ru/partner-reserve/forms/03fcde06-37b9-4221-a463-c06049b48a12" target="_blank" rel="noopener">Забронировать стол</a>
+    <button class="btn" type="button" data-menu aria-haspopup="dialog">Меню</button>
     <a class="btn" href="https://yandex.ru/maps/org/66056015280" target="_blank" rel="noopener">Как добраться</a>
   </div>
   <dl class="info">
-    <dt>Адрес</dt><dd>Москва, ул.&nbsp;Авиаконструктора Миля,&nbsp;3А, 2-й этаж</dd>
-    <dt>Часы</dt><dd>Ежедневно 14:00–01:00, пт–сб до&nbsp;02:00</dd>
-    <dt>Связь</dt><dd><a href="tel:+79267219990">+7 926 721-99-90</a> · <a href="https://t.me/loungeliwan" target="_blank" rel="noopener">Telegram</a></dd>
+    <dt>Адрес</dt><dd>Москва, ул.&nbsp;Авиаконструктора Миля,&nbsp;3А, фудмолл «Привоз», 2-й&nbsp;этаж</dd>
+    <dt>Часы</dt><dd>Вс–чт 14:00–01:00, пт–сб 14:00–02:00</dd>
+    <dt>Связь</dt><dd><a href="tel:+79267219990">+7&nbsp;(926)&nbsp;721-99-90</a> · <a href="https://t.me/loungeliwan" target="_blank" rel="noopener">Telegram</a></dd>
   </dl>
   <button class="again" type="button">↺ Смотреть ещё раз</button>
 </section>
 
-<main id="plain"><h1 class="sr">Liwan — лаунж-бар и чайная в Жулебино</h1></main>
+<h1 class="sr">Liwan — лаунж-бар и чайная в Жулебино</h1>
+<main id="plain"></main>
 
 <div class="cur" aria-hidden="true"></div><div class="dot" aria-hidden="true"></div>
 
@@ -318,22 +393,22 @@ const small = coarse || innerWidth < 820;
    pm — фоновые песчинки: 0 золотая пыль, 1 искры, 2 пар, 3 звуковые кольца, 5 светлячки */
 const CH = [
   { label: "Пролог", media: "about", fo: .5, k: 0, dark: .9, pm: 6, form: 1, tr: 0, dur: 9,
-    subs: [[3.8, 8.4, "Лаунж-бар и чайная в Жулебино"]] },
+    subs: [[3.8, 8.4, "Лаунж-бар и чайная в Жулебино."]] },
   { label: "Привал", media: "atmosfera", fo: .5, k: 3, dark: .06, pm: 1, form: 0, tr: 0, dur: 17,
     card: ["Глава I", "Привал"],
-    subs: [[7.2, 11.6, "Город остаётся за дверью."], [12.2, 16.4, "Здесь свет мягче, а время — медленнее."]] },
+    subs: [[7.2, 11.6, "Город остаётся за дверью."], [12.2, 16.4, "Здесь свет мягче, а время течёт медленнее."]] },
   { label: "Чай", media: "chai", fo: .5, k: 1, dark: .06, pm: 2, form: 0, tr: 2, dur: 17,
     card: ["Глава II", "Чай"],
-    subs: [[7.2, 11.6, "Чай здесь заваривает мастер."], [12.2, 16.4, "Улуны, пуэры и марокканский чай с мятой."]] },
+    subs: [[7.2, 11.6, "Чай здесь заваривает мастер."], [12.2, 16.4, "Улуны, пуэры и марокканский чай."]] },
   { label: "Живой звук", media: "muzyka", top: .085, fo: .55, k: 1, dark: .1, pm: 3, form: 0, tr: 1, dur: 17.5,
     card: ["Глава III", "Живой звук"],
-    subs: [[7.2, 11.8, "По вечерам звучат ситар и табла."], [12.4, 16.9, "Музыка, ради которой остаются до закрытия."]] },
-  { label: "Ночь", media: "dj", fo: .5, k: 4, dark: .14, pm: 0, form: 0, tr: 3, dur: 17.5,
-    card: ["Глава IV", "Ночь"],
+    subs: [[7.2, 11.8, "В дни концертов звучат ситар и табла."], [12.4, 16.9, "Музыка, ради которой остаются до закрытия."]] },
+  { label: "Вечера с DJ", media: "dj", fo: .5, k: 4, dark: .14, pm: 0, form: 0, tr: 3, dur: 17.5,
+    card: ["Глава IV", "Вечера с\u00a0DJ"],
     subs: [[7.2, 11.8, "По выходным за пультом — DJ."], [12.4, 16.9, 'Афиша недели — в нашем <a href="https://t.me/loungeliwan" target="_blank" rel="noopener">Telegram</a>.']] },
   { label: "Веранда", media: "veranda", fo: .4, k: 1, dark: .1, pm: 5, form: 0, tr: 4, dur: 17,
     card: ["Глава V", "Веранда"],
-    subs: [[7.2, 11.6, "Зелень и плетёные лампы."], [12.2, 16.4, "Ковры, тёплый вечер и живой звук."]] },
+    subs: [[7.2, 11.6, "Летняя веранда — зелень и плетёные лампы."], [12.2, 16.4, "Ковры, тёплый вечер и живой звук."]] },
   { label: "Финал", media: "about", fo: .5, k: 3, dark: .82, pm: 0, form: 1, tr: 0, dur: 0,
     card: ["Финал", "До встречи"] }
 ];
@@ -365,9 +440,52 @@ CH.forEach(c => {
   plain.appendChild(s);
 });
 
+/* ===== меню заведения (до WebGL — работает и в простой версии) ===== */
+const filmHooks = { open: null, close: null };
+let menuOpen = false, menuFocus = null, menuInert = [];
+const menuEl = document.getElementById("menu"), menuSc = menuEl.querySelector(".m-scroll");
+function openMenu() {
+  if (menuOpen) return;
+  menuOpen = true; menuFocus = document.activeElement;
+  if (filmHooks.open) filmHooks.open();
+  menuInert = [...document.body.children].filter(el => el !== menuEl && el.tagName !== "SCRIPT" && !el.inert);
+  menuInert.forEach(el => { el.inert = true; });
+  menuEl.classList.add("on"); menuEl.setAttribute("aria-hidden", "false"); root.classList.add("mopen");
+  setTimeout(() => menuEl.querySelector(".m-x").focus(), 60);
+}
+function closeMenu() {
+  if (!menuOpen) return;
+  menuOpen = false; menuInert.forEach(el => { el.inert = false; }); menuInert = [];
+  menuEl.classList.remove("on"); menuEl.setAttribute("aria-hidden", "true"); root.classList.remove("mopen"); menuSc.classList.remove("zoom");
+  if (filmHooks.close) filmHooks.close();
+  if (menuFocus && menuFocus.focus) menuFocus.focus();
+}
+document.querySelectorAll("[data-menu]").forEach(b => b.addEventListener("click", openMenu));
+menuEl.querySelector(".m-x").addEventListener("click", closeMenu);
+menuEl.querySelectorAll("[data-go]").forEach(b => b.addEventListener("click", () => {
+  const pg = document.getElementById(b.dataset.go);
+  menuSc.scrollTo({ top: pg.offsetTop - menuSc.querySelector(".m-page").offsetTop, behavior: "smooth" });
+}));
+menuSc.addEventListener("click", e => {
+  if (e.target === menuSc) closeMenu();
+  else if (coarse && e.target.classList.contains("m-page")) menuSc.classList.toggle("zoom"); /* телефон: страница во всю ширину ×2 */
+});
+addEventListener("keydown", e => {
+  if (!menuOpen) return;
+  if (e.key === "Escape") { e.preventDefault(); closeMenu(); }
+  else if (e.key === "Tab") {
+    const f = [...menuEl.querySelectorAll("button,a")]; const i = f.indexOf(document.activeElement);
+    if (i < 0) { e.preventDefault(); f[0].focus(); }
+    else if (e.shiftKey && i === 0) { e.preventDefault(); f[f.length - 1].focus(); }
+    else if (!e.shiftKey && i === f.length - 1) { e.preventDefault(); f[0].focus(); }
+  }
+}, true);
+/* телефон: бронь в той же вкладке — во встроенных браузерах Telegram/Instagram новая вкладка может не открыться */
+if (coarse) $$('a[href*="reservation.yandex.ru"]').forEach(a => a.removeAttribute("target"));
+
 /* ===== WebGL ===== */
 const cv = $("#gl");
-const gl = cv.getContext("webgl", { antialias: false, alpha: false, premultipliedAlpha: false, powerPreference: "high-performance" });
+const gl = /nogl/.test(location.hash) ? null : cv.getContext("webgl", { antialias: false, alpha: false, premultipliedAlpha: false, powerPreference: "high-performance" });
 if (!gl || gl.getParameter(gl.MAX_VERTEX_TEXTURE_IMAGE_UNITS) < 2) { root.classList.add("nogl"); return; }
 
 /* общий код кадра и песочного перехода: фон и песчинки считают одно и то же, поэтому стыкуются без шва */
@@ -394,7 +512,7 @@ float vign(vec2 uv){return mix(.42,1.,smoothstep(1.15,.25,length((uv-.5)*vec2(uR
 float front(vec2 uv){
   vec2 p=(uv-.5)*vec2(uRes.x/uRes.y,1.);float f;
   if(uTr<.5)f=uv.x*.8+fbm(uv*vec2(3.,5.)+7.)*.2;
-  else if(uTr<1.5){float r=length(p),a=atan(p.y,p.x);f=fract(a/6.2832+.5+r*.55)*.78+fbm(uv*4.)*.22;}
+  else if(uTr<1.5){float r=length(p),a=atan(p.y,p.x+1e-6);f=fract(a/6.2832+.5+r*.55)*.78+fbm(uv*4.)*.22;}
   else if(uTr<2.5)f=uv.y*.8+fbm(uv*vec2(5.,3.)+3.)*.2;
   else if(uTr<3.5)f=clamp(length(p)/length(vec2(uRes.x/uRes.y,1.)*.5),0.,1.)*.8+fbm(uv*4.+1.)*.2;
   else f=(uv.x*.55+(1.-uv.y)*.45)*.8+fbm(uv*3.+5.)*.2;
@@ -410,13 +528,18 @@ float tIn(float d){return clamp((uMix-d*.62-.1)/.26,0.,1.);}
 `;
 
 const VS_Q = `attribute vec2 p;varying vec2 vUv;void main(){vUv=p*.5+.5;gl_Position=vec4(p,0.,1.);}`;
-const FS_BG = `precision highp float;
+const FS_BG = `#ifdef GL_FRAGMENT_PRECISION_HIGH
+precision highp float;
+#else
+precision mediump float;
+#endif
+
 varying vec2 vUv;
 uniform sampler2D uA,uB;uniform float uKA,uKB,uVel,uBeat,uLeak,uCosmos;uniform vec3 uMoon;
 ${COMMON}
 vec3 sky(vec2 uv){
   float asp=uRes.x/uRes.y;vec2 q=(uv-.5)*vec2(asp,1.)/(1.+uWarp*1.8);
-  float band=exp(-pow((q.y-q.x*.32+.05)*2.4,2.));
+  float bq=(q.y-q.x*.32+.05)*2.4;float band=exp(-bq*bq);
   float n1=fbm(q*1.7+vec2(uTime*.012,0.)),n2=fbm(q*3.4+n1*1.6-uTime*.008);
   vec3 col=vec3(.34,.07,.11)*pow(n2,2.2)*1.3+vec3(.6,.42,.22)*pow(n1,3.2)*.9+vec3(.07,.06,.17)*n1*.7;
   col*=.35+band*1.1;
@@ -518,15 +641,16 @@ void main(){
   pos*=pj;
   gl_Position=vec4(pos.x/asp,pos.y,0.,1.);
   vec3 col=(uSide<.5?texture2D(uA,c).rgb:texture2D(uB,c).rgb)*ed;
-  col=grade(col)*(1.-uDark)*vign(uv);
+  col=grade(col)*(1.-uDark)*vign(camFwd(uv,cm));
   float lift=sin(t*3.1416);
   float glint=step(.93,aR.w)*lift;
   col=mix(col,vec3(1.,.84,.58)*(.35+dot(col,vec3(.4))),glint*.75);
   col+=vec3(.75,.52,.3)*.05*lift;
   float big=step(.988,aR.y);
   float near=clamp(z*1.6,0.,1.);
-  gl_PointSize=uPt*mix(1.,.5,t)*(1.+big*3.)*pj*(1.+near*2.5);
+  gl_PointSize=min(uPt*mix(1.,.5,t)*(1.+big*3.)*pj*(1.+near*2.5),96.);
   vA=(1.-smoothstep(.55,1.,t))*mix(1.,.22,big)*mix(1.,.3*smoothstep(.12,.45,dot(col,vec3(.33))),near);
+  if(vA<.012){gl_Position=vec4(-9.,-9.,0.,1.);gl_PointSize=0.;}
   vC=col;}`;
 const FS_G = `precision mediump float;varying vec3 vC;varying float vA;
 void main(){float r=length(gl_PointCoord-.5);float a=smoothstep(.5,.32,r)*vA;gl_FragColor=vec4(vC*a,a);}`;
@@ -560,7 +684,7 @@ void mode(float m,out vec2 p,out float sz,out float al,out vec3 col){
     vec2 g=vec2(cos(th),sin(th))*r+vec2(aRnd.w-.5,aRnd.z-.5)*.05*(1.-r);
     g.y*=.5;float tl=-.32;g=mat2(cos(tl),-sin(tl),sin(tl),cos(tl))*g;
     p=uOff+g*1.2*(1.+uWarp*(2.2+aRnd.w*2.));sz=(.6+aRnd.w*1.7)*(1.+uWarp*1.5);
-    al=(.1+.38*exp(-pow((r-.38)*2.8,2.)))*(.65+.35*sin(t*2.+aRnd.w*30.));
+    float rq=(r-.38)*2.8;al=(.1+.38*exp(-rq*rq))*(.65+.35*sin(t*2.+aRnd.w*30.));
     col=mix(vec3(.98,.93,.82),vec3(.71,.55,.35),r)+vec3(.35,.05,.12)*step(.86,aRnd.w);
   }
 }
@@ -581,7 +705,7 @@ void main(){
   gl_Position=vec4(p.x/uAsp,p.y,0.,1.);
   gl_PointSize=mix(sz,(.8+aRnd.w*1.8)*1.1,f)*uPR*(1.+uBeat*.4*(1.-f));
   float sweep=mod(t*.22,2.6)-1.3;
-  float shine=exp(-pow((aHome.x-aHome.y*.45-sweep)*7.,2.))*f;
+  float sq=(aHome.x-aHome.y*.45-sweep)*7.;float shine=exp(-sq*sq)*f;
   vA=uAlpha*mix(al,.9,f);
   vC=mix(col,mix(vec3(.71,.55,.35),vec3(.98,.93,.82),aRnd.y*aRnd.y),f)+vec3(1.,.9,.7)*shine*.9;}`;
 const FS_P = `precision mediump float;varying float vA;varying vec3 vC;
@@ -591,16 +715,22 @@ function prog(vs, fs) {
   const p = gl.createProgram();
   for (const [t, src] of [[gl.VERTEX_SHADER, vs], [gl.FRAGMENT_SHADER, fs]]) {
     const s = gl.createShader(t); gl.shaderSource(s, src); gl.compileShader(s);
-    if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) console.error(gl.getShaderInfoLog(s));
+    if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s));
     gl.attachShader(p, s);
   }
   gl.linkProgram(p);
-  if (!gl.getProgramParameter(p, gl.LINK_STATUS)) console.error(gl.getProgramInfoLog(p));
+  if (!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(p));
   const u = {}; const n = gl.getProgramParameter(p, gl.ACTIVE_UNIFORMS);
   for (let i = 0; i < n; i++) { const nm = gl.getActiveUniform(p, i).name; u[nm] = gl.getUniformLocation(p, nm); }
   return { p, u };
 }
-const BG = prog(VS_Q, FS_BG), GR = prog(VS_G, FS_G), PT = prog(VS_P, FS_P);
+let BG, GR, PT;
+try { BG = prog(VS_Q, FS_BG); GR = prog(VS_G, FS_G); PT = prog(VS_P, FS_P); }
+catch (err) { console.error(err); root.classList.add("nogl"); return; } /* шейдер не собрался на этом устройстве — простая страница */
+let ctxLost = false;
+cv.addEventListener("webglcontextlost", e => { e.preventDefault(); ctxLost = true; });
+cv.addEventListener("webglcontextrestored", () => location.reload());
+document.addEventListener("visibilitychange", () => { if (!document.hidden && ctxLost) setTimeout(() => { if (ctxLost) location.reload(); }, 1500); });
 const triBuf = gl.createBuffer();
 gl.bindBuffer(gl.ARRAY_BUFFER, triBuf);
 gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
@@ -641,7 +771,7 @@ function feed(t) {
 }
 function playNear(c) {
   const want = new Set();
-  if (playing || phase !== "film" || tw) CH.forEach((ch, k) => { if (Math.abs(c - k) < 1.25) want.add(TEX[ch.media]); });
+  if (!document.hidden && (playing || phase !== "film" || tw)) CH.forEach((ch, k) => { if (Math.abs(c - k) < 1.25) want.add(TEX[ch.media]); });
   Object.values(TEX).forEach(t => {
     if (!t.el) return;
     if (want.has(t) && t.el.paused) { const p = t.el.play(); if (p && p.catch) p.catch(() => {}); }
@@ -652,6 +782,7 @@ function playNear(c) {
 /* сетка песчинок перехода: по зерну на каждые ~3 пикселя экрана */
 const gBuf = gl.createBuffer(); let gCount = 0, gCols = 1, gFrac = 1;
 function buildGrains() {
+  gAsp = asp;
   const target = small ? 85000 : 170000;
   gCols = Math.max(40, Math.round(Math.sqrt(target * asp)));
   const rows = Math.max(30, Math.round(target / gCols));
@@ -690,7 +821,7 @@ logo.onload = () => {
 logo.onerror = () => loaded++;
 logo.src = "img/logo.png";
 
-let W = 0, H = 0, asp = 1, dpr = 1, rT = 0, qCap = 2;
+let W = 0, H = 0, asp = 1, dpr = 1, rT = 0, qCap = 2, gAsp = -1;
 function resize() {
   dpr = Math.min(devicePixelRatio || 1, small ? 1.5 : 2, qCap);
   W = innerWidth; H = innerHeight; asp = W / H;
@@ -699,7 +830,7 @@ function resize() {
   const bar = !small && asp > 1.3 ? Math.max(0, Math.round((H - W / 2.35) / 2)) : 0;
   root.style.setProperty("--bar", bar + "px");
   root.style.setProperty("--subB", (bar >= 64 ? Math.round(bar / 2 - 16) : 86) + "px");
-  clearTimeout(rT); rT = setTimeout(buildGrains, 120);
+  if (Math.abs(asp - gAsp) > .01) { clearTimeout(rT); rT = setTimeout(buildGrains, 120); }
 }
 resize(); buildGrains(); addEventListener("resize", resize);
 
@@ -709,7 +840,7 @@ try { AU.on = localStorage.getItem("lw-x-snd") !== "0"; } catch (e) {}
 const sndBtn = $(".snd");
 function paintSnd() {
   sndBtn.classList.toggle("off", !AU.on); sndBtn.setAttribute("aria-pressed", AU.on);
-  $(".lbl", sndBtn).textContent = AU.on ? "Звук" : "Без звука";
+  $(".lbl", sndBtn).textContent = AU.on ? "Звук" : "Звук выкл"; sndBtn.setAttribute("aria-label", "Звук");
 }
 paintSnd();
 const BPM = 96, S16 = 60 / BPM / 4;
@@ -727,7 +858,6 @@ const PAT = [
 function audioInit() {
   if (AU.ac) return;
   const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return;
-  try { if (navigator.audioSession) navigator.audioSession.type = "playback"; } catch (e) {} /* iPhone: звук и при беззвучном режиме */
   const ac = AU.ac = new AC();
   const comp = ac.createDynamicsCompressor(); comp.threshold.value = -18; comp.ratio.value = 4; comp.connect(ac.destination);
   AU.master = ac.createGain(); AU.master.gain.value = 0; AU.master.connect(comp);
@@ -768,7 +898,7 @@ function audioInit() {
 function setVol() {
   if (!AU.ac) return;
   if (AU.on && AU.ac.state === "suspended") AU.ac.resume();
-  AU.master.gain.setTargetAtTime(AU.on && !document.hidden ? .62 : 0, AU.ac.currentTime, .5);
+  AU.master.gain.setTargetAtTime(AU.on && !document.hidden ? (menuOpen ? .18 : .62) : 0, AU.ac.currentTime, .5);
 }
 sndBtn.addEventListener("click", () => {
   AU.on = !AU.on; try { localStorage.setItem("lw-x-snd", AU.on ? "1" : "0"); } catch (e) {}
@@ -828,6 +958,8 @@ function noise(t, type, f, q, dur, v) {
 }
 function score(ch) {
   const ac = AU.ac; if (!ac) return;
+  if (!AU.on || document.hidden || AU.next < ac.currentTime) AU.next = ac.currentTime + .05; /* не догонять пропущенные ноты разом */
+  if (!AU.on || document.hidden) return;
   const P = PAT[ch] || PAT[0];
   while (AU.next < ac.currentTime + .15) {
     const t = AU.next, st = AU.step % 16;
@@ -903,19 +1035,26 @@ function go(k, instant) {
   k = clamp(k, 0, N - 1); if (k === cur && !instant) return;
   const from = tw ? tw.to : C;
   if (instant) { C = prevC = k; tw = null; } else { tw = { from, to: k, fromI: Math.round(from), far: Math.abs(k - from) > 1.01, t0: performance.now(), dur: TRANS_MS }; whoosh(TRANS_MS / 1000 * .95, k === 4 ? 2400 : 1600); }
-  cur = k; chT0 = performance.now(); shownCard = -1; subsKey = "";
-  if (card.classList.contains("on")) card.classList.add("off"); credits.classList.remove("on"); fin.classList.remove("on");
+  cur = k; chT0 = performance.now(); shownCard = -1; subsKey = "\u0000"; finFast = !!userNav && k === N - 1; userNav = false;
+  if (card.classList.contains("on")) card.classList.add("off"); credits.classList.remove("on"); fin.classList.remove("on"); fin.inert = true; root.classList.remove("fin-on");
 }
-function setPlaying(v, quiet) {
+let userNav = false, finFast = false;
+function setPlaying(v) {
   playing = v; root.classList.toggle("paused", !v);
-  $(".lbl", ppBtn).textContent = v ? "Пауза" : "Смотреть"; ppBtn.setAttribute("aria-label", v ? "Пауза" : "Смотреть");
-  if (v && cur === N - 1 && !quiet) go(1);
+  $(".lbl", ppBtn).textContent = v ? "Пауза" : "Продолжить"; ppBtn.setAttribute("aria-label", v ? "Пауза" : "Продолжить");
 }
 ppBtn.addEventListener("click", () => setPlaying(!playing));
-$(".again").addEventListener("click", () => { go(1); setPlaying(true); });
+$(".again").addEventListener("click", e => { e.currentTarget.blur(); go(1); setPlaying(true); });
+filmHooks.open = () => { menuWas = playing; if (playing && phase === "film") setPlaying(false); setVol(); };
+filmHooks.close = () => { if (menuWas && phase === "film") setPlaying(true); setVol(); };
+let menuWas = false;
+$$(".ui").forEach(el => { el.inert = true; }); fin.inert = true; /* невидимое не получает фокус */
+$("#start-now").addEventListener("click", () => { if (!ready || phase !== "gate") return; audioInit(); unlockAudio(); startFilm(); });
 
 const startHold = e => { if (!ready || phase !== "gate") return; holding = true; audioInit(); if (e && e.pointerId != null) try { holdBtn.setPointerCapture(e.pointerId); } catch (_) {} };
-const endHold = () => { holding = false; };
+const endHold = () => { holding = false; unlockAudio(); };
+const unlockAudio = () => { if (AU.ac && AU.on && AU.ac.state !== "running") AU.ac.resume(); }; /* iPhone разрешает звук только по отпусканию пальца */
+addEventListener("touchend", unlockAudio, { passive: true }); addEventListener("click", unlockAudio);
 holdBtn.addEventListener("pointerdown", startHold);
 holdBtn.addEventListener("pointerup", endHold);
 holdBtn.addEventListener("pointercancel", endHold);
@@ -924,6 +1063,7 @@ holdBtn.addEventListener("keydown", e => { if ((e.key === "Enter" || e.key === "
 holdBtn.addEventListener("keyup", e => { if (e.key === "Enter" || e.key === " ") endHold(); });
 function startFilm(quiet) {
   phase = "film"; holding = false; root.classList.add("film"); gate.classList.add("out");
+  gate.inert = true; $$(".ui").forEach(el => { el.inert = false; }); if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
   enterT = performance.now(); go(0, true); chT0 = enterT;
   setVol(); if (!quiet) { whoosh(3.2, 1200); boom(2.3); showHint(); }
 }
@@ -931,7 +1071,7 @@ function showHint() {
   let seen = false; try { seen = localStorage.getItem("lw-x-hint") === "1"; localStorage.setItem("lw-x-hint", "1"); } catch (e) {}
   if (seen) return;
   const h = $("#hint");
-  h.textContent = coarse ? "Тап справа — дальше · слева — назад · удерживайте — пауза" : "Колесо или стрелки — главы · пробел — пауза";
+  h.textContent = coarse ? "Коснитесь справа — дальше · слева — назад · удерживайте — пауза" : "Колесо или стрелки — главы · пробел — пауза";
   setTimeout(() => h.classList.add("show"), 900);
   setTimeout(() => h.classList.remove("show"), 3500);
 }
@@ -941,12 +1081,13 @@ setTimeout(() => { if (!ready) loaded = total; }, 9000);
 let wAcc = 0, wLast = 0, wUsed = false, queued = 0;
 function step(d) {
   if (phase !== "film" || !d) return;
-  if (tw) { queued = d; return; } /* переход идёт — дождаться конца, не дёргать кадр */
-  queued = 0; go(cur + d);
+  if (tw) { queued = d; pendingTo = -1; return; } /* переход идёт — дождаться конца, не дёргать кадр */
+  queued = 0; userNav = true; go(cur + d);
 }
-function navTo(k) { if (phase !== "film") return; if (tw) { queued = 0; pendingTo = k; return; } go(k); }
+function navTo(k) { if (phase !== "film" || menuOpen) return; if (tw) { queued = 0; pendingTo = k; return; } userNav = true; go(k); }
 let pendingTo = -1;
 addEventListener("wheel", e => {
+  if (menuOpen) return; /* меню прокручивается само */
   e.preventDefault();
   const now = performance.now();
   if (now - wLast > 320) { wAcc = 0; wUsed = false; } /* пауза в событиях — начался новый жест */
@@ -956,33 +1097,37 @@ addEventListener("wheel", e => {
   if (Math.abs(wAcc) > 40) { wUsed = true; step(Math.sign(wAcc)); wAcc = 0; }
 }, { passive: false });
 let ty = null, tx = null, tT = 0, tMoved = false, tUi = false, tHold = 0, heldPause = false, heldWas = false;
-const isUi = el => !!(el && el.closest && el.closest("a,button,.fin,.segs,#gate"));
+const isUi = el => !!(el && el.closest && el.closest("a,button,.fin,.segs,#gate,#menu"));
 addEventListener("touchstart", e => {
+  if (menuOpen) { ty = null; return; }
   if (e.touches.length > 1) { ty = null; return; }
   ty = e.touches[0].clientY; tx = e.touches[0].clientX; tT = performance.now(); tMoved = false; tUi = isUi(e.target);
+  if (tx < 24 || tx > W - 24) { ty = null; return; }
   clearTimeout(tHold);
-  if (!tUi && phase === "film") tHold = setTimeout(() => { if (!tMoved) { heldPause = true; heldWas = playing; if (playing) setPlaying(false, true); } }, 380);
+  if (!tUi && phase === "film") tHold = setTimeout(() => { if (!tMoved) { heldPause = true; heldWas = playing; if (playing) setPlaying(false); } }, 380);
 }, { passive: true });
 addEventListener("touchmove", e => {
+  if (menuOpen) return;
   if (ty !== null && (Math.abs(e.touches[0].clientY - ty) > 10 || Math.abs(e.touches[0].clientX - tx) > 10)) { tMoved = true; clearTimeout(tHold); }
   if (e.cancelable) e.preventDefault();
 }, { passive: false });
 const endTouch = e => {
   clearTimeout(tHold);
-  if (heldPause) { heldPause = false; if (heldWas) setPlaying(true, true); ty = null; return; } /* отпустили — смотрим дальше */
+  if (heldPause) { heldPause = false; if (heldWas) setPlaying(true); ty = null; return; } /* отпустили — смотрим дальше */
   if (ty === null) return;
   const p = e.changedTouches[0], dy = ty - p.clientY, dx = tx - p.clientX, dt = performance.now() - tT; ty = null;
+  if (tUi) return; /* жест начат на кнопке или блоке брони — не листаем */
   if (Math.abs(dy) > 45 && Math.abs(dy) > Math.abs(dx)) { step(Math.sign(dy)); return; }
   if (Math.abs(dx) > 60) { step(Math.sign(dx)); return; }
   if (!tUi && !tMoved && dt < 350 && phase === "film") step(p.clientX < W * .3 ? -1 : 1); /* тап: справа — дальше, слева — назад */
 };
 addEventListener("touchend", endTouch);
-addEventListener("touchcancel", () => { clearTimeout(tHold); if (heldPause) { heldPause = false; if (heldWas) setPlaying(true, true); } ty = null; });
+addEventListener("touchcancel", () => { clearTimeout(tHold); if (heldPause) { heldPause = false; if (heldWas) setPlaying(true); } ty = null; });
 addEventListener("keydown", e => {
-  if (phase !== "film") return;
+  if (menuOpen || phase !== "film") return;
   if (["ArrowDown", "ArrowRight", "PageDown"].includes(e.key)) { e.preventDefault(); if (!e.repeat) step(1); }
   else if (["ArrowUp", "ArrowLeft", "PageUp"].includes(e.key)) { e.preventDefault(); if (!e.repeat) step(-1); }
-  else if (e.key === " " && !e.target.closest("a,button")) { e.preventDefault(); setPlaying(!playing); }
+  else if (e.key === " " && !(e.target && e.target.closest && e.target.closest("a,button"))) { e.preventDefault(); setPlaying(!playing); }
 });
 let hiddenAt = 0;
 document.addEventListener("visibilitychange", () => {
@@ -1013,7 +1158,7 @@ function splitTitle(s) {
 }
 function textFrame(lt) {
   const ch = CH[cur];
-  if (ch.card) {
+  if (ch.card && !(cur === N - 1 && finFast)) {
     if (shownCard !== cur && lt > CARD_IN) {
       shownCard = cur;
       $(".kick", card).textContent = ch.card[0];
@@ -1037,8 +1182,11 @@ function textFrame(lt) {
     }
   }
   if (cur === N - 1) {
-    if (lt > 7) credits.classList.add("on");
-    if (lt > 19.5) { fin.classList.add("on"); credits.classList.remove("on"); }
+    if (finFast) { if (lt > 2.4 && !fin.classList.contains("on")) { fin.classList.add("on"); fin.inert = false; root.classList.add("fin-on"); } }
+    else {
+      if (lt > 7 && lt <= 19.5) credits.classList.add("on");
+      if (lt > 19.5 && !fin.classList.contains("on")) { fin.classList.add("on"); fin.inert = false; root.classList.add("fin-on"); credits.classList.remove("on"); }
+    }
   }
 }
 
@@ -1070,24 +1218,26 @@ function frame(now) {
   try { frameBody(now); } catch (e) { console.error(e); }
   requestAnimationFrame(frame);
 }
-let qT = 0, qN = 0, qSum = 0;
+let qT = 0, qN = 0, qSum = 0, qMin = 1, qMax = 0;
 function frameBody(now) {
+  if (ctxLost) return;
   const rawDt = (now - last) / 1000;
   const dt = Math.min(rawDt, .05); last = now;
   if (!document.hidden && rawDt < .25) {
-    qSum += rawDt; qN++;
+    qSum += rawDt; qN++; qMin = Math.min(qMin, rawDt); qMax = Math.max(qMax, rawDt);
     if (now - qT > 1500) {
       const avg = qSum / Math.max(qN, 1);
-      if (avg > .021 && qCap > 1) { qCap = Math.max(1, +(Math.min(qCap, dpr) * .8).toFixed(2)); resize(); }
-      else if (avg > .024 && gFrac > .4 && tw) gFrac = Math.max(.4, gFrac * .8); /* слабый телефон: меньше зёрен, крупнее */
-      qT = now; qN = 0; qSum = 0;
+      const jitter = qMax - qMin > .007; /* перегрузка — кадры неровные; ограничение 30 к/с — ровные */
+      if (avg > .021 && jitter && qCap > 1) { qCap = Math.max(1, +(Math.min(qCap, dpr) * .8).toFixed(2)); resize(); }
+      else if (avg > .024 && jitter && gFrac > .4 && tw) gFrac = Math.max(.4, gFrac * .8); /* слабый телефон: меньше зёрен, крупнее */
+      qT = now; qN = 0; qSum = 0; qMin = 1; qMax = 0;
     }
   }
   const time = (now - t0) / 1000;
 
   loadShown = lerp(loadShown, loaded / total, 1 - Math.exp(-dt * 5));
   if (!ready) {
-    pct.textContent = Math.round(loadShown * 100) + "%";
+    const pv = Math.round(loadShown * 100) + "%"; if (pct.textContent !== pv) pct.textContent = pv;
     if (loaded >= total && loadShown > .985) { ready = true; readyAt = Math.round(performance.now()); gate.classList.add("ready"); }
   }
   if (phase === "gate") {
@@ -1104,8 +1254,8 @@ function frameBody(now) {
     C = lerp(tw.from, tw.to, ios(k));
     if (k >= 1) {
       C = tw.to; tw = null;
-      if (pendingTo >= 0) { const t = pendingTo; pendingTo = -1; go(t); }
-      else if (queued) { const d = queued; queued = 0; go(cur + d); }
+      if (pendingTo >= 0) { const t = pendingTo; pendingTo = -1; queued = 0; userNav = true; go(t); }
+      else if (queued) { const d = queued; queued = 0; userNav = true; go(cur + d); }
     }
   }
   const v = (C - prevC) / Math.max(dt, .001); prevC = C;
@@ -1182,7 +1332,7 @@ function frameBody(now) {
     gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
     gl.useProgram(GR.p);
     common(GR, A, B, ta, tb, mixV, time, dark, lt);
-    gl.uniform1f(GR.u.uPt, (cv.width / gCols) * 1.75 / Math.sqrt(gFrac));
+    gl.uniform1f(GR.u.uPt, (cv.width / gCols) * 1.75 / Math.pow(gFrac, .25));
     gl.bindBuffer(gl.ARRAY_BUFFER, gBuf);
     gl.enableVertexAttribArray(aUv); gl.vertexAttribPointer(aUv, 2, gl.FLOAT, false, 24, 0);
     gl.enableVertexAttribArray(aR); gl.vertexAttribPointer(aR, 4, gl.FLOAT, false, 24, 8);
@@ -1230,7 +1380,8 @@ function frameBody(now) {
     textFrame(lt);
     segBtns.forEach((b, k) => {
       const p = k < cur ? 1 : k > cur ? 0 : (CH[k].dur ? clamp(lt / CH[k].dur, 0, 1) : 1);
-      b.style.setProperty("--p", p);
+      const pr = p.toFixed(3); if (b._p !== pr) { b._p = pr; b.style.setProperty("--p", pr); }
+      if ((k === cur) !== b._c) { b._c = k === cur; if (b._c) b.setAttribute("aria-current", "step"); else b.removeAttribute("aria-current"); }
     });
     root.classList.toggle("lb", !small && cur > 0 && cur < N - 1);
   }
