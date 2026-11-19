@@ -137,12 +137,12 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 
 /* финал: титры и бронь */
 #credits{position:fixed;z-index:9;right:calc(var(--pad) + 20px);top:110px;bottom:110px;width:min(460px,42vw);overflow:hidden;pointer-events:none;
-  -webkit-mask-image:linear-gradient(transparent,#000 22%,#000 78%,transparent);mask-image:linear-gradient(transparent,#000 22%,#000 78%,transparent);opacity:0;transition:opacity 1.2s}
+  -webkit-mask-image:linear-gradient(transparent,#000 14%,#000 86%,transparent);mask-image:linear-gradient(transparent,#000 14%,#000 86%,transparent);opacity:0;transition:opacity 1.2s}
 #credits.on{opacity:1}
 #credits .roll{position:absolute;left:0;right:0;top:100%;text-align:center}
-#credits.on .roll{animation:roll 8.5s linear forwards}
+#credits.on .roll{animation:roll 8s linear forwards}
 .paused #credits .roll{animation-play-state:paused}
-@keyframes roll{to{transform:translateY(calc(-100% - 100vh))}}
+@keyframes roll{to{top:0;transform:translateY(-100%)}} /* ровно от нижнего края окна до ухода за верхний: без лишнего пути титры идут медленнее и читаются */
 .roll .big{font:400 54px/1 "Tenor Sans",serif;letter-spacing:.08em}
 .roll .sub{font:400 10px/1 Inter;letter-spacing:.36em;text-transform:uppercase;color:var(--brass);margin:16px 0 70px}
 .roll h4{font:400 10px/1 Inter;letter-spacing:.42em;text-transform:uppercase;color:var(--brass);margin:0 0 30px}
@@ -194,7 +194,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   #card h2{font-size:clamp(46px,14vw,70px)}
   #card .kick{margin-bottom:18px}
   #subs{bottom:96px;font-size:16px}
-  #credits{right:0;left:0;width:auto;top:30%;bottom:90px}
+  #credits{right:0;left:0;width:auto;top:var(--credTop,30%);bottom:90px}
   .roll .big{font-size:40px}.roll dd{font-size:16px}
   .fin{left:var(--pad);right:var(--pad);width:auto;top:auto;bottom:calc(var(--pad) + 46px);transform:translateY(20px)}
   .fin.on{transform:none}
@@ -868,6 +868,7 @@ function resize() {
   const fe = document.querySelector(".fin"); finQ = fe ? (fe.getBoundingClientRect().left / W - .5) * asp : 9; /* левый край блока брони в координатах неба */
   const se = document.querySelector(".segs"); segB = se ? se.getBoundingClientRect().bottom : 0;
   finBand = fe && se && asp <= 1.05 ? [1 - 2 * (segB + 10) / H, 1 - 2 * (fe.offsetTop - 14) / H] : null; /* просвет для знака на телефоне, в долях экрана сверху вниз */
+  root.style.setProperty("--credTop", finBand ? Math.max(fe.offsetTop - 10, H * .3) + "px" : "30%"); /* титры на телефоне — под знаком */
 }
 resize(); buildGrains(); addEventListener("resize", resize);
 if (document.fonts) document.fonts.ready.then(() => resize()); /* высота блока брони зависит от шрифтов */
@@ -1075,7 +1076,7 @@ function go(k, instant) {
   k = clamp(k, 0, N - 1); if (k === cur && !instant) return;
   const from = tw ? tw.to : C;
   if (instant) { C = prevC = k; tw = null; } else { tw = { from, to: k, fromI: Math.round(from), far: Math.abs(k - from) > 1.01, t0: performance.now(), dur: TRANS_MS }; whoosh(TRANS_MS / 1000 * .95, k === 4 ? 2400 : 1600); }
-  cur = k; chT0 = performance.now(); shownCard = -1; subsKey = "\u0000"; finFast = !!userNav && k === N - 1; userNav = false;
+  cur = k; chT0 = performance.now(); shownCard = -1; subsKey = "\u0000"; finFast = false; userNav = false; /* в финал — всегда с титрами, даже если перешли вручную */
   if (card.classList.contains("on")) card.classList.add("off"); credits.classList.remove("on"); fin.classList.remove("on"); fin.inert = true; root.classList.remove("fin-on");
 }
 let userNav = false, finFast = false;
@@ -1119,8 +1120,14 @@ setTimeout(() => { if (!ready) loaded = total; }, 9000);
 
 /* навигация по главам */
 let wAcc = 0, wLast = 0, wUsed = false, queued = 0;
+function skipToBooking() { /* «дальше» во время титров — сразу бронь */
+  finFast = true; credits.classList.remove("on");
+  if (card.classList.contains("on")) card.classList.add("off");
+  fin.classList.add("on"); fin.inert = false; root.classList.add("fin-on");
+}
 function step(d) {
   if (phase !== "film" || !d) return;
+  if (d > 0 && cur === N - 1 && !tw && !fin.classList.contains("on")) { skipToBooking(); return; }
   if (tw) { queued = d; pendingTo = -1; return; } /* переход идёт — дождаться конца, не дёргать кадр */
   queued = 0; userNav = true; go(cur + d);
 }
