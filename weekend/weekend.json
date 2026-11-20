@@ -3,14 +3,6 @@
  "mode": "auto",
  "events": [
   {
-   "date": "2026-11-20",
-   "time": "22:00",
-   "name": "DJ Tammy",
-   "kind": "DJ-сет",
-   "url": "https://t.me/loungeliwan/491",
-   "img": "491.jpg"
-  },
-  {
    "date": "2026-11-21",
    "time": "19:00",
    "name": "Группа Taikat",
@@ -33,7 +25,6 @@
    "url": "https://t.me/loungeliwan/491",
    "date": "2026-11-16",
    "when": [
-    "2026-11-20",
     "2026-11-21"
    ],
    "title": "Неделя в Liwan",
