@@ -1,34 +1,6 @@
 {
  "channel": "https://t.me/loungeliwan",
  "mode": "auto",
- "events": [
-  {
-   "date": "2026-11-21",
-   "time": "19:00",
-   "name": "Группа Taikat",
-   "kind": "Живая музыка",
-   "url": "https://t.me/loungeliwan/491",
-   "img": "491.jpg"
-  },
-  {
-   "date": "2026-11-21",
-   "time": "21:30",
-   "name": "DJ Arina Bles",
-   "kind": "DJ-сет",
-   "url": "https://t.me/loungeliwan/491",
-   "img": "491.jpg"
-  }
- ],
- "items": [
-  {
-   "id": 491,
-   "url": "https://t.me/loungeliwan/491",
-   "date": "2026-11-16",
-   "when": [
-    "2026-11-21"
-   ],
-   "title": "Неделя в Liwan",
-   "img": "491.jpg"
-  }
- ]
+ "events": [],
+ "items": []
 }
