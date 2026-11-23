@@ -1,6 +1,44 @@
 {
  "channel": "https://t.me/loungeliwan",
  "mode": "auto",
- "events": [],
- "items": []
+ "events": [
+  {
+   "date": "2026-11-25",
+   "time": "22:00",
+   "name": "«Отель «Гранд Будапешт»",
+   "kind": "Кинопоказ",
+   "url": "https://t.me/loungeliwan/516",
+   "img": "516.jpg"
+  },
+  {
+   "date": "2026-11-27",
+   "time": "22:00–01:00",
+   "name": "DJ Sokol",
+   "kind": "DJ-сет",
+   "url": "https://t.me/loungeliwan/516",
+   "img": "516.jpg"
+  },
+  {
+   "date": "2026-11-28",
+   "time": "22:00–01:00",
+   "name": "DJ Bbooka",
+   "kind": "DJ-сет",
+   "url": "https://t.me/loungeliwan/516",
+   "img": "516.jpg"
+  }
+ ],
+ "items": [
+  {
+   "id": 516,
+   "url": "https://t.me/loungeliwan/516",
+   "date": "2026-11-23",
+   "when": [
+    "2026-11-25",
+    "2026-11-27",
+    "2026-11-28"
+   ],
+   "title": "Что в Liwan на этой неделе",
+   "img": "516.jpg"
+  }
+ ]
 }
